@@ -1,0 +1,38 @@
+═══════════════════════════════════════════════════════
+   ALARMAVISION SG-SST — INICIO RÁPIDO (SIN GITHUB)
+═══════════════════════════════════════════════════════
+
+¿TIENES WINDOWS?
+─────────────────
+1. Haz doble clic en:  INICIAR-WINDOWS.bat
+2. Se abrirán 3 pestañas en tu navegador automáticamente
+3. ¡Listo! Ya puedes usar las apps
+
+¿TIENES MAC o LINUX?
+─────────────────────
+1. Abre Terminal en esta carpeta
+2. Ejecuta:  bash INICIAR-MAC-LINUX.sh
+3. Se abrirán 3 pestañas en tu navegador automáticamente
+
+¿QUÉ SE ABRE?
+──────────────
+• http://localhost:8080/              → Página de inicio
+• http://localhost:8080/mobile-app/   → App para reportar (celular/PC)
+• http://localhost:8080/desktop-app/  → Panel administrador
+
+REQUISITO PREVIO (solo una vez):
+──────────────────────────────────
+Debes tener Python instalado. Para verificar:
+  Abre "cmd" o Terminal y escribe:  python --version
+
+Si no aparece, descárgalo de:  https://python.org
+(Durante la instalación marca "Add Python to PATH")
+
+PARA EL CELULAR:
+─────────────────
+1. Asegúrate de que el PC y el celular estén en el mismo WiFi
+2. Averigua la IP de tu PC (ejecuta "ipconfig" en cmd, busca IPv4)
+3. En el celular abre:  http://192.168.X.X:8080/mobile-app/
+   (reemplaza con tu IP real)
+
+═══════════════════════════════════════════════════════

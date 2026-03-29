@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1B3A8C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SG-SST">
+  <title>Alarmavision SG-SST — Reporte de Riesgos</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="../shared/icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --blue: #1B3A8C;
+      --blue-light: #2E5FD9;
+      --blue-glow: rgba(27, 58, 140, 0.4);
+      --gray: #9EA2A2;
+      --gray-dark: #5A5D5D;
+      --black: #080808;
+      --surface: #0F1318;
+      --surface2: #161C26;
+      --border: rgba(27, 58, 140, 0.3);
+      --text: #E8EAF0;
+      --text-dim: #8A8F9A;
+      --success: #00C853;
+      --danger: #FF1744;
+      --warning: #FFD600;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      height: 100%;
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── FONDO ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(27,58,140,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(27,58,140,0.12) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      background: linear-gradient(180deg, rgba(27,58,140,0.25) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+    }
+
+    .header-logos {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      height: 44px;
+      width: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .logo-sgsst {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      border-radius: 8px;
+      opacity: 0.9;
+    }
+
+    .divider-v {
+      width: 1px;
+      height: 32px;
+      background: var(--border);
+    }
+
+    .header-info {
+      flex: 1;
+    }
+
+    .header-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .header-title span {
+      color: var(--gray-dark);
+    }
+    .header-title span1 {
+      color: var(--blue);
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-dot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.offline {
+      background: var(--gray-dark);
+      box-shadow: none;
+      animation: none;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── MAIN ── */
+    .main-content {
+      flex: 1;
+      padding: 20px 16px 100px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(27,58,140,0.2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue-light);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .section-badge svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light), transparent);
+    }
+
+    .card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title svg {
+      width: 16px;
+      height: 16px;
+      color: var(--blue-light);
+    }
+
+    /* ── FORM ── */
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .field-label .required {
+      color: var(--danger);
+      margin-left: 2px;
+    }
+
+    .field-input, .field-select, .field-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid rgba(158, 162, 162, 0.2);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 12px 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+
+    .field-input:focus, .field-select:focus, .field-textarea:focus {
+      border-color: var(--blue-light);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+
+    .field-input::placeholder, .field-textarea::placeholder {
+      color: var(--gray-dark);
+    }
+
+    .field-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239EA2A2' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    .field-select option {
+      background: #1A2030;
+      color: var(--text);
+    }
+
+    .field-textarea {
+      min-height: 90px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* ── NIVEL DE RIESGO ── */
+    .risk-levels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .risk-level-btn {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .risk-level-btn input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .risk-level-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 8px;
+      border-radius: var(--radius-sm);
+      border: 2px solid rgba(158,162,162,0.15);
+      background: var(--surface2);
+      transition: all 0.2s;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .risk-level-label .level-icon {
+      font-size: 20px;
+    }
+
+    .risk-level-label .level-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .risk-level-btn input[value="Alto"]:checked ~ .risk-level-label {
+      border-color: var(--danger);
+      background: rgba(255,23,68,0.12);
+      box-shadow: 0 0 12px rgba(255,23,68,0.2);
+    }
+    .risk-level-btn input[value="Alto"]:checked ~ .risk-level-label .level-text { color: var(--danger); }
+
+    .risk-level-btn input[value="Medio"]:checked ~ .risk-level-label {
+      border-color: var(--warning);
+      background: rgba(255,214,0,0.1);
+      box-shadow: 0 0 12px rgba(255,214,0,0.2);
+    }
+    .risk-level-btn input[value="Medio"]:checked ~ .risk-level-label .level-text { color: var(--warning); }
+
+    .risk-level-btn input[value="Bajo"]:checked ~ .risk-level-label {
+      border-color: var(--success);
+      background: rgba(0,200,83,0.1);
+      box-shadow: 0 0 12px rgba(0,200,83,0.15);
+    }
+    .risk-level-btn input[value="Bajo"]:checked ~ .risk-level-label .level-text { color: var(--success); }
+
+    /* ── OFFLINE QUEUE ── */
+    .queue-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,214,0,0.1);
+      border: 1px solid rgba(255,214,0,0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--warning);
+      margin-bottom: 16px;
+    }
+
+    .queue-banner.visible { display: flex; }
+
+    .queue-count {
+      background: var(--warning);
+      color: #000;
+      border-radius: 100px;
+      padding: 1px 8px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* ── BOTÓN ENVIAR ── */
+    .btn-send {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+      border: none;
+      border-radius: var(--radius);
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 24px rgba(27,58,140,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-send::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.15s;
+    }
+
+    .btn-send:active::after {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-send.loading {
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+    }
+
+    .btn-send.loading .spinner { display: block; }
+    .btn-send.loading .btn-icon { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 16px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: auto;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { border-color: rgba(0,200,83,0.4); }
+    .toast.error { border-color: rgba(255,23,68,0.4); }
+    .toast.warning { border-color: rgba(255,214,0,0.4); }
+
+    .toast-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .toast-text {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .toast-msg {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* ── HISTORIAL ── */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .history-item-info { flex: 1; min-width: 0; }
+
+    .history-item-type {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .history-badge {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-alto { background: rgba(255,23,68,0.2); color: #FF5252; border: 1px solid rgba(255,23,68,0.3); }
+    .badge-medio { background: rgba(255,214,0,0.15); color: #FFD600; border: 1px solid rgba(255,214,0,0.3); }
+    .badge-bajo { background: rgba(0,200,83,0.15); color: #00E676; border: 1px solid rgba(0,200,83,0.3); }
+    .badge-pending { background: rgba(158,162,162,0.15); color: var(--gray); border: 1px solid rgba(158,162,162,0.3); }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .empty-state svg {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      opacity: 0.3;
+      display: block;
+    }
+
+    /* ── NAV BOTTOM ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(8,8,8,0.95);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      z-index: 200;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 8px;
+      border: none;
+      background: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
+
+    .nav-btn.active {
+      color: var(--blue-light);
+    }
+
+    .nav-btn.active svg {
+      filter: drop-shadow(0 0 6px rgba(46,95,217,0.6));
+    }
+
+    /* ── TABS ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── ANIMACIONES ── */
+    .card {
+      animation: slideUp 0.3s ease both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(2) { animation-delay: 0.05s; }
+    .card:nth-child(3) { animation-delay: 0.1s; }
+    .card:nth-child(4) { animation-delay: 0.15s; }
+
+    /* ── INPUTS VÁLIDOS ── */
+    .field-input.valid, .field-select.valid, .field-textarea.valid {
+      border-color: rgba(0,200,83,0.4);
+    }
+
+    .field-input.invalid, .field-select.invalid, .field-textarea.invalid {
+      border-color: rgba(255,23,68,0.5);
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: #FF5252;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .field-error.show { display: block; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-logos">
+      <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="logo-img"
+           onerror="this.style.display='none'">
+      <div class="divider-v"></div>
+      <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst"
+           onerror="this.style.display='none'">
+    </div>
+    <div class="header-info">
+      <div class="header-title"><span1>Alarma</span1><span>vision</span></div>
+      <div class="header-subtitle">Reporte de Riesgos SG-SST</div>
+    </div>
+    <div class="status-dot" id="statusDot" title="En línea"></div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+
+    <!-- TAB: FORMULARIO -->
+    <div class="tab-content active" id="tab-form">
+
+      <div class="queue-banner" id="queueBanner">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        Sin conexión — <span class="queue-count" id="queueCount">0</span> pendiente(s)
+      </div>
+
+      <div class="section-badge">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+        </svg>
+        Riesgos SG-SST en la oficina
+      </div>
+
+      <!-- DATOS DEL REPORTANTE -->
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+          </svg>
+          Datos del reportante
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="nombre">
+            Nombre completo <span class="required">*</span>
+          </label>
+          <input type="text" id="nombre" class="field-input"
+                 placeholder="Ej: Julanito Perez" autocomplete="name">
+          <div class="field-error" id="nombre-error">Campo obligatorio</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="cedula">
+            Cédula de ciudadanía <span class="required">*</span>
+          </label>
+          <input type="number" id="cedula" class="field-input"
+                 placeholder="Ej: 1234567890" inputmode="numeric">
+          <div class="field-error" id="cedula-error">Ingresa un número de cédula válido</div>
+        </div>
+      </div>
+
+      <!-- TIPO DE RIESGO -->
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+          </svg>
+          Tipo de riesgo
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="tipoRiesgo">
+            Selecciona el tipo de riesgo <span class="required">*</span>
+          </label>
+          <select id="tipoRiesgo" class="field-select">
+            <option value="">— Seleccionar —</option>
+            <option>Daño en silla</option>
+            <option>Daño en módulo de trabajo</option>
+            <option>Cableado en mal estado</option>
+            <option>Iluminación deficiente</option>
+            <option>Riesgo eléctrico</option>
+            <option>Caídas o tropiezos</option>
+            <option>Riesgo de incendio</option>
+            <option>Señalización deficiente</option>
+            <option>Extintor vencido o ausente</option>
+            <option>Salida de emergencia bloqueada</option>
+            <option>Otros</option>
+          </select>
+          <div class="field-error" id="tipo-error">Selecciona un tipo de riesgo</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">
+            Nivel de riesgo <span class="required">*</span>
+          </label>
+          <div class="risk-levels">
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Alto">
+              <div class="risk-level-label">
+                <span class="level-icon">🔴</span>
+                <span class="level-text">Alto</span>
+              </div>
+            </label>
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Medio">
+              <div class="risk-level-label">
+                <span class="level-icon">🟡</span>
+                <span class="level-text">Medio</span>
+              </div>
+            </label>
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Bajo">
+              <div class="risk-level-label">
+                <span class="level-icon">🟢</span>
+                <span class="level-text">Bajo</span>
+              </div>
+            </label>
+          </div>
+          <div class="field-error" id="nivel-error">Selecciona el nivel de riesgo</div>
+        </div>
+
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" for="observaciones">
+            Descripción del riesgo
+          </label>
+          <textarea id="observaciones" class="field-textarea"
+                    placeholder="Describe brevemente el riesgo observado..."></textarea>
+        </div>
+      </div>
+
+      <!-- BOTÓN ENVIAR -->
+      <button class="btn-send" id="btnSend" onclick="handleSubmit()">
+        <svg class="btn-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+        </svg>
+        <div class="spinner"></div>
+        Enviar Reporte
+      </button>
+
+    </div>
+
+    <!-- TAB: HISTORIAL -->
+    <div class="tab-content" id="tab-history">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div class="section-badge" style="margin-bottom:0">
+          <svg viewBox="0 0 16 16" fill="currentColor" style="width:14px;height:14px">
+            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+          </svg>
+          Mis reportes
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="retrySend()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(27,58,140,0.2);border:1px solid rgba(27,58,140,0.4);border-radius:8px;color:#58A6FF;font-size:12px;font-weight:600;cursor:pointer;">
+            🔄 Reintentar envío
+          </button>
+          <button onclick="deletePending()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(210,153,34,0.15);border:1px solid rgba(210,153,34,0.35);border-radius:8px;color:#E3B341;font-size:12px;font-weight:600;cursor:pointer;">
+            🗑️ Borrar pendientes
+          </button>
+          <button onclick="clearHistory()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);border-radius:8px;color:#F85149;font-size:12px;font-weight:600;cursor:pointer;">
+            ✕ Borrar todo
+          </button>
+        </div>
+      </div>
+
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+  </main>
+
+  <!-- NAV BOTTOM -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-form" onclick="switchTab('form')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1zM2 3.5a.5.5 0 0 1 .5-.5H4v.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3h4v.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3h1.5a.5.5 0 0 1 .5.5v2h-13V3.5zM2 7h12v5.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V7z"/>
+      </svg>
+      <span>Reportar</span>
+    </button>
+    <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+        <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+        <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+      </svg>
+      <span>Historial</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — URL de Google Apps Script
+// Lee de localStorage si el usuario la configuró en el panel admin.
+// Si no, usa la URL por defecto del código.
+// ============================================================
+const URL_DEFAULT = "https://script.google.com/a/macros/alarmavision.com/s/AKfycbx-9EBUJ_xOUWyzyCow6tLjtvFxWLG7PCXAujJ86xs5L_fXDB9xd16Nz70m3w9N_0R-/exec";
+const SCRIPT_URL = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
+
+// ============================================================
+// ESTADO DE LA APP
+// ============================================================
+let isOnline = navigator.onLine;
+let pendingQueue = JSON.parse(localStorage.getItem('pending_queue') || '[]');
+let myReports = JSON.parse(localStorage.getItem('my_reports') || '[]');
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  // Register SW
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+    
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data.type === 'SYNC_NEEDED') syncPending();
+    });
+  }
+  
+  updateOnlineStatus();
+  renderHistory();
+  // Intentar sincronizar pendientes al arrancar
+  if (navigator.onLine) setTimeout(() => syncPending(), 2000);
+});
+
+window.addEventListener('online', () => {
+  isOnline = true;
+  updateOnlineStatus();
+  syncPending();
+});
+
+window.addEventListener('offline', () => {
+  isOnline = false;
+  updateOnlineStatus();
+});
+
+// ============================================================
+// ONLINE STATUS
+// ============================================================
+function updateOnlineStatus() {
+  const dot = document.getElementById('statusDot');
+  if (isOnline) {
+    dot.classList.remove('offline');
+    dot.title = 'En línea';
+  } else {
+    dot.classList.add('offline');
+    dot.title = 'Sin conexión';
+  }
+  updateQueueBanner();
+}
+
+function updateQueueBanner() {
+  const banner = document.getElementById('queueBanner');
+  const count = document.getElementById('queueCount');
+  count.textContent = pendingQueue.length;
+  
+  if (!isOnline && pendingQueue.length > 0) {
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  
+  if (tab === 'history') renderHistory();
+}
+
+// ============================================================
+// VALIDACIÓN
+// ============================================================
+function validate() {
+  let valid = true;
+  
+  const nombre = document.getElementById('nombre');
+  const cedula = document.getElementById('cedula');
+  const tipoRiesgo = document.getElementById('tipoRiesgo');
+  const nivelRiesgo = document.querySelector('input[name="nivelRiesgo"]:checked');
+  
+  // Nombre
+  if (!nombre.value.trim() || nombre.value.trim().length < 3) {
+    nombre.classList.add('invalid');
+    document.getElementById('nombre-error').classList.add('show');
+    valid = false;
+  } else {
+    nombre.classList.remove('invalid');
+    nombre.classList.add('valid');
+    document.getElementById('nombre-error').classList.remove('show');
+  }
+  
+  // Cédula
+  if (!cedula.value.trim() || cedula.value.trim().length < 6) {
+    cedula.classList.add('invalid');
+    document.getElementById('cedula-error').classList.add('show');
+    valid = false;
+  } else {
+    cedula.classList.remove('invalid');
+    cedula.classList.add('valid');
+    document.getElementById('cedula-error').classList.remove('show');
+  }
+  
+  // Tipo riesgo
+  if (!tipoRiesgo.value) {
+    tipoRiesgo.classList.add('invalid');
+    document.getElementById('tipo-error').classList.add('show');
+    valid = false;
+  } else {
+    tipoRiesgo.classList.remove('invalid');
+    tipoRiesgo.classList.add('valid');
+    document.getElementById('tipo-error').classList.remove('show');
+  }
+  
+  // Nivel
+  if (!nivelRiesgo) {
+    document.getElementById('nivel-error').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('nivel-error').classList.remove('show');
+  }
+  
+  return valid;
+}
+
+// ============================================================
+// ENVIAR REPORTE
+// ============================================================
+async function handleSubmit() {
+  if (!validate()) return;
+  
+  const btn = document.getElementById('btnSend');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  
+  const now = new Date();
+  const report = {
+    nombre: document.getElementById('nombre').value.trim(),
+    cedula: document.getElementById('cedula').value.trim(),
+    tipoRiesgo: document.getElementById('tipoRiesgo').value,
+    nivelRiesgo: document.querySelector('input[name="nivelRiesgo"]:checked').value,
+    observaciones: document.getElementById('observaciones').value.trim(),
+    fecha: now.toLocaleDateString('es-CO'),
+    hora: now.toLocaleTimeString('es-CO'),
+    timestamp: now.toISOString(),
+    localId: 'L' + Date.now()
+  };
+  
+  try {
+    if (!isOnline) throw new Error('offline');
+    
+    // GET con parámetros — evita CORS de Google Apps Script
+    const params = new URLSearchParams({
+      action: 'submit',
+      nombre: report.nombre,
+      cedula: report.cedula,
+      tipoRiesgo: report.tipoRiesgo,
+      nivelRiesgo: report.nivelRiesgo,
+      observaciones: report.observaciones || ''
+    });
+    const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, { method: 'GET' });
+    const result = await response.json();
+    
+    if (result.success) {
+      report.id = result.id;
+      report.sent = true;
+      saveReport(report);
+      resetForm();
+      showToast('✅', '¡Reporte enviado!', `ID: ${result.id} — ${report.tipoRiesgo}`, 'success');
+    } else {
+      throw new Error(result.error || 'Error del servidor');
+    }
+    
+  } catch (err) {
+    report.sent = false;
+    pendingQueue.push(report);
+    localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+    saveReport(report);
+    updateQueueBanner();
+    const msg = err.message === 'offline'
+      ? 'Sin conexión — se enviará al recuperar señal'
+      : `Error: ${err.message} — guardado localmente`;
+    showToast('📥', 'Guardado localmente', msg, 'warning');
+    resetForm();
+  }
+  
+  btn.classList.remove('loading');
+  btn.disabled = false;
+}
+
+// ============================================================
+// SINCRONIZAR PENDIENTES
+// ============================================================
+async function syncPending() {
+  if (!isOnline || pendingQueue.length === 0) return;
+  
+  const toSync = [...pendingQueue];
+  let synced = 0;
+  
+  for (const report of toSync) {
+    try {
+      const params = new URLSearchParams({
+        action: 'submit',
+        nombre: report.nombre,
+        cedula: report.cedula,
+        tipoRiesgo: report.tipoRiesgo,
+        nivelRiesgo: report.nivelRiesgo,
+        observaciones: report.observaciones || ''
+      });
+      const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, { method: 'GET' });
+      const result = await response.json();
+      
+      if (result.success) {
+        pendingQueue = pendingQueue.filter(r => r.localId !== report.localId);
+        
+        // Actualizar en myReports
+        const idx = myReports.findIndex(r => r.localId === report.localId);
+        if (idx !== -1) {
+          myReports[idx].sent = true;
+          myReports[idx].id = result.id;
+        }
+        synced++;
+      }
+    } catch (e) { break; }
+  }
+  
+  if (synced > 0) {
+    localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+    localStorage.setItem('my_reports', JSON.stringify(myReports));
+    updateQueueBanner();
+    renderHistory();
+    showToast('🔄', 'Sincronizado', `${synced} reporte(s) enviado(s)`, 'success');
+  }
+}
+
+// ============================================================
+// GUARDAR & RENDERIZAR HISTORIAL
+// ============================================================
+function saveReport(report) {
+  myReports.unshift(report);
+  if (myReports.length > 50) myReports = myReports.slice(0, 50);
+  localStorage.setItem('my_reports', JSON.stringify(myReports));
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  const pendientes = myReports.filter(r => !r.sent).length;
+
+  if (myReports.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></svg>
+        Historial vacío
+      </div>`;
+    return;
+  }
+
+  // Resumen rápido
+  const resumen = pendientes > 0
+    ? `<div style="background:rgba(210,153,34,0.1);border:1px solid rgba(210,153,34,0.3);border-radius:8px;padding:10px 14px;font-size:12.5px;color:#E3B341;margin-bottom:12px;">
+        ⏳ <b>${pendientes}</b> reporte(s) pendiente(s) de enviar.
+        Guarda la URL correcta en el panel y presiona <b>Reintentar envío</b>.
+       </div>`
+    : '';
+
+  list.innerHTML = resumen + myReports.map(r => {
+    const nivel = r.nivelRiesgo || '';
+    const badgeClass = nivel === 'Alto' ? 'badge-alto' : nivel === 'Medio' ? 'badge-medio' : 'badge-bajo';
+
+    if (r.sent) {
+      // Enviado — solo mostrar info
+      return `
+        <div class="history-item" style="opacity:0.85">
+          <div class="history-item-info">
+            <div class="history-item-type">${r.tipoRiesgo}</div>
+            <div class="history-item-meta">
+              ${r.fecha} ${r.hora} · ✅ ${r.id || 'Enviado'}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="history-badge ${badgeClass}">${nivel}</div>
+            <button onclick="deleteOne('${r.localId}')" title="Eliminar del historial"
+              style="background:none;border:none;cursor:pointer;color:var(--gray-dark);font-size:16px;padding:2px 4px;line-height:1;">✕</button>
+          </div>
+        </div>`;
+    } else {
+      // Pendiente — mostrar con opciones
+      return `
+        <div class="history-item" style="border-color:rgba(210,153,34,0.35);background:rgba(210,153,34,0.05);">
+          <div class="history-item-info">
+            <div class="history-item-type">${r.tipoRiesgo}</div>
+            <div class="history-item-meta">
+              ${r.fecha} ${r.hora} · ⏳ Pendiente
+            </div>
+            <div style="margin-top:6px;display:flex;gap:6px;">
+              <button onclick="retrySingle('${r.localId}')"
+                style="padding:4px 10px;background:rgba(27,58,140,0.2);border:1px solid rgba(27,58,140,0.4);border-radius:6px;color:#58A6FF;font-size:11px;font-weight:600;cursor:pointer;">
+                🔄 Reintentar
+              </button>
+              <button onclick="deleteOne('${r.localId}')"
+                style="padding:4px 10px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);border-radius:6px;color:#F85149;font-size:11px;font-weight:600;cursor:pointer;">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+          <div class="history-badge ${badgeClass}">${nivel}</div>
+        </div>`;
+    }
+  }).join('');
+}
+
+// Eliminar un reporte del historial (y de la cola si estaba pendiente)
+function deleteOne(localId) {
+  myReports    = myReports.filter(r => r.localId !== localId);
+  pendingQueue = pendingQueue.filter(r => r.localId !== localId);
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+}
+
+// Borrar solo los pendientes
+function deletePending() {
+  const n = myReports.filter(r => !r.sent).length;
+  if (n === 0) { showToast('ℹ️', 'Sin pendientes', 'No hay reportes pendientes en el historial', 'info'); return; }
+  if (!confirm(`¿Eliminar ${n} reporte(s) pendiente(s)? Esto no los enviará.`)) return;
+  myReports    = myReports.filter(r => r.sent);
+  pendingQueue = [];
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+  showToast('🗑️', 'Pendientes eliminados', `Se eliminaron ${n} reporte(s)`, 'success');
+}
+
+// Borrar todo el historial local
+function clearHistory() {
+  if (!confirm('¿Borrar todo el historial local? Los reportes ya enviados siguen en Google Sheets.')) return;
+  myReports    = [];
+  pendingQueue = [];
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+  showToast('🗑️', 'Historial borrado', 'Los datos en Google Sheets no se afectaron', 'info');
+}
+
+// Reintentar envío de un solo pendiente
+async function retrySingle(localId) {
+  const report = myReports.find(r => r.localId === localId);
+  if (!report) return;
+  showToast('🔄', 'Reintentando...', report.tipoRiesgo, 'info');
+  try {
+    const params = new URLSearchParams({
+      action: 'submit', nombre: report.nombre, cedula: report.cedula,
+      tipoRiesgo: report.tipoRiesgo, nivelRiesgo: report.nivelRiesgo,
+      observaciones: report.observaciones || ''
+    });
+    const res    = await fetch(`${SCRIPT_URL}?${params}`, { method: 'GET' });
+    const result = await res.json();
+    if (result.success) {
+      myReports    = myReports.map(r => r.localId === localId ? { ...r, sent: true, id: result.id } : r);
+      pendingQueue = pendingQueue.filter(r => r.localId !== localId);
+      localStorage.setItem('my_reports',    JSON.stringify(myReports));
+      localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+      updateQueueBanner();
+      renderHistory();
+      showToast('✅', '¡Enviado!', `ID: ${result.id}`, 'success');
+    } else throw new Error(result.error);
+  } catch (e) {
+    showToast('❌', 'No se pudo enviar', 'Verifica la URL en el panel de escritorio → Configuración', 'error');
+  }
+}
+
+// ============================================================
+// RESET FORM
+// ============================================================
+function resetForm() {
+  document.getElementById('nombre').value = '';
+  document.getElementById('cedula').value = '';
+  document.getElementById('tipoRiesgo').value = '';
+  document.getElementById('observaciones').value = '';
+  document.querySelectorAll('input[name="nivelRiesgo"]').forEach(r => r.checked = false);
+  
+  document.querySelectorAll('.field-input, .field-select, .field-textarea').forEach(el => {
+    el.classList.remove('valid', 'invalid');
+  });
+  document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(icon, title, msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-text">
+      <div class="toast-title">${title}</div>
+      ${msg ? `<div class="toast-msg">${msg}</div>` : ''}
+    </div>`;
+  
+  container.appendChild(toast);
+  
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => toast.classList.add('show'));
+  });
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
+// ============================================================
+// INPUT LISTENERS (auto-validate on change)
+// ============================================================
+['nombre', 'cedula', 'tipoRiesgo'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', () => {
+    const el = document.getElementById(id);
+    if (el.value.trim()) {
+      el.classList.remove('invalid');
+      el.classList.add('valid');
+      document.getElementById(id.replace('tipoRiesgo','tipo') + '-error')?.classList.remove('show');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
