@@ -1,0 +1,32 @@
+{
+  "name": "Alarmavision SG-SST — Panel Administrativo",
+  "short_name": "SG-SST Admin",
+  "description": "Panel de gestión de reportes SG-SST - Alarmavision Services S.A.S.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#080808",
+  "theme_color": "#1B3A8C",
+  "icons": [
+    {
+      "src": "../shared/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../shared/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "lang": "es",
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}

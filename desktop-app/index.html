@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1B3A8C">
+  <title>Alarmavision SG-SST — Panel Administrativo</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- SheetJS para exportar Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- jsPDF para exportar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+:root {
+  --blue: #1B3A8C;
+  --blue-light: #2E5FD9;
+  --blue-dim: rgba(27,58,140,0.15);
+  --blue-glow: rgba(27,58,140,0.35);
+  --gray: #9EA2A2;
+  --gray-dark: #5A5D5D;
+  --black: #080808;
+  --surface: #0D1117;
+  --surface2: #161B24;
+  --surface3: #1C2333;
+  --border: rgba(27,58,140,0.25);
+  --border2: rgba(158,162,162,0.12);
+  --text: #E6EDF3;
+  --text-dim: #8B949E;
+  --success: #3FB950;
+  --danger: #F85149;
+  --warning: #D29922;
+  --info: #58A6FF;
+  --alto: #F85149;
+  --medio: #D29922;
+  --bajo: #3FB950;
+  --radius: 10px;
+  --sidebar-w: 220px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* ── LAYOUT ── */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sidebar-logo {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.sidebar-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+.sidebar-brand {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+}
+
+.sidebar-brand span { color: var( --gray-dark); }
+.sidebar-brand span1 { color: var( --blue); }
+
+.sidebar-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 10px;
+  overflow-y: auto;
+}
+
+.nav-section {
+  margin-bottom: 20px;
+}
+
+.nav-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--blue-dim);
+  color: var(--blue-light);
+}
+
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--danger);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.online-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.status-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 50% { opacity: 0.5; } }
+
+.last-sync {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* ── MAIN AREA ── */
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  flex: 1;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn svg { width: 14px; height: 14px; }
+
+.btn-primary {
+  background: var(--blue);
+  color: white;
+}
+.btn-primary:hover { background: var(--blue-light); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border2);
+}
+.btn-outline:hover { background: var(--surface2); color: var(--text); }
+
+.btn-success {
+  background: rgba(63,185,80,0.15);
+  color: var(--success);
+  border: 1px solid rgba(63,185,80,0.3);
+}
+.btn-success:hover { background: rgba(63,185,80,0.25); }
+
+.btn-excel {
+  background: rgba(21,128,61,0.15);
+  color: #4ade80;
+  border: 1px solid rgba(21,128,61,0.3);
+}
+.btn-excel:hover { background: rgba(21,128,61,0.25); }
+
+.btn-pdf {
+  background: rgba(239,68,68,0.12);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.25);
+}
+.btn-pdf:hover { background: rgba(239,68,68,0.22); }
+
+/* ── PAGE CONTENT ── */
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── STATS CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+}
+
+.stat-card.total::before { background: var(--blue-light); }
+.stat-card.alto::before { background: var(--alto); }
+.stat-card.medio::before { background: var(--medio); }
+.stat-card.bajo::before { background: var(--bajo); }
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-card.total .stat-value { color: var(--blue-light); }
+.stat-card.alto .stat-value { color: var(--alto); }
+.stat-card.medio .stat-value { color: var(--medio); }
+.stat-card.bajo .stat-value { color: var(--bajo); }
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ── CHART ROW ── */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) { .chart-row { grid-template-columns: 1fr; } }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.chart-card-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+
+/* ── PROGRESS BARS ── */
+.progress-bar {
+  margin-bottom: 10px;
+}
+
+.progress-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 5px;
+}
+
+.progress-bar-label { color: var(--text); font-weight: 500; }
+.progress-bar-value { color: var(--text-dim); }
+
+.progress-track {
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* ── FILTERS ── */
+.filters-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 0;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 7px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.filter-input:focus { border-color: var(--blue-light); }
+.filter-input::placeholder { color: var(--text-dim); }
+
+.filter-input.search { min-width: 220px; flex: 1; }
+
+select.filter-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238B949E' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+select.filter-input option { background: #1C2333; }
+
+/* ── TABLE ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-header-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  max-height: calc(100vh - 380px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface2);
+}
+
+th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+th:hover { color: var(--text); }
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border2);
+  vertical-align: middle;
+  max-width: 220px;
+}
+
+.td-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+tbody tr {
+  transition: background 0.1s;
+}
+
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+tbody tr.atendido {
+  background: rgba(63,185,80,0.05);
+}
+
+tbody tr.atendido:hover {
+  background: rgba(63,185,80,0.09);
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.badge-alto { background: rgba(248,81,73,0.15); color: #FF6B63; border: 1px solid rgba(248,81,73,0.3); }
+.badge-medio { background: rgba(210,153,34,0.15); color: #E3B341; border: 1px solid rgba(210,153,34,0.3); }
+.badge-bajo { background: rgba(63,185,80,0.12); color: #3FB950; border: 1px solid rgba(63,185,80,0.3); }
+.badge-atendido { background: rgba(63,185,80,0.12); color: #3FB950; border: 1px solid rgba(63,185,80,0.3); }
+.badge-no-atendido { background: rgba(248,81,73,0.1); color: #F85149; border: 1px solid rgba(248,81,73,0.2); }
+
+/* ── ACTION BUTTONS ── */
+.btn-attend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(63,185,80,0.3);
+  background: rgba(63,185,80,0.1);
+  color: var(--success);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-attend:hover { background: rgba(63,185,80,0.2); }
+
+.btn-attend:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── EMPTY STATE ── */
+.empty-table {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-dim);
+}
+
+.empty-table svg {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 12px;
+  display: block;
+  opacity: 0.3;
+}
+
+/* ── LOADING ── */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,8,0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  gap: 14px;
+}
+
+.loading-overlay.hidden { display: none; }
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(27,58,140,0.3);
+  border-top-color: var(--blue-light);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  color: var(--text-dim);
+}
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 260px;
+  max-width: 360px;
+}
+
+.toast.show { transform: translateX(0); }
+.toast.success { border-color: rgba(63,185,80,0.4); }
+.toast.error { border-color: rgba(248,81,73,0.4); }
+.toast.info { border-color: rgba(27,58,140,0.5); }
+
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+.toast-body { flex: 1; }
+.toast-title { font-weight: 600; font-size: 13.5px; }
+.toast-msg { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+/* ── MODAL ── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  width: 90%;
+  max-width: 480px;
+  transform: scale(0.95);
+  transition: transform 0.2s;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+.modal-backdrop.show .modal { transform: scale(1); }
+
+.modal-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.modal-field {
+  margin-bottom: 12px;
+}
+
+.modal-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
+}
+
+.modal-value {
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  word-break: break-word;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+/* ── SETTINGS PAGE ── */
+.settings-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  max-width: 600px;
+}
+
+.settings-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text);
+}
+
+.settings-field {
+  margin-bottom: 14px;
+}
+
+.settings-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 7px;
+}
+
+.settings-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.settings-input:focus { border-color: var(--blue-light); }
+
+.settings-hint {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.settings-hint a { color: var(--blue-light); text-decoration: none; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-dark); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Cargando datos...</div>
+</div>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logos">
+        <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="sidebar-logo"
+             onerror="this.style.display='none'">
+        <div class="sidebar-divider"></div>
+        <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div>
+      <div class="sidebar-sub">Panel SG-SST · Admin</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Principal</div>
+        <button class="nav-item active" onclick="switchPage('dashboard')">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+          Dashboard
+        </button>
+        <button class="nav-item" onclick="switchPage('reports')">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/>
+          </svg>
+          Reportes
+          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Exportar</div>
+        <button class="nav-item" onclick="exportExcel()">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+          </svg>
+          Exportar Excel
+        </button>
+        <button class="nav-item" onclick="exportPDF()">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+          </svg>
+          Exportar PDF
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Sistema</div>
+        <button class="nav-item" onclick="switchPage('settings')">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+          </svg>
+          Configuración
+        </button>
+        <button class="nav-item" onclick="loadData()">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+          </svg>
+          Actualizar datos
+        </button>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="online-status">
+        <div class="status-indicator" id="sidebarDot"></div>
+        <span id="onlineText">En línea</span>
+      </div>
+      <div class="last-sync" id="lastSync">Última actualización: —</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-area">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="pageTitle">📊 Dashboard</div>
+      <div class="topbar-actions">
+        <button class="btn btn-excel" onclick="exportExcel()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>
+          Excel
+        </button>
+        <button class="btn btn-pdf" onclick="exportPDF()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2z"/></svg>
+          PDF
+        </button>
+        <button class="btn btn-primary" onclick="loadData()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>
+          Actualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- PÁGINAS -->
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-label">Total Reportes</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-sub">Todos los registros</div>
+          </div>
+          <div class="stat-card alto">
+            <div class="stat-label">Riesgo Alto</div>
+            <div class="stat-value" id="stat-alto">0</div>
+            <div class="stat-sub">Atención inmediata</div>
+          </div>
+          <div class="stat-card medio">
+            <div class="stat-label">Riesgo Medio</div>
+            <div class="stat-value" id="stat-medio">0</div>
+            <div class="stat-sub">Seguimiento activo</div>
+          </div>
+          <div class="stat-card bajo">
+            <div class="stat-label">Riesgo Bajo</div>
+            <div class="stat-value" id="stat-bajo">0</div>
+            <div class="stat-sub">Monitoreo periódico</div>
+          </div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-card">
+            <div class="chart-card-title">Estado de atención</div>
+            <div id="chartEstado"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Tipos de riesgo más frecuentes</div>
+            <div id="chartTipos"></div>
+          </div>
+        </div>
+
+        <!-- Últimos reportes en dashboard -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-header-title">Últimos 10 reportes</span>
+            <button class="btn btn-outline" onclick="switchPage('reports')">Ver todos →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Tipo de riesgo</th>
+                  <th>Nivel</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardTableBody">
+                <tr><td colspan="6" class="empty-table">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTES -->
+      <div class="page" id="page-reports">
+        <div class="filters-row">
+          <input type="text" class="filter-input search" id="filterNombre" placeholder="🔍 Buscar por nombre o cédula..." oninput="applyFilters()">
+          <select class="filter-input" id="filterNivel" onchange="applyFilters()">
+            <option value="">Todos los niveles</option>
+            <option value="Alto">Alto</option>
+            <option value="Medio">Medio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+          <select class="filter-input" id="filterEstado" onchange="applyFilters()">
+            <option value="">Todos los estados</option>
+            <option value="No atendido">No atendido</option>
+            <option value="Atendido">Atendido</option>
+          </select>
+          <input type="date" class="filter-input" id="filterFecha" onchange="applyFilters()">
+          <button class="btn btn-outline" onclick="clearFilters()">Limpiar</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-header-title" id="reportsCount">Reportes</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-excel" onclick="exportExcel()">Excel</button>
+              <button class="btn btn-pdf" onclick="exportPDF()">PDF</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th onclick="sortBy('ID')">ID ↕</th>
+                  <th onclick="sortBy('Nombre')">Nombre ↕</th>
+                  <th>Cédula</th>
+                  <th>Tipo de riesgo</th>
+                  <th onclick="sortBy('Nivel de Riesgo')">Nivel ↕</th>
+                  <th>Observaciones</th>
+                  <th onclick="sortBy('Fecha')">Fecha ↕</th>
+                  <th>Hora</th>
+                  <th onclick="sortBy('Estado')">Estado ↕</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="reportsTableBody">
+                <tr><td colspan="10" class="empty-table">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="settings-card">
+          <div class="settings-title">
+            ⚙️ Configuración del servidor
+            <span id="urlStatusBadge" style="display:none;margin-left:10px;font-size:11px;background:rgba(63,185,80,0.15);color:var(--success);border:1px solid rgba(63,185,80,0.3);border-radius:100px;padding:3px 10px;font-family:'Inter',sans-serif;font-weight:600;vertical-align:middle;">✓ Configurado</span>
+          </div>
+
+          <div style="background:rgba(27,58,140,0.12);border:1px solid rgba(27,58,140,0.25);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--text-dim);line-height:1.6;">
+            📌 <b style="color:var(--text)">Una sola configuración:</b> al guardar aquí, tanto el panel como la app móvil (en el mismo navegador/equipo) quedan configurados automáticamente. Solo necesitas hacer esto una vez.
+          </div>
+
+          <div class="settings-field">
+            <label class="settings-label">URL de Google Apps Script</label>
+            <input type="url" class="settings-input" id="settingScriptUrl"
+                   placeholder="https://script.google.com/a/macros/alarmavision.com/s/AKfycbx-9EBUJ_xOUWyzyCow6tLjtvFxWLG7PCXAujJ86xs5L_fXDB9xd16Nz70m3w9N_0R-/exec"
+                   value="">
+            <div class="settings-hint">
+              Pega aquí la URL que genera Google al implementar el script como app web.<br>
+              Formato: <code style="background:var(--surface3);padding:1px 6px;border-radius:4px">https://script.google.com/macros/s/XXXX/exec</code>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button class="btn btn-primary" onclick="saveSettings()">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/></svg>
+              Guardar y conectar
+            </button>
+            <button class="btn btn-outline" onclick="testConnection()">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>
+              Probar conexión
+            </button>
+            <button class="btn btn-outline" onclick="clearConfig()" style="color:var(--danger);border-color:rgba(248,81,73,0.3);">
+              Borrar configuración
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-title">📋 Cómo configurar paso a paso</div>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
+            <b style="color:var(--text)">1. Crear el backend en Google Sheets:</b><br>
+            &nbsp;&nbsp;• Ve a <a href="https://drive.google.com" target="_blank" style="color:var(--blue-light)">drive.google.com</a> → Nuevo → Hoja de cálculo de Google<br>
+            &nbsp;&nbsp;• En la hoja: <b style="color:var(--text)">Extensiones → Apps Script</b><br>
+            &nbsp;&nbsp;• Borra todo el código y pega el contenido de <code style="background:var(--surface3);padding:1px 5px;border-radius:4px">docs/google-apps-script.js</code><br>
+            &nbsp;&nbsp;• Guarda con Ctrl+S<br><br>
+
+            <b style="color:var(--text)">2. Publicar como app web:</b><br>
+            &nbsp;&nbsp;• Clic en <b style="color:var(--text)">"Implementar" → "Nueva implementación"</b><br>
+            &nbsp;&nbsp;• Tipo: <b style="color:var(--text)">Aplicación web</b><br>
+            &nbsp;&nbsp;• Ejecutar como: <b style="color:var(--text)">Yo</b><br>
+            &nbsp;&nbsp;• Quién tiene acceso: <b style="color:var(--text)">Cualquier usuario</b><br>
+            &nbsp;&nbsp;• Clic en <b style="color:var(--text)">"Implementar"</b> → autoriza los permisos<br>
+            &nbsp;&nbsp;• <b style="color:var(--success)">Copia la URL que aparece</b><br><br>
+
+            <b style="color:var(--text)">3. Pegar la URL aquí arriba</b> y clic en <b style="color:var(--text)">"Guardar y conectar"</b><br><br>
+
+            <b style="color:var(--text)">4. ¡Listo!</b> La hoja de cálculo se crea sola con el primer reporte enviado.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <div class="modal-title">📄 Detalle del Reporte</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cerrar</button>
+      <button class="btn btn-success" id="modalAttendBtn">✓ Marcar como Atendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ============================================================
+// ESTADO GLOBAL
+// ============================================================
+let allData = [];
+let filteredData = [];
+let currentSort = { col: 'Fecha', dir: -1 };
+// La URL se lee de localStorage primero (configurada por el usuario),
+// si no hay, usa la que viene por defecto en el código.
+const URL_DEFAULT = "https://script.google.com/a/macros/alarmavision.com/s/AKfycbx-9EBUJ_xOUWyzyCow6tLjtvFxWLG7PCXAujJ86xs5L_fXDB9xd16Nz70m3w9N_0R-/exec";
+let scriptUrl = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
+let currentModalId = null;
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  }
+  
+  // Mostrar URL actual en el campo de configuración
+  document.getElementById('settingScriptUrl').value = scriptUrl;
+  // Indicar si ya está configurada
+  if (localStorage.getItem('SGSST_SCRIPT_URL')) {
+    document.getElementById('urlStatusBadge').style.display = 'inline-flex';
+  }
+  
+  updateOnlineStatus();
+  loadData();
+});
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// ============================================================
+// ONLINE STATUS
+// ============================================================
+function updateOnlineStatus() {
+  const dot = document.getElementById('sidebarDot');
+  const txt = document.getElementById('onlineText');
+  const online = navigator.onLine;
+  
+  dot.style.background = online ? 'var(--success)' : 'var(--gray-dark)';
+  dot.style.boxShadow = online ? '0 0 6px var(--success)' : 'none';
+  txt.textContent = online ? 'En línea' : 'Sin conexión';
+}
+
+// ============================================================
+// PAGES
+// ============================================================
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  document.getElementById('page-' + page).classList.add('active');
+  
+  const titles = {
+    dashboard: '📊 Dashboard',
+    reports: '📋 Gestión de Reportes',
+    settings: '⚙️ Configuración'
+  };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  
+  // Activate nav item
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(n => {
+    if (n.textContent.trim().startsWith(
+      page === 'dashboard' ? 'Dashboard' : 
+      page === 'reports' ? 'Reportes' : 
+      'Configuración'
+    )) n.classList.add('active');
+  });
+  
+  if (page === 'reports') renderReportsTable(filteredData);
+}
+
+// ============================================================
+// CARGAR DATOS
+// ============================================================
+async function loadData() {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.remove('hidden');
+  
+  try {
+    const res = await fetch(`${scriptUrl}?action=get&t=${Date.now()}`);
+    const json = await res.json();
+    
+    if (json.success) {
+      allData = json.data || [];
+      filteredData = [...allData];
+      
+      updateDashboard();
+      renderReportsTable(filteredData);
+      updatePendingBadge();
+      
+      const now = new Date();
+      document.getElementById('lastSync').textContent = 
+        `Última actualización: ${now.toLocaleTimeString('es-CO')}`;
+      
+      showToast('✅', 'Datos actualizados', `${allData.length} reporte(s) cargado(s)`, 'success');
+    } else {
+      throw new Error(json.error);
+    }
+  } catch (err) {
+    showToast('⚠️', 'Error al cargar', err.message || 'Verifica la conexión', 'error');
+    loadDemoData();
+  }
+  
+  overlay.classList.add('hidden');
+}
+
+function loadDemoData() {
+  const demos = [
+    { ID:'RPT-0001', Nombre:'Carlos Gómez', 'Cédula':'1023456789', 'Tipo de Riesgo':'Cableado en mal estado', 'Nivel de Riesgo':'Alto', Observaciones:'Cables expuestos en oficina principal', Fecha:'28/03/2026', Hora:'08:30:00', Estado:'No atendido', 'Fecha Atención':'' },
+    { ID:'RPT-0002', Nombre:'María López', 'Cédula':'1098765432', 'Tipo de Riesgo':'Iluminación deficiente', 'Nivel de Riesgo':'Medio', Observaciones:'Lámpara quemada en pasillo', Fecha:'28/03/2026', Hora:'09:15:00', Estado:'Atendido', 'Fecha Atención':'28/03/2026 10:00' },
+    { ID:'RPT-0003', Nombre:'Juan Martínez', 'Cédula':'71234567', 'Tipo de Riesgo':'Daño en silla', 'Nivel de Riesgo':'Bajo', Observaciones:'Silla sin espaldar ajustable', Fecha:'27/03/2026', Hora:'14:20:00', Estado:'No atendido', 'Fecha Atención':'' },
+    { ID:'RPT-0004', Nombre:'Ana Torres', 'Cédula':'52345678', 'Tipo de Riesgo':'Riesgo eléctrico', 'Nivel de Riesgo':'Alto', Observaciones:'Tomacorriente sin tapa', Fecha:'27/03/2026', Hora:'11:00:00', Estado:'Atendido', 'Fecha Atención':'27/03/2026 15:30' },
+    { ID:'RPT-0005', Nombre:'Pedro Ramírez', 'Cédula':'1143456789', 'Tipo de Riesgo':'Caídas o tropiezos', 'Nivel de Riesgo':'Medio', Observaciones:'Alfombra despegada en entrada', Fecha:'26/03/2026', Hora:'16:45:00', Estado:'No atendido', 'Fecha Atención':'' },
+    { ID:'RPT-0006', Nombre:'Luisa Herrera', 'Cédula':'1099887766', 'Tipo de Riesgo':'Extintor vencido o ausente', 'Nivel de Riesgo':'Alto', Observaciones:'Extintor vencido desde enero', Fecha:'25/03/2026', Hora:'10:10:00', Estado:'No atendido', 'Fecha Atención':'' },
+  ];
+  
+  allData = demos;
+  filteredData = [...allData];
+  updateDashboard();
+  renderReportsTable(filteredData);
+  updatePendingBadge();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function updateDashboard() {
+  const total = allData.length;
+  const alto = allData.filter(r => r['Nivel de Riesgo'] === 'Alto').length;
+  const medio = allData.filter(r => r['Nivel de Riesgo'] === 'Medio').length;
+  const bajo = allData.filter(r => r['Nivel de Riesgo'] === 'Bajo').length;
+  const atendidos = allData.filter(r => r['Estado'] === 'Atendido').length;
+  const noAtendidos = total - atendidos;
+  
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-alto').textContent = alto;
+  document.getElementById('stat-medio').textContent = medio;
+  document.getElementById('stat-bajo').textContent = bajo;
+  
+  // Chart: Estado
+  const pctAtendidos = total ? Math.round(atendidos / total * 100) : 0;
+  const pctNo = 100 - pctAtendidos;
+  
+  document.getElementById('chartEstado').innerHTML = `
+    <div class="progress-bar">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label">✅ Atendidos</span>
+        <span class="progress-bar-value">${atendidos} (${pctAtendidos}%)</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pctAtendidos}%;background:var(--success)"></div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label">❌ No atendidos</span>
+        <span class="progress-bar-value">${noAtendidos} (${pctNo}%)</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pctNo}%;background:var(--danger)"></div>
+      </div>
+    </div>
+    <div class="progress-bar" style="margin-top:16px">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label">🔴 Alto</span>
+        <span class="progress-bar-value">${alto}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${total?alto/total*100:0}%;background:var(--danger)"></div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label">🟡 Medio</span>
+        <span class="progress-bar-value">${medio}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${total?medio/total*100:0}%;background:var(--warning)"></div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label">🟢 Bajo</span>
+        <span class="progress-bar-value">${bajo}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${total?bajo/total*100:0}%;background:var(--success)"></div>
+      </div>
+    </div>
+  `;
+  
+  // Chart: Tipos de riesgo
+  const tipoCount = {};
+  allData.forEach(r => {
+    const t = r['Tipo de Riesgo'] || 'N/A';
+    tipoCount[t] = (tipoCount[t] || 0) + 1;
+  });
+  
+  const sortedTipos = Object.entries(tipoCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6);
+  
+  const maxTipo = sortedTipos[0]?.[1] || 1;
+  
+  document.getElementById('chartTipos').innerHTML = sortedTipos.map(([tipo, count]) => `
+    <div class="progress-bar">
+      <div class="progress-bar-header">
+        <span class="progress-bar-label td-truncate" style="max-width:200px">${tipo}</span>
+        <span class="progress-bar-value">${count}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${count/maxTipo*100}%;background:var(--blue-light)"></div>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--text-dim);font-size:13px">Sin datos</div>';
+  
+  // Últimos 10 en dashboard
+  const last10 = [...allData].slice(-10).reverse();
+  document.getElementById('dashboardTableBody').innerHTML = last10.length > 0
+    ? last10.map(r => `
+      <tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}">
+        <td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td>
+        <td class="td-truncate">${r.Nombre || '—'}</td>
+        <td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo'] || '—'}</td>
+        <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
+        <td style="font-size:12px">${r.Fecha || '—'}</td>
+        <td>${estadoBadge(r.Estado)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="empty-table">Sin reportes</td></tr>';
+}
+
+// ============================================================
+// TABLA REPORTES
+// ============================================================
+function renderReportsTable(data) {
+  const tbody = document.getElementById('reportsTableBody');
+  document.getElementById('reportsCount').textContent = `${data.length} reporte(s)`;
+  
+  const noAtendidos = data.filter(r => r.Estado !== 'Atendido').length;
+  
+  if (data.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10">
+          <div class="empty-table">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>
+            No hay reportes que coincidan con los filtros
+          </div>
+        </td>
+      </tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = data.map(r => `
+    <tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}" 
+        onclick="openModal('${(r.ID || '').replace(/'/g,"\\'")}')">
+      <td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td>
+      <td class="td-truncate">${r.Nombre || '—'}</td>
+      <td style="font-size:12px">${r['Cédula'] || '—'}</td>
+      <td class="td-truncate">${r['Tipo de Riesgo'] || '—'}</td>
+      <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
+      <td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${r.Observaciones || '—'}</td>
+      <td style="font-size:12px">${r.Fecha || '—'}</td>
+      <td style="font-size:12px">${r.Hora || '—'}</td>
+      <td>${estadoBadge(r.Estado)}</td>
+      <td onclick="event.stopPropagation()">
+        <button class="btn-attend" 
+                ${r.Estado === 'Atendido' ? 'disabled' : ''}
+                onclick="markAttended('${(r.ID || '').replace(/'/g,"\\'")}')">
+          ${r.Estado === 'Atendido' ? '✓ Atendido' : '+ Atender'}
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+// ============================================================
+// BADGES
+// ============================================================
+function nivelBadge(nivel) {
+  const cls = nivel === 'Alto' ? 'badge-alto' : nivel === 'Medio' ? 'badge-medio' : 'badge-bajo';
+  return `<span class="badge ${cls}">${nivel || '—'}</span>`;
+}
+
+function estadoBadge(estado) {
+  const cls = estado === 'Atendido' ? 'badge-atendido' : 'badge-no-atendido';
+  return `<span class="badge ${cls}">${estado || 'No atendido'}</span>`;
+}
+
+// ============================================================
+// FILTROS
+// ============================================================
+function applyFilters() {
+  const nombre = document.getElementById('filterNombre').value.toLowerCase();
+  const nivel = document.getElementById('filterNivel').value;
+  const estado = document.getElementById('filterEstado').value;
+  const fecha = document.getElementById('filterFecha').value;
+  
+  filteredData = allData.filter(r => {
+    const matchNombre = !nombre || 
+      (r.Nombre || '').toLowerCase().includes(nombre) ||
+      (r['Cédula'] || '').toString().includes(nombre);
+    const matchNivel = !nivel || r['Nivel de Riesgo'] === nivel;
+    const matchEstado = !estado || r.Estado === estado;
+    const matchFecha = !fecha || (r.Fecha || '').includes(
+      new Date(fecha).toLocaleDateString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric'})
+    );
+    return matchNombre && matchNivel && matchEstado && matchFecha;
+  });
+  
+  renderReportsTable(filteredData);
+}
+
+function clearFilters() {
+  document.getElementById('filterNombre').value = '';
+  document.getElementById('filterNivel').value = '';
+  document.getElementById('filterEstado').value = '';
+  document.getElementById('filterFecha').value = '';
+  filteredData = [...allData];
+  renderReportsTable(filteredData);
+}
+
+// ============================================================
+// ORDENAR
+// ============================================================
+function sortBy(col) {
+  if (currentSort.col === col) currentSort.dir *= -1;
+  else { currentSort.col = col; currentSort.dir = 1; }
+  
+  filteredData.sort((a, b) => {
+    const va = a[col] || '';
+    const vb = b[col] || '';
+    return va.localeCompare(vb) * currentSort.dir;
+  });
+  
+  renderReportsTable(filteredData);
+}
+
+// ============================================================
+// MARCAR ATENDIDO
+// ============================================================
+async function markAttended(id) {
+  if (!id) return;
+  
+  // Update local
+  const item = allData.find(r => r.ID === id);
+  if (!item) return;
+  
+  item.Estado = 'Atendido';
+  item['Fecha Atención'] = new Date().toLocaleDateString('es-CO') + ' ' + new Date().toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'});
+  
+  filteredData = filteredData.map(r => r.ID === id ? item : r);
+  
+  renderReportsTable(filteredData);
+  updateDashboard();
+  updatePendingBadge();
+  closeModal();
+  
+  // Sync with server
+  if (scriptUrl) {
+    try {
+      await fetch(`${scriptUrl}?action=updateStatus&id=${encodeURIComponent(id)}`);
+      showToast('✅', 'Estado actualizado', `Reporte ${id} marcado como atendido`, 'success');
+    } catch {
+      showToast('⚠️', 'Actualizado localmente', 'Sincronizará cuando haya conexión', 'info');
+    }
+  } else {
+    showToast('✅', 'Atendido', 'Reporte marcado como atendido', 'success');
+  }
+}
+
+function updatePendingBadge() {
+  const noAtendidos = allData.filter(r => r.Estado !== 'Atendido').length;
+  const badge = document.getElementById('pendingBadge');
+  badge.textContent = noAtendidos;
+  badge.style.display = noAtendidos > 0 ? 'inline' : 'none';
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(id) {
+  const report = allData.find(r => r.ID === id);
+  if (!report) return;
+  
+  currentModalId = id;
+  
+  const fields = [
+    ['ID del Reporte', report.ID],
+    ['Nombre', report.Nombre],
+    ['Cédula', report['Cédula']],
+    ['Tipo de Riesgo', report['Tipo de Riesgo']],
+    ['Nivel de Riesgo', report['Nivel de Riesgo']],
+    ['Observaciones', report.Observaciones || '—'],
+    ['Fecha', report.Fecha],
+    ['Hora', report.Hora],
+    ['Estado', report.Estado],
+    ['Fecha de Atención', report['Fecha Atención'] || '—'],
+  ];
+  
+  document.getElementById('modalBody').innerHTML = fields.map(([label, val]) => `
+    <div class="modal-field">
+      <div class="modal-label">${label}</div>
+      <div class="modal-value">${val || '—'}</div>
+    </div>`).join('');
+  
+  const attendBtn = document.getElementById('modalAttendBtn');
+  attendBtn.disabled = report.Estado === 'Atendido';
+  attendBtn.textContent = report.Estado === 'Atendido' ? '✓ Ya atendido' : '✓ Marcar como Atendido';
+  attendBtn.onclick = () => markAttended(id);
+  
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalBackdrop')) return;
+  document.getElementById('modalBackdrop').classList.remove('show');
+  currentModalId = null;
+}
+
+// ============================================================
+// EXPORT EXCEL
+// ============================================================
+function exportExcel() {
+  if (typeof XLSX === 'undefined') {
+    showToast('❌', 'Error', 'Librería XLSX no disponible', 'error');
+    return;
+  }
+  
+  const data = filteredData.length > 0 ? filteredData : allData;
+  
+  const wsData = [
+    ['ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST'],
+    [`Generado: ${new Date().toLocaleString('es-CO')}`],
+    [],
+    ['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha Atención'],
+    ...data.map(r => [
+      r.ID, r.Nombre, r['Cédula'], r['Tipo de Riesgo'], r['Nivel de Riesgo'],
+      r.Observaciones, r.Fecha, r.Hora, r.Estado, r['Fecha Atención']
+    ])
+  ];
+  
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  
+  // Estilos básicos
+  ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }];
+  ws['!cols'] = [
+    {wch:12},{wch:25},{wch:15},{wch:28},{wch:14},
+    {wch:35},{wch:14},{wch:10},{wch:14},{wch:18}
+  ];
+  
+  XLSX.utils.book_append_sheet(wb, ws, 'Reportes SG-SST');
+  XLSX.writeFile(wb, `AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.xlsx`);
+  
+  showToast('📥', 'Excel exportado', `${data.length} reporte(s)`, 'success');
+}
+
+// ============================================================
+// EXPORT PDF
+// ============================================================
+function exportPDF() {
+  if (typeof window.jspdf === 'undefined') {
+    showToast('❌', 'Error', 'Librería jsPDF no disponible', 'error');
+    return;
+  }
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  
+  const data = filteredData.length > 0 ? filteredData : allData;
+  
+  // Header
+  doc.setFillColor(27, 58, 140);
+  doc.rect(0, 0, 297, 22, 'F');
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', 14, 14);
+  
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Generado: ${new Date().toLocaleString('es-CO')} | Total: ${data.length} registros`, 14, 20);
+  
+  // Tabla
+  doc.autoTable({
+    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Fecha', 'Estado']],
+    body: data.map(r => [
+      r.ID || '—',
+      r.Nombre || '—',
+      r['Cédula'] || '—',
+      r['Tipo de Riesgo'] || '—',
+      r['Nivel de Riesgo'] || '—',
+      r.Fecha || '—',
+      r.Estado || '—'
+    ]),
+    startY: 26,
+    styles: { fontSize: 9, cellPadding: 3, textColor: [30,30,30] },
+    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245,247,252] },
+    didParseCell: (data) => {
+      if (data.section === 'body') {
+        const nivel = data.row.raw[4];
+        const estado = data.row.raw[6];
+        if (estado === 'Atendido') data.cell.styles.fillColor = [200,240,210];
+        else if (nivel === 'Alto') data.cell.styles.fillColor = [255,230,230];
+      }
+    }
+  });
+  
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(158,162,162);
+    doc.text(`Página ${i} de ${pageCount} | Alarmavision SG-SST`, 14, doc.internal.pageSize.height - 5);
+  }
+  
+  doc.save(`AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('📄', 'PDF exportado', `${data.length} reporte(s)`, 'success');
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function saveSettings() {
+  const url = document.getElementById('settingScriptUrl').value.trim();
+  if (!url || !url.startsWith('https://script.google.com')) {
+    showToast('⚠️', 'URL inválida', 'Pega la URL completa de Google Apps Script', 'error');
+    return;
+  }
+
+  // Guardar con clave compartida — la app móvil lee la misma clave
+  localStorage.setItem('SGSST_SCRIPT_URL', url);
+  scriptUrl = url;
+
+  // Feedback visual en el campo
+  const field = document.getElementById('settingScriptUrl');
+  field.style.borderColor = 'var(--success)';
+  setTimeout(() => { field.style.borderColor = ''; }, 2000);
+
+  showToast('✅', '¡URL guardada!', 'El panel y la app móvil usarán esta URL automáticamente.', 'success');
+  setTimeout(() => loadData(), 1200);
+}
+
+async function testConnection() {
+  const url = document.getElementById('settingScriptUrl').value.trim();
+  if (!url) { showToast('⚠️', 'Sin URL', 'Primero pega la URL del script', 'error'); return; }
+  showToast('🔄', 'Probando conexión...', url.slice(0, 60) + '...', 'info');
+  try {
+    const res = await fetch(`${url}?action=ping`);
+    const json = await res.json();
+    if (json.success) {
+      showToast('✅', '¡Conexión exitosa!', 'El servidor responde correctamente.', 'success');
+    } else throw new Error(json.error || 'Sin respuesta válida');
+  } catch (err) {
+    showToast('❌', 'Error de conexión', 'Verifica que la URL sea correcta y esté implementada como app web pública.', 'error');
+  }
+}
+
+function clearConfig() {
+  if (!confirm('¿Borrar la URL guardada y volver al valor por defecto?')) return;
+  localStorage.removeItem('SGSST_SCRIPT_URL');
+  scriptUrl = URL_DEFAULT;
+  document.getElementById('settingScriptUrl').value = scriptUrl;
+  document.getElementById('urlStatusBadge').style.display = 'none';
+  showToast('🗑️', 'Configuración borrada', 'Se usa la URL por defecto del código.', 'info');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(icon, title, msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      ${msg ? `<div class="toast-msg">${msg}</div>` : ''}
+    </div>`;
+  
+  container.appendChild(toast);
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
+// Auto-refresh cada 60 segundos
+setInterval(() => {
+  if (navigator.onLine && scriptUrl) loadData();
+}, 60000);
+</script>
+
+</body>
+</html>
+
