@@ -8,36 +8,46 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- SheetJS para exportar Excel -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- xlsx-js-style para exportar Excel con estilos -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <!-- jsPDF para exportar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 <style>
 :root {
+  /* Colores Corporativos */
   --blue: #1B3A8C;
   --blue-light: #2E5FD9;
-  --blue-dim: rgba(27,58,140,0.15);
-  --blue-glow: rgba(27,58,140,0.35);
-  --gray: #9EA2A2;
-  --gray-dark: #5A5D5D;
-  --black: #080808;
-  --surface: #0D1117;
-  --surface2: #161B24;
-  --surface3: #1C2333;
-  --border: rgba(27,58,140,0.25);
-  --border2: rgba(158,162,162,0.12);
-  --text: #E6EDF3;
-  --text-dim: #8B949E;
-  --success: #3FB950;
-  --danger: #F85149;
-  --warning: #D29922;
-  --info: #58A6FF;
-  --alto: #F85149;
-  --medio: #D29922;
-  --bajo: #3FB950;
-  --radius: 10px;
+  --blue-dim: rgba(27,58,140,0.08);
+  --blue-glow: rgba(27,58,140,0.15);
+  --gray: #6B7280;
+  --gray-dark: #374151;
+  
+  /* Fondos claros (Menos oscuros) */
+  --black: #F3F4F6; /* Fondo principal de la app (gris muy claro) */
+  --surface: #FFFFFF; /* Fondo de las tarjetas y tabla (blanco) */
+  --surface2: #F9FAFB; /* Fondo de menús y hover */
+  --surface3: #E5E7EB; /* Gris para barras de progreso */
+  
+  /* Bordes */
+  --border: #D1D5DB;
+  --border2: #E5E7EB;
+  
+  /* Textos adaptados para fondo claro */
+  --text: #111827; /* Texto principal oscuro */
+  --text-dim: #4B5563; /* Texto secundario gris */
+  
+  /* Colores de estado (Mantenemos los mismos de alerta) */
+  --success: #059669;
+  --danger: #DC2626;
+  --warning: #D97706;
+  --info: #2563EB;
+  --alto: #DC2626;
+  --medio: #D97706;
+  --bajo: #059669;
+  
+  --radius: 8px; /* Bordes ligeramente más rectos/serios */
   --sidebar-w: 220px;
 }
 
@@ -451,7 +461,7 @@ select.filter-input {
   appearance: none;
 }
 
-select.filter-input option { background: #1C2333; }
+select.filter-input option { background: #FFFFFF; color: #111827; }
 
 /* ── TABLE ── */
 .table-wrap {
@@ -530,7 +540,7 @@ tbody tr {
   transition: background 0.1s;
 }
 
-tbody tr:hover { background: rgba(255,255,255,0.03); }
+tbody tr:hover { background: rgba(0,0,0,0.03); }
 
 tbody tr.atendido {
   background: rgba(63,185,80,0.05);
@@ -1112,6 +1122,28 @@ tbody tr.atendido:hover {
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+  // ============================================================
+// FORMATEAR FECHA
+// ============================================================
+  function formatearFecha(fechaString) {
+  if (!fechaString) return '';
+  const date = new Date(fechaString);
+  if (isNaN(date.getTime())) return fechaString; // Si hay error, devuelve el original
+  
+  const dia = String(date.getDate()).padStart(2, '0');
+  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const anio = date.getFullYear();
+  
+  let horas = date.getHours();
+  const minutos = String(date.getMinutes()).padStart(2, '0');
+  const ampm = horas >= 12 ? 'pm' : 'am';
+  
+  horas = horas % 12;
+  horas = horas ? horas : 12; // La hora '0' se convierte en '12'
+  const horasStr = String(horas).padStart(2, '0');
+  
+  return `${dia}/${mes}/${anio} ${horasStr}:${minutos} ${ampm}`;
+}
 // ============================================================
 // ESTADO GLOBAL
 // ============================================================
@@ -1120,7 +1152,7 @@ let filteredData = [];
 let currentSort = { col: 'Fecha', dir: -1 };
 // La URL se lee de localStorage primero (configurada por el usuario),
 // si no hay, usa la que viene por defecto en el código.
-const URL_DEFAULT = "https://script.google.com/macros/s/AKfycbx0Bc1tgDcMKCniiZ-lw4PAKaJ66T-n4mOSoHDZgvvVSIZWD-2jI1H80M5lwrWQRAIR/exec";
+const URL_DEFAULT = "https://script.google.com/a/macros/alarmavision.com/s/AKfycbx-9EBUJ_xOUWyzyCow6tLjtvFxWLG7PCXAujJ86xs5L_fXDB9xd16Nz70m3w9N_0R-/exec";
 let scriptUrl = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 let currentModalId = null;
 
@@ -1342,7 +1374,7 @@ function updateDashboard() {
         <td class="td-truncate">${r.Nombre || '—'}</td>
         <td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo'] || '—'}</td>
         <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
-        <td style="font-size:12px">${r.Fecha || '—'}</td>
+        <td style="font-size:12px">${formatFecha(r.Fecha)}</td>
         <td>${estadoBadge(r.Estado)}</td>
       </tr>`).join('')
     : '<tr><td colspan="6" class="empty-table">Sin reportes</td></tr>';
@@ -1379,8 +1411,8 @@ function renderReportsTable(data) {
       <td class="td-truncate">${r['Tipo de Riesgo'] || '—'}</td>
       <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
       <td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${r.Observaciones || '—'}</td>
-      <td style="font-size:12px">${r.Fecha || '—'}</td>
-      <td style="font-size:12px">${r.Hora || '—'}</td>
+      <td style="font-size:12px">${formatFecha(r.Fecha)}</td>
+      <td style="font-size:12px">${formatHora(r.Hora)}</td>
       <td>${estadoBadge(r.Estado)}</td>
       <td onclick="event.stopPropagation()">
         <button class="btn-attend" 
@@ -1393,8 +1425,81 @@ function renderReportsTable(data) {
 }
 
 // ============================================================
-// BADGES
+// FORMATO DE FECHA Y HORA
 // ============================================================
+function formatFecha(val) {
+  if (!val) return '—';
+  // Si ya es un objeto Date
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    const day   = String(val.getDate()).padStart(2, '0');
+    const month = String(val.getMonth() + 1).padStart(2, '0');
+    return `${day}/${month}/${val.getFullYear()}`;
+  }
+  const s = String(val).trim();
+  // Ya está en formato dd/mm/yyyy
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  // Intentar parsear como objeto Date (cubre "Sun Mar 29 2026 ...", ISO, etc.)
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    const day   = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year  = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+  return s;
+}
+
+function formatHora(val) {
+  if (!val) return '—';
+  // Si ya es un objeto Date
+  if (val instanceof Date && !isNaN(val.getTime())) {
+    let h = val.getHours();
+    const m = String(val.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
+  }
+  const s = String(val).trim();
+  // Ya está en formato h:mm am/pm
+  if (/^\d{1,2}:\d{2}\s*(am|pm)$/i.test(s)) return s.toLowerCase();
+  // Formato HH:MM:SS o HH:MM → convertir a 12h
+  const timeMatch = s.match(/(\d{1,2}):(\d{2})(?::\d{2})?/);
+  if (timeMatch) {
+    let h = parseInt(timeMatch[1], 10);
+    const m = timeMatch[2];
+    const ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
+  }
+  // Intentar parsear como Date completo (cubre "Sun Mar 29 2026 08:30:00 GMT...")
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    let h = d.getHours();
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
+  }
+  return s;
+}
+
+function formatFechaAtencion(val) {
+  if (!val) return '—';
+  const s = String(val).trim();
+  // Ya está en formato dd/mm/yyyy HH:MM
+  if (/^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}/.test(s)) {
+    const parts = s.split(/\s+/);
+    return `${parts[0]} ${formatHora(parts[1])}`;
+  }
+  // Intentar parsear como Date (cubre formato largo GMT)
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return `${formatFecha(d)} ${formatHora(d)}`;
+  }
+  return s;
+}
+
+
 function nivelBadge(nivel) {
   const cls = nivel === 'Alto' ? 'badge-alto' : nivel === 'Medio' ? 'badge-medio' : 'badge-bajo';
   return `<span class="badge ${cls}">${nivel || '—'}</span>`;
@@ -1510,10 +1615,10 @@ function openModal(id) {
     ['Tipo de Riesgo', report['Tipo de Riesgo']],
     ['Nivel de Riesgo', report['Nivel de Riesgo']],
     ['Observaciones', report.Observaciones || '—'],
-    ['Fecha', report.Fecha],
-    ['Hora', report.Hora],
+    ['Fecha', formatFecha(report.Fecha)],
+    ['Hora', formatHora(report.Hora)],
     ['Estado', report.Estado],
-    ['Fecha de Atención', report['Fecha Atención'] || '—'],
+    ['Fecha de Atención', formatFechaAtencion(report['Fecha Atención'])],
   ];
   
   document.getElementById('modalBody').innerHTML = fields.map(([label, val]) => `
@@ -1544,33 +1649,166 @@ function exportExcel() {
     showToast('❌', 'Error', 'Librería XLSX no disponible', 'error');
     return;
   }
-  
+
   const data = filteredData.length > 0 ? filteredData : allData;
-  
+  const cols  = ['ID','Nombre','Cédula','Tipo de Riesgo','Nivel de Riesgo','Observaciones','Fecha','Hora','Estado','Fecha Atención'];
+  const TOTAL_COLS = cols.length; // 10
+
+  // ── Estilos reutilizables ──────────────────────────────────
+  const S = {
+    // Fila 1 — título corporativo (azul oscuro, texto blanco, negrita, grande)
+    title: {
+      font: { name: 'Calibri', sz: 16, bold: true, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: '1B3A8C' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: {}
+    },
+    // Fila 2 — subtítulo "Generado:"
+    subtitle: {
+      font: { name: 'Calibri', sz: 10, italic: true, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: '2E5FD9' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: {}
+    },
+    // Fila 3 — vacía con color de acento
+    accent: {
+      fill: { fgColor: { rgb: '5B8DEF' } },
+      border: {}
+    },
+    // Fila 4 — encabezados de columna
+    header: {
+      font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: '1B3A8C' } },
+      alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+      border: {
+        top:    { style: 'thin', color: { rgb: '5B8DEF' } },
+        bottom: { style: 'thin', color: { rgb: '5B8DEF' } },
+        left:   { style: 'thin', color: { rgb: '5B8DEF' } },
+        right:  { style: 'thin', color: { rgb: '5B8DEF' } }
+      }
+    },
+    // Filas de datos — par
+    dataEven: {
+      font: { name: 'Calibri', sz: 10, color: { rgb: '1F2937' } },
+      fill: { fgColor: { rgb: 'EEF2FF' } },
+      alignment: { vertical: 'center', wrapText: false },
+      border: {
+        bottom: { style: 'hair', color: { rgb: 'D1D5DB' } },
+        right:  { style: 'hair', color: { rgb: 'D1D5DB' } }
+      }
+    },
+    // Filas de datos — impar
+    dataOdd: {
+      font: { name: 'Calibri', sz: 10, color: { rgb: '1F2937' } },
+      fill: { fgColor: { rgb: 'FFFFFF' } },
+      alignment: { vertical: 'center', wrapText: false },
+      border: {
+        bottom: { style: 'hair', color: { rgb: 'D1D5DB' } },
+        right:  { style: 'hair', color: { rgb: 'D1D5DB' } }
+      }
+    },
+    // Estado: Atendido
+    atendido: {
+      font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: '065F46' } },
+      fill: { fgColor: { rgb: 'D1FAE5' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: { bottom: { style: 'hair', color: { rgb: 'D1D5DB' } } }
+    },
+    // Estado: No atendido
+    noAtendido: {
+      font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: '991B1B' } },
+      fill: { fgColor: { rgb: 'FEE2E2' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: { bottom: { style: 'hair', color: { rgb: 'D1D5DB' } } }
+    },
+    // Nivel de riesgo
+    nivelAlto:  { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'991B1B'} }, fill:{fgColor:{rgb:'FEE2E2'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    nivelMedio: { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'92400E'} }, fill:{fgColor:{rgb:'FEF3C7'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    nivelBajo:  { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'065F46'} }, fill:{fgColor:{rgb:'D1FAE5'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+  };
+
+  // ── Construir filas ───────────────────────────────────────
   const wsData = [
-    ['ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST'],
-    [`Generado: ${new Date().toLocaleString('es-CO')}`],
-    [],
-    ['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha Atención'],
+    ['ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', ...Array(TOTAL_COLS-1).fill('')],
+    [`Generado: ${new Date().toLocaleString('es-CO')} | Total: ${data.length} registros`, ...Array(TOTAL_COLS-1).fill('')],
+    Array(TOTAL_COLS).fill(''),
+    cols,
     ...data.map(r => [
       r.ID, r.Nombre, r['Cédula'], r['Tipo de Riesgo'], r['Nivel de Riesgo'],
-      r.Observaciones, r.Fecha, r.Hora, r.Estado, r['Fecha Atención']
+      r.Observaciones, formatFecha(r.Fecha), formatHora(r.Hora), r.Estado, formatFechaAtencion(r['Fecha Atención'])
     ])
   ];
-  
+
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(wsData);
-  
-  // Estilos básicos
-  ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }];
-  ws['!cols'] = [
-    {wch:12},{wch:25},{wch:15},{wch:28},{wch:14},
-    {wch:35},{wch:14},{wch:10},{wch:14},{wch:18}
+
+  // ── Merges ────────────────────────────────────────────────
+  ws['!merges'] = [
+    { s:{r:0,c:0}, e:{r:0,c:TOTAL_COLS-1} },
+    { s:{r:1,c:0}, e:{r:1,c:TOTAL_COLS-1} },
+    { s:{r:2,c:0}, e:{r:2,c:TOTAL_COLS-1} },
   ];
-  
+
+  // ── Anchos de columna ─────────────────────────────────────
+  ws['!cols'] = [
+    {wch:12},{wch:26},{wch:14},{wch:30},{wch:14},
+    {wch:36},{wch:14},{wch:10},{wch:14},{wch:18}
+  ];
+
+  // ── Alturas de fila ───────────────────────────────────────
+  ws['!rows'] = [
+    {hpt:36}, // título
+    {hpt:18}, // subtítulo
+    {hpt:6},  // acento
+    {hpt:22}, // encabezados
+    ...data.map(() => ({hpt:16}))
+  ];
+
+  // ── Aplicar estilos celda por celda ──────────────────────
+  const toCol = n => { let s=''; do { s=String.fromCharCode(65+n%26)+s; n=Math.floor(n/26)-1; } while(n>=0); return s; };
+  const addr  = (r,c) => `${toCol(c)}${r+1}`;
+
+  // Fila 0 — título
+  for (let c=0;c<TOTAL_COLS;c++) { const a=addr(0,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.title; }
+
+  // Fila 1 — subtítulo
+  for (let c=0;c<TOTAL_COLS;c++) { const a=addr(1,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.subtitle; }
+
+  // Fila 2 — acento
+  for (let c=0;c<TOTAL_COLS;c++) { const a=addr(2,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.accent; }
+
+  // Fila 3 — encabezados
+  for (let c=0;c<TOTAL_COLS;c++) { const a=addr(3,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.header; }
+
+  // Filas de datos
+  data.forEach((r, i) => {
+    const row = i + 4;
+    const base = i % 2 === 0 ? S.dataEven : S.dataOdd;
+    for (let c=0;c<TOTAL_COLS;c++) {
+      const a = addr(row,c);
+      if (!ws[a]) ws[a] = {v:'',t:'s'};
+      // Columna Nivel de Riesgo (4) → color semáforo
+      if (c === 4) {
+        const nv = r['Nivel de Riesgo'];
+        ws[a].s = nv==='Alto' ? S.nivelAlto : nv==='Medio' ? S.nivelMedio : S.nivelBajo;
+        ws[a].s = { ...ws[a].s, alignment:{horizontal:'center',vertical:'center'} };
+      }
+      // Columna Estado (8) → color estado
+      else if (c === 8) {
+        ws[a].s = r.Estado === 'Atendido' ? S.atendido : S.noAtendido;
+      }
+      // Resto → fila alterna
+      else {
+        ws[a].s = { ...base };
+        // ID centrado
+        if (c===0) ws[a].s = { ...base, alignment:{horizontal:'center',vertical:'center'} };
+      }
+    }
+  });
+
   XLSX.utils.book_append_sheet(wb, ws, 'Reportes SG-SST');
   XLSX.writeFile(wb, `AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.xlsx`);
-  
+
   showToast('📥', 'Excel exportado', `${data.length} reporte(s)`, 'success');
 }
 
@@ -1713,9 +1951,8 @@ function showToast(icon, title, msg, type = 'info') {
 // Auto-refresh cada 60 segundos
 setInterval(() => {
   if (navigator.onLine && scriptUrl) loadData();
-}, 60000);
+}, 100000);
 </script>
 
 </body>
 </html>
-
