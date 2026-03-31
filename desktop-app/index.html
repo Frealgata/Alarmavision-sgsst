@@ -811,11 +811,317 @@ tbody tr.atendido:hover {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gray-dark); }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+/* ── RESPONSIVE MÓVIL COMPLETO ── */
+
+/* ── Botón hamburguesa (solo móvil) ── */
+.mob-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
+  border: none;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
+.mob-menu-btn:active { background: var(--surface2); }
+.mob-menu-btn svg { width: 22px; height: 22px; }
+
+/* ── Overlay oscuro para el drawer ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 299;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sidebar-overlay.open { opacity: 1; }
+
+/* ── Bottom nav móvil ── */
+.mob-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 2px solid var(--blue);
+  box-shadow: 0 -2px 12px rgba(27,58,140,0.10);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.mob-bottom-nav-inner {
+  display: flex;
+  align-items: stretch;
+}
+.mob-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 6px 7px;
+  border: none;
+  background: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  position: relative;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mob-nav-btn svg { width: 20px; height: 20px; }
+.mob-nav-btn.active { color: var(--blue); }
+.mob-nav-btn.active svg { filter: drop-shadow(0 0 4px rgba(27,58,140,0.35)); }
+.mob-nav-badge {
+  position: absolute;
+  top: 6px; right: calc(50% - 18px);
+  background: var(--danger);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ── Vista de tarjetas para reportes en móvil ── */
+.report-cards { display: none; }
+.report-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.15s;
+  box-shadow: 0 1px 3px rgba(27,58,140,0.06);
+}
+.report-card:active { box-shadow: 0 2px 8px rgba(27,58,140,0.14); }
+.report-card-accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.report-card-accent.alto  { background: var(--alto); }
+.report-card-accent.medio { background: var(--medio); }
+.report-card-accent.bajo  { background: var(--bajo); }
+.report-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.report-card-id {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.report-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+.report-card-tipo {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  margin-bottom: 10px;
+}
+.report-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.report-card-date {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.report-card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ── Filtros colapsables en móvil ── */
+.mob-filter-toggle {
+  display: none;
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 10px;
+  align-items: center;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.mob-filter-toggle svg { width: 15px; height: 15px; flex-shrink: 0; }
+.mob-filter-toggle .toggle-arrow {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+.mob-filter-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.mob-filters-panel {
+  display: none;
+}
+.mob-filters-panel.open { display: block; }
+
+/* ── Modal adaptado a móvil (bottom sheet) ── */
+@media (max-width: 640px) {
+  .modal-backdrop {
+    align-items: flex-end !important;
+  }
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    padding: 20px 18px 32px !important;
+    max-height: 88vh;
+    overflow-y: auto;
+    transform: translateY(40px) !important;
+  }
+  .modal-backdrop.show .modal {
+    transform: translateY(0) !important;
+  }
+  .modal-actions {
+    flex-direction: column !important;
+  }
+  .modal-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* ── Layout ── */
+  html, body { overflow: hidden; }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 260px;
+    z-index: 300;
+    transform: translateX(-100%);
+    transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(27,58,140,0.15);
+  }
+  .sidebar-overlay { display: block; pointer-events: none; }
+  .sidebar-overlay.open { pointer-events: auto; }
+
+  .mob-menu-btn { display: flex; }
+
+  /* Topbar en móvil */
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .topbar-title {
+    font-size: 15px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-actions .btn-excel,
+  .topbar-actions .btn-pdf {
+    display: none; /* Se muestran en el drawer lateral */
+  }
+  .topbar-actions .btn-primary {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  /* ── Page content ── */
+  .page-content {
+    padding: 14px 12px 80px; /* 80px para el bottom nav */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Stats grid 2 columnas ── */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-value { font-size: 26px; }
+
+  /* ── Charts en columna ── */
+  .chart-row { grid-template-columns: 1fr; gap: 10px; }
+
+  /* ── Tabla de reportes: ocultar, mostrar cards ── */
+  .table-wrap .table-scroll { display: none; }
+  .report-cards { display: block; }
+
+  /* ── Tabla del dashboard: scroll horizontal ── */
+  #page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #page-dashboard table { min-width: 520px; }
+  #page-dashboard th, #page-dashboard td { padding: 8px 10px; font-size: 11px; }
+
+  /* ── Filtros en móvil ── */
+  .filters-row { display: none; } /* ocultar filtros de escritorio */
+  .mob-filter-toggle { display: flex; }
+
+  /* ── Botón actualizar: solo icono en móvil muy pequeño ── */
+  @media (max-width: 380px) {
+    .topbar-actions .btn-primary span { display: none; }
+  }
+
+  /* ── Bottom nav visible ── */
+  .mob-bottom-nav { display: block; }
+
+  /* ── Settings: ancho completo ── */
+  .settings-card { max-width: 100%; }
+
+  /* ── Toast adaptado ── */
+  .toast-container {
+    top: auto;
+    bottom: 76px;
+    left: 12px;
+    right: 12px;
+  }
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+}
+
 </style>
 </head>
 <body>
@@ -826,10 +1132,13 @@ tbody tr.atendido:hover {
   <div class="loading-text">Cargando datos...</div>
 </div>
 
+<!-- OVERLAY para cerrar sidebar en móvil -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <div class="app-layout">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logos">
         <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="sidebar-logo"
@@ -907,6 +1216,12 @@ tbody tr.atendido:hover {
 
     <!-- TOPBAR -->
     <div class="topbar">
+      <!-- Botón hamburguesa: solo visible en móvil -->
+      <button class="mob-menu-btn" id="mobMenuBtn" onclick="openSidebar()" aria-label="Menú">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+      </button>
       <div class="topbar-title" id="pageTitle">📊 Dashboard</div>
       <div class="topbar-actions">
         <button class="btn btn-excel" onclick="exportExcel()">
@@ -991,6 +1306,8 @@ tbody tr.atendido:hover {
 
       <!-- REPORTES -->
       <div class="page" id="page-reports">
+
+        <!-- Filtros escritorio -->
         <div class="filters-row">
           <input type="text" class="filter-input search" id="filterNombre" placeholder="🔍 Buscar por nombre o cédula..." oninput="applyFilters()">
           <select class="filter-input" id="filterNivel" onchange="applyFilters()">
@@ -1006,6 +1323,35 @@ tbody tr.atendido:hover {
           </select>
           <input type="date" class="filter-input" id="filterFecha" onchange="applyFilters()">
           <button class="btn btn-outline" onclick="clearFilters()">Limpiar</button>
+        </div>
+
+        <!-- Filtros móvil colapsables -->
+        <button class="mob-filter-toggle" id="mobFilterToggle" onclick="toggleMobFilters()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/></svg>
+          Filtrar reportes
+          <svg class="toggle-arrow" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+        </button>
+        <div class="mob-filters-panel" id="mobFiltersPanel">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <input type="text" class="filter-input search" id="filterNombreMob" placeholder="🔍 Buscar nombre o cédula..." oninput="applyFiltersMob()" style="min-width:unset;flex:unset;">
+            <div style="display:flex;gap:8px;">
+              <select class="filter-input" id="filterNivelMob" onchange="applyFiltersMob()" style="flex:1">
+                <option value="">Todos los niveles</option>
+                <option value="Alto">Alto</option>
+                <option value="Medio">Medio</option>
+                <option value="Bajo">Bajo</option>
+              </select>
+              <select class="filter-input" id="filterEstadoMob" onchange="applyFiltersMob()" style="flex:1">
+                <option value="">Todos los estados</option>
+                <option value="No atendido">No atendido</option>
+                <option value="Atendido">Atendido</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <input type="date" class="filter-input" id="filterFechaMob" onchange="applyFiltersMob()" style="flex:1">
+              <button class="btn btn-outline" onclick="clearFiltersMob()" style="flex-shrink:0">Limpiar</button>
+            </div>
+          </div>
         </div>
 
         <div class="table-wrap">
@@ -1038,6 +1384,10 @@ tbody tr.atendido:hover {
             </table>
           </div>
         </div>
+
+        <!-- Vista de tarjetas para móvil -->
+        <div class="report-cards" id="reportCards"></div>
+
       </div>
 
       <!-- SETTINGS -->
@@ -1112,7 +1462,7 @@ tbody tr.atendido:hover {
     <div class="modal-title">📄 Detalle del Reporte</div>
     <div id="modalBody"></div>
     <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cerrar</button>
+      <button class="btn btn-outline" onclick="closeModalDirect()">Cerrar</button>
       <button class="btn btn-success" id="modalAttendBtn">✓ Marcar como Atendido</button>
     </div>
   </div>
@@ -1120,6 +1470,44 @@ tbody tr.atendido:hover {
 
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- BOTTOM NAV MÓVIL -->
+<nav class="mob-bottom-nav" id="mobBottomNav">
+  <div class="mob-bottom-nav-inner">
+    <button class="mob-nav-btn active" id="mobNavDashboard" onclick="switchPage('dashboard')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zm8 0A1.5 1.5 0 0 1 9.5 0h2A1.5 1.5 0 0 1 13 1.5v2A1.5 1.5 0 0 1 11.5 5h-2A1.5 1.5 0 0 1 8 3.5v-2zM0 9.5A1.5 1.5 0 0 1 1.5 8h2A1.5 1.5 0 0 1 5 9.5v2A1.5 1.5 0 0 1 3.5 13h-2A1.5 1.5 0 0 1 0 11.5v-2zm8 0A1.5 1.5 0 0 1 9.5 8h2a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-2A1.5 1.5 0 0 1 8 11.5v-2z"/>
+      </svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavReports" onclick="switchPage('reports')" style="position:relative">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/>
+      </svg>
+      <span>Reportes</span>
+      <span class="mob-nav-badge" id="mobPendingBadge" style="display:none">0</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavExcel" onclick="exportExcel()">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+      </svg>
+      <span>Excel</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavRefresh" onclick="loadData()">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+      </svg>
+      <span>Actualizar</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavSettings" onclick="switchPage('settings')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+        <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
+      </svg>
+      <span>Config</span>
+    </button>
+  </div>
+</nav>
 
 <script>
   // ============================================================
@@ -1173,6 +1561,16 @@ window.addEventListener('load', () => {
   
   updateOnlineStatus();
   loadData();
+
+  // Swipe izquierda sobre el sidebar → cerrarlo
+  let touchStartX = 0;
+  document.getElementById('sidebar').addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  document.getElementById('sidebar').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx < -60) closeSidebar();
+  }, { passive: true });
 });
 
 window.addEventListener('online', updateOnlineStatus);
@@ -1216,8 +1614,15 @@ function switchPage(page) {
       'Configuración'
     )) n.classList.add('active');
   });
+
+  // Actualizar bottom nav móvil y cerrar sidebar si está abierto
+  updateMobNav(page);
+  closeSidebar();
   
-  if (page === 'reports') renderReportsTable(filteredData);
+  if (page === 'reports') {
+    renderReportsTable(filteredData);
+    renderReportCards(filteredData);
+  }
 }
 
 // ============================================================
@@ -1399,6 +1804,7 @@ function renderReportsTable(data) {
           </div>
         </td>
       </tr>`;
+    renderReportCards(data);
     return;
   }
   
@@ -1422,6 +1828,8 @@ function renderReportsTable(data) {
         </button>
       </td>
     </tr>`).join('');
+
+  renderReportCards(data);
 }
 
 // ============================================================
@@ -1577,7 +1985,7 @@ async function markAttended(id) {
   renderReportsTable(filteredData);
   updateDashboard();
   updatePendingBadge();
-  closeModal();
+  closeModalDirect();
   
   // Sync with server
   if (scriptUrl) {
@@ -1597,6 +2005,7 @@ function updatePendingBadge() {
   const badge = document.getElementById('pendingBadge');
   badge.textContent = noAtendidos;
   badge.style.display = noAtendidos > 0 ? 'inline' : 'none';
+  updateMobPendingBadge(noAtendidos);
 }
 
 // ============================================================
@@ -1637,6 +2046,11 @@ function openModal(id) {
 
 function closeModal(e) {
   if (e && e.target !== document.getElementById('modalBackdrop')) return;
+  document.getElementById('modalBackdrop').classList.remove('show');
+  currentModalId = null;
+}
+
+function closeModalDirect() {
   document.getElementById('modalBackdrop').classList.remove('show');
   currentModalId = null;
 }
@@ -1948,7 +2362,139 @@ function showToast(icon, title, msg, type = 'info') {
   }, 4000);
 }
 
-// Auto-refresh cada 60 segundos
+// ============================================================
+// SIDEBAR MÓVIL
+// ============================================================
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  const ov = document.getElementById('sidebarOverlay');
+  ov.style.display = 'block';
+  requestAnimationFrame(() => ov.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  const ov = document.getElementById('sidebarOverlay');
+  ov.classList.remove('open');
+  setTimeout(() => { ov.style.display = 'none'; }, 260);
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// FILTROS MÓVIL
+// ============================================================
+function toggleMobFilters() {
+  const btn   = document.getElementById('mobFilterToggle');
+  const panel = document.getElementById('mobFiltersPanel');
+  btn.classList.toggle('open');
+  panel.classList.toggle('open');
+}
+
+function applyFiltersMob() {
+  const nombre = (document.getElementById('filterNombreMob').value || '').toLowerCase();
+  const nivel  = document.getElementById('filterNivelMob').value;
+  const estado = document.getElementById('filterEstadoMob').value;
+  const fecha  = document.getElementById('filterFechaMob').value;
+
+  filteredData = allData.filter(r => {
+    const matchNombre = !nombre ||
+      (r.Nombre || '').toLowerCase().includes(nombre) ||
+      (r['Cédula'] || '').toString().includes(nombre);
+    const matchNivel  = !nivel  || r['Nivel de Riesgo'] === nivel;
+    const matchEstado = !estado || r.Estado === estado;
+    const matchFecha  = !fecha  || (r.Fecha || '').includes(
+      new Date(fecha).toLocaleDateString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric'})
+    );
+    return matchNombre && matchNivel && matchEstado && matchFecha;
+  });
+
+  renderReportsTable(filteredData);
+  renderReportCards(filteredData);
+}
+
+function clearFiltersMob() {
+  document.getElementById('filterNombreMob').value = '';
+  document.getElementById('filterNivelMob').value  = '';
+  document.getElementById('filterEstadoMob').value = '';
+  document.getElementById('filterFechaMob').value  = '';
+  filteredData = [...allData];
+  renderReportsTable(filteredData);
+  renderReportCards(filteredData);
+}
+
+// ============================================================
+// TARJETAS MÓVIL
+// ============================================================
+function renderReportCards(data) {
+  const container = document.getElementById('reportCards');
+  if (!container) return;
+
+  if (data.length === 0) {
+    container.innerHTML = `
+      <div class="empty-table" style="padding:40px 20px;text-align:center;color:var(--text-dim)">
+        <svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" style="display:block;margin:0 auto 12px;opacity:0.25">
+          <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+        </svg>
+        No hay reportes que coincidan
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(r => {
+    const nivelCls  = (r['Nivel de Riesgo'] || '').toLowerCase();
+    const atendido  = r.Estado === 'Atendido';
+    return `
+      <div class="report-card${atendido ? ' atendido' : ''}" onclick="openModal('${(r.ID||'').replace(/'/g,"\\'")}')">
+        <div class="report-card-accent ${nivelCls}"></div>
+        <div style="padding-left:8px">
+          <div class="report-card-head">
+            <div>
+              <div class="report-card-id">${r.ID || '—'}</div>
+              <div class="report-card-name">${r.Nombre || '—'}</div>
+            </div>
+            <div>${nivelBadge(r['Nivel de Riesgo'])}</div>
+          </div>
+          <div class="report-card-tipo">${r['Tipo de Riesgo'] || '—'}</div>
+          <div class="report-card-foot">
+            <div class="report-card-date">📅 ${formatFecha(r.Fecha)} · ${formatHora(r.Hora)}</div>
+            <div class="report-card-actions">
+              ${estadoBadge(r.Estado)}
+              ${!atendido ? `
+                <button class="btn-attend" onclick="event.stopPropagation();markAttended('${(r.ID||'').replace(/'/g,"\\'")}')">
+                  + Atender
+                </button>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// BOTTOM NAV — activar botón correcto
+// ============================================================
+function updateMobNav(page) {
+  ['Dashboard','Reports','Settings'].forEach(p => {
+    const btn = document.getElementById('mobNav' + p);
+    if (btn) btn.classList.remove('active');
+  });
+  const map = { dashboard:'Dashboard', reports:'Reports', settings:'Settings' };
+  const btn = document.getElementById('mobNav' + (map[page] || ''));
+  if (btn) btn.classList.add('active');
+}
+
+// ============================================================
+// BADGE MÓVIL — sincronizar con el badge del sidebar
+// ============================================================
+function updateMobPendingBadge(count) {
+  const badge = document.getElementById('mobPendingBadge');
+  if (!badge) return;
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'inline' : 'none';
+}
+
+// Auto-refresh cada 100 segundos
 setInterval(() => {
   if (navigator.onLine && scriptUrl) loadData();
 }, 100000);
