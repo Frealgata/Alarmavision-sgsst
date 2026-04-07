@@ -70,8 +70,8 @@
       color: var(--gray);
       margin-bottom: 48px;
     }
-     .span1 { color: var(--blue); }
-  
+    .span1 { color: var(--blue); }
+
     .apps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -90,6 +90,7 @@
       flex-direction: column;
       align-items: center;
       gap: 12px;
+      cursor: pointer;
     }
     .app-card:hover {
       border-color: var(--blue-light);
@@ -125,6 +126,88 @@
       font-size: 12px;
       color: rgba(158,162,162,0.5);
     }
+
+    /* ── Modal de contraseña ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #0D1117;
+      border: 1px solid rgba(27,58,140,0.4);
+      border-radius: 18px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .modal p { font-size: 13px; color: var(--gray); margin-bottom: 28px; }
+    .modal input[type="password"] {
+      width: 100%;
+      background: rgba(27,58,140,0.08);
+      border: 1px solid rgba(27,58,140,0.35);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      color: #E6EDF3;
+      outline: none;
+      margin-bottom: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+      letter-spacing: 3px;
+    }
+    .modal input[type="password"]:focus { border-color: var(--blue-light); }
+    .modal input[type="password"].error { border-color: #F85149; }
+    .error-msg {
+      font-size: 12px;
+      color: #F85149;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .error-msg.active { display: block; }
+    .btn-primary {
+      width: 100%;
+      background: var(--blue-light);
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+      margin-bottom: 12px;
+    }
+    .btn-primary:hover { background: #1B3A8C; }
+    .btn-cancel {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-cancel:hover { color: #E6EDF3; }
   </style>
 </head>
 <body>
@@ -137,7 +220,7 @@
            onerror="this.style.display='none'">
     </div>
 
-    <h1> <span class="span1">Alarma</span><span>vision</span> SG-SST</h1>
+    <h1><span class="span1">Alarma</span><span>vision</span> SG-SST</h1>
     <p class="subtitle">Sistema de Reporte y Gestión de Riesgos · Services S.A.S.</p>
 
     <div class="apps-grid">
@@ -147,17 +230,118 @@
         <div class="app-desc">Reporta riesgos desde tu celular. Instala como app en tu dispositivo.</div>
         <div class="app-badge">Emisor · PWA</div>
       </a>
-      <a href="desktop-app/index.html" class="app-card">
+      <div class="app-card" onclick="openPasswordModal()">
         <div class="app-icon">💻</div>
         <div class="app-name">Panel Admin</div>
         <div class="app-desc">Gestiona y da seguimiento a todos los reportes desde el escritorio.</div>
         <div class="app-badge">Receptor · PWA</div>
-      </a>
+      </div>
     </div>
 
     <div class="footer">
       Alarmavision Services S.A.S. · Sistema SG-SST v1.0.0
     </div>
   </div>
+
+  <!-- Modal contraseña -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal">
+      <div style="font-size:32px;margin-bottom:12px;">🔐</div>
+      <h2>Acceso Restringido</h2>
+      <p>Ingresa la contraseña de administrador para acceder al Panel Admin.</p>
+      <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="off"
+             onkeydown="if(event.key==='Enter')checkPassword()">
+      <div class="error-msg" id="errorMsg">Contraseña incorrecta. Intenta de nuevo.</div>
+      <button class="btn-primary" onclick="checkPassword()">Ingresar al Panel</button>
+      <button class="btn-cancel" onclick="closePasswordModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // CONTRASEÑA DINÁMICA
+    // Contraseña inicial por defecto. Se sobreescribe con lo
+    // guardado en localStorage por el dashboard (vía GitHub).
+    // ============================================================
+    const DEFAULT_PASSWORD = "Alarmavision2006";
+
+    function getAdminPassword() {
+      return localStorage.getItem('SGSST_ADMIN_PASSWORD') || DEFAULT_PASSWORD;
+    }
+
+    // ============================================================
+    // CARGAR CONTRASEÑA DESDE GITHUB AL ABRIR LA PÁGINA
+    // Si el dashboard guardó la config de GitHub en localStorage,
+    // se lee el archivo remoto para tener la contraseña más reciente.
+    // ============================================================
+    async function loadPasswordFromGitHub() {
+      const owner    = localStorage.getItem('gh_owner');
+      const repo     = localStorage.getItem('gh_repo');
+      const filePath = localStorage.getItem('gh_filePath') || 'settings.json';
+      const token    = localStorage.getItem('gh_token');
+
+      if (!owner || !repo || !token) return; // Sin config de GitHub, usar localStorage
+
+      try {
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+        const res = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+        if (!res.ok) return;
+        const data    = await res.json();
+        const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+
+        // Actualizar contraseña en localStorage si viene en el archivo
+        if (content.admin_password) {
+          localStorage.setItem('SGSST_ADMIN_PASSWORD', content.admin_password);
+        }
+      } catch (e) {
+        // Silencioso: si falla GitHub, usa lo que hay en localStorage
+        console.warn('No se pudo cargar config remota:', e.message);
+      }
+    }
+
+    // ============================================================
+    // MODAL — ABRIR / CERRAR / VERIFICAR
+    // ============================================================
+    function openPasswordModal() {
+      document.getElementById('passwordModal').classList.add('active');
+      setTimeout(() => document.getElementById('passwordInput').focus(), 100);
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.remove('active');
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').classList.remove('error');
+      document.getElementById('errorMsg').classList.remove('active');
+    }
+
+    function checkPassword() {
+      const val = document.getElementById('passwordInput').value;
+      if (val === getAdminPassword()) {
+        window.location.href = 'desktop-app/index.html';
+      } else {
+        document.getElementById('passwordInput').classList.add('error');
+        document.getElementById('errorMsg').classList.add('active');
+        document.getElementById('passwordInput').value = '';
+        setTimeout(() => {
+          document.getElementById('passwordInput').classList.remove('error');
+        }, 1200);
+      }
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('passwordModal').addEventListener('click', function(e) {
+      if (e.target === this) closePasswordModal();
+    });
+
+    // ============================================================
+    // INICIALIZACIÓN — intentar cargar contraseña desde GitHub
+    // ============================================================
+    loadPasswordFromGitHub();
+  </script>
 </body>
 </html>
