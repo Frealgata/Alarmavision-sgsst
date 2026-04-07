@@ -630,17 +630,6 @@
           </label>
           <select id="tipoRiesgo" class="field-select">
             <option value="">— Seleccionar —</option>
-            <option>Daño en silla</option>
-            <option>Daño en módulo de trabajo</option>
-            <option>Cableado en mal estado</option>
-            <option>Iluminación deficiente</option>
-            <option>Riesgo eléctrico</option>
-            <option>Caídas o tropiezos</option>
-            <option>Riesgo de incendio</option>
-            <option>Señalización deficiente</option>
-            <option>Extintor vencido o ausente</option>
-            <option>Salida de emergencia bloqueada</option>
-            <option>Otros</option>
           </select>
           <div class="field-error" id="tipo-error">Selecciona un tipo de riesgo</div>
         </div>
@@ -757,6 +746,88 @@ const URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwdJ1vT4Z5od6RGEwLi
 const SCRIPT_URL = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 
 // ============================================================
+// RIESGOS — lista dinámica (sincronizada por el dashboard)
+// ============================================================
+const DEFAULT_RISKS = [
+  //"Daño en silla","Daño en módulo de trabajo","Cableado en mal estado",
+ // "Iluminación deficiente","Riesgo eléctrico","Caídas o tropiezos",
+  //"Riesgo de incendio","Señalización deficiente","Extintor vencido o ausente",
+  //"Salida de emergencia bloqueada","Otros"
+];
+
+function getRisks() {
+  const saved = localStorage.getItem('SGSST_RISKS');
+  if (saved) { try { return JSON.parse(saved); } catch(e) {} }
+  return [...DEFAULT_RISKS];
+}
+
+// Carga la lista actual (localStorage o default) en el select — respaldo inmediato
+function loadRisksIntoSelect() {
+  const select = document.getElementById('tipoRiesgo');
+  const risks  = getRisks();
+  select.innerHTML = '<option value="">— Seleccionar —</option>';
+  risks.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r;
+    opt.textContent = r;
+    select.appendChild(opt);
+  });
+}
+
+// Fuente primaria: siempre consulta GitHub al cargar
+// Si tiene config → lee el JSON remoto, actualiza localStorage y recarga el select
+// Si no tiene config o falla → usa localStorage (que puede tener lista anterior)
+async function loadRisksFromGitHub() {
+  const owner    = localStorage.getItem('gh_owner');
+  const repo     = localStorage.getItem('gh_repo');
+  const filePath = localStorage.getItem('gh_filePath') || 'settings.json';
+  const token    = localStorage.getItem('gh_token');
+
+  // Mostrar indicador de carga en el select mientras se consulta GitHub
+  const select = document.getElementById('tipoRiesgo');
+  if (owner && repo && token) {
+    select.innerHTML = '<option value="">⏳ Cargando lista actualizada…</option>';
+    select.disabled = true;
+  }
+
+  try {
+    if (!owner || !repo || !token) {
+      // Sin config de GitHub: usar localStorage directamente
+      loadRisksIntoSelect();
+      return;
+    }
+
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+    const res = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data    = await res.json();
+    const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+
+    // Actualizar riesgos en localStorage y en el select
+    if (Array.isArray(content.risks) && content.risks.length > 0) {
+      localStorage.setItem('SGSST_RISKS', JSON.stringify(content.risks));
+    }
+    // Actualizar contraseña si viene en el archivo
+    if (content.admin_password) {
+      localStorage.setItem('SGSST_ADMIN_PASSWORD', content.admin_password);
+    }
+
+    loadRisksIntoSelect();
+
+  } catch(e) {
+    console.warn('No se pudieron cargar datos desde GitHub, usando lista local:', e.message);
+    // Fallback: usar lo que hay en localStorage (puede ser la lista anterior)
+    loadRisksIntoSelect();
+  } finally {
+    select.disabled = false;
+  }
+}
+
+// ============================================================
 // ESTADO DE LA APP
 // ============================================================
 let isOnline = navigator.onLine;
@@ -778,6 +849,10 @@ window.addEventListener('load', () => {
   
   updateOnlineStatus();
   renderHistory();
+  // Primero cargar lista local inmediatamente (para no tener select vacío)
+  loadRisksIntoSelect();
+  // Luego consultar GitHub para tener la lista más actualizada
+  loadRisksFromGitHub();
   // Intentar sincronizar pendientes al arrancar
   if (navigator.onLine) setTimeout(() => syncPending(), 2000);
 });
@@ -786,6 +861,8 @@ window.addEventListener('online', () => {
   isOnline = true;
   updateOnlineStatus();
   syncPending();
+  // Al recuperar conexión, recargar la lista actualizada desde GitHub
+  loadRisksFromGitHub();
 });
 
 window.addEventListener('offline', () => {
@@ -1177,6 +1254,18 @@ function showToast(icon, title, msg, type = 'success') {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 400);
   }, 4000);
+}
+
+// ============================================================
+// REINTENTAR TODOS LOS PENDIENTES
+// ============================================================
+async function retrySend() {
+  if (pendingQueue.length === 0) {
+    showToast('ℹ️', 'Sin pendientes', 'No hay reportes pendientes en la cola', 'info');
+    return;
+  }
+  showToast('🔄', 'Reintentando...', `${pendingQueue.length} reporte(s)`, 'info');
+  await syncPending();
 }
 
 // ============================================================
