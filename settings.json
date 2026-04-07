@@ -1,1 +1,16 @@
-{}
+{
+  "risks": [
+    "Daño en silla",
+    "Daño en módulo de trabajo",
+    "Cableado en mal estado",
+    "Iluminación deficiente",
+    "Riesgo eléctrico",
+    "Caídas o tropiezos",
+    "Riesgo de incendio",
+    "Señalización deficiente",
+    "Extintor vencido o ausente",
+    "Salida de emergencia bloqueada",
+    "Otros",
+    "puerta"
+  ]
+}
