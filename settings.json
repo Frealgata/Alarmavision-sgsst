@@ -1,16 +1,17 @@
 {
   "risks": [
-    "Daño en silla",
-    "Daño en módulo de trabajo",
+    "DaÃ±o en silla",
+    "DaÃ±o en mÃ³dulo de trabajo",
     "Cableado en mal estado",
-    "Iluminación deficiente",
-    "Riesgo eléctrico",
-    "Caídas o tropiezos",
+    "IluminaciÃ³n deficiente",
+    "Riesgo elÃ©ctrico",
+    "CaÃ­das o tropiezos",
     "Riesgo de incendio",
-    "Señalización deficiente",
+    "SeÃ±alizaciÃ³n deficiente",
     "Extintor vencido o ausente",
     "Salida de emergencia bloqueada",
     "Otros",
     "puerta"
-  ]
+  ],
+  "admin_password": "Alarmavision-2006"
 }
