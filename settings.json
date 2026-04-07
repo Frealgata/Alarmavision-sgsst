@@ -1,4 +1,7 @@
 {
+  "raw_url": "https://raw.githubusercontent.com/Frealgata/Alarmavision-sgsst/main/settings.json",
+  "admin_password": "Alarmavision2006",
+  "script_url": "https://script.google.com/macros/s/AKfycbwdJ1vT4Z5od6RGEwLiCAVZeUqNvWO9eWKqeWwq480b0lwbSO8xAjP70Weg69yByAdPyw/exec",
   "risks": [
     "Daño en silla",
     "Daño en módulo de trabajo",
@@ -10,8 +13,6 @@
     "Señalización deficiente",
     "Extintor vencido o ausente",
     "Salida de emergencia bloqueada",
-    "Otros",
-    "Puerta"
-  ],
-  "admin_password": "Alarmavision-2006"
+    "Otros"
+  ]
 }
