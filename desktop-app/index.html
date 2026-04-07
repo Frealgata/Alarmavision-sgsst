@@ -23,22 +23,22 @@
   --blue-glow: rgba(27,58,140,0.15);
   --gray: #6B7280;
   --gray-dark: #374151;
-  
+
   /* Fondos claros (Menos oscuros) */
-  --black: #F3F4F6; /* Fondo principal de la app (gris muy claro) */
-  --surface: #FFFFFF; /* Fondo de las tarjetas y tabla (blanco) */
-  --surface2: #F9FAFB; /* Fondo de menús y hover */
-  --surface3: #E5E7EB; /* Gris para barras de progreso */
-  
+  --black: #F3F4F6;
+  --surface: #FFFFFF;
+  --surface2: #F9FAFB;
+  --surface3: #E5E7EB;
+
   /* Bordes */
   --border: #D1D5DB;
   --border2: #E5E7EB;
-  
+
   /* Textos adaptados para fondo claro */
-  --text: #111827; /* Texto principal oscuro */
-  --text-dim: #4B5563; /* Texto secundario gris */
-  
-  /* Colores de estado (Mantenemos los mismos de alerta) */
+  --text: #111827;
+  --text-dim: #4B5563;
+
+  /* Colores de estado */
   --success: #059669;
   --danger: #DC2626;
   --warning: #D97706;
@@ -46,8 +46,8 @@
   --alto: #DC2626;
   --medio: #D97706;
   --bajo: #059669;
-  
-  --radius: 8px; /* Bordes ligeramente más rectos/serios */
+
+  --radius: 8px;
   --sidebar-w: 220px;
 }
 
@@ -114,8 +114,8 @@ html, body {
   line-height: 1.1;
 }
 
-.sidebar-brand span { color: var( --gray-dark); }
-.sidebar-brand span1 { color: var( --blue); }
+.sidebar-brand span { color: var(--gray-dark); }
+.sidebar-brand span1 { color: var(--blue); }
 
 .sidebar-sub {
   font-size: 10px;
@@ -813,7 +813,6 @@ tbody tr.atendido:hover {
 
 /* ── RESPONSIVE MÓVIL COMPLETO ── */
 
-/* ── Botón hamburguesa (solo móvil) ── */
 .mob-menu-btn {
   display: none;
   align-items: center;
@@ -829,7 +828,6 @@ tbody tr.atendido:hover {
 .mob-menu-btn:active { background: var(--surface2); }
 .mob-menu-btn svg { width: 22px; height: 22px; }
 
-/* ── Overlay oscuro para el drawer ── */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -841,7 +839,6 @@ tbody tr.atendido:hover {
 }
 .sidebar-overlay.open { opacity: 1; }
 
-/* ── Bottom nav móvil ── */
 .mob-bottom-nav {
   display: none;
   position: fixed;
@@ -893,7 +890,6 @@ tbody tr.atendido:hover {
   line-height: 1.4;
 }
 
-/* ── Vista de tarjetas para reportes en móvil ── */
 .report-cards { display: none; }
 .report-card {
   background: var(--surface);
@@ -964,7 +960,6 @@ tbody tr.atendido:hover {
   align-items: center;
 }
 
-/* ── Filtros colapsables en móvil ── */
 .mob-filter-toggle {
   display: none;
   width: 100%;
@@ -995,7 +990,6 @@ tbody tr.atendido:hover {
 }
 .mob-filters-panel.open { display: block; }
 
-/* ── Modal adaptado a móvil (bottom sheet) ── */
 @media (max-width: 640px) {
   .modal-backdrop {
     align-items: flex-end !important;
@@ -1024,8 +1018,6 @@ tbody tr.atendido:hover {
 }
 
 @media (max-width: 768px) {
-
-  /* ── Layout ── */
   html, body { overflow: hidden; }
 
   .sidebar {
@@ -1046,7 +1038,6 @@ tbody tr.atendido:hover {
 
   .mob-menu-btn { display: flex; }
 
-  /* Topbar en móvil */
   .topbar {
     padding: 0 12px;
     gap: 8px;
@@ -1060,52 +1051,42 @@ tbody tr.atendido:hover {
   }
   .topbar-actions .btn-excel,
   .topbar-actions .btn-pdf {
-    display: none; /* Se muestran en el drawer lateral */
+    display: none;
   }
   .topbar-actions .btn-primary {
     padding: 7px 10px;
     font-size: 12px;
   }
 
-  /* ── Page content ── */
   .page-content {
-    padding: 14px 12px 80px; /* 80px para el bottom nav */
+    padding: 14px 12px 80px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* ── Stats grid 2 columnas ── */
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .stat-value { font-size: 26px; }
 
-  /* ── Charts en columna ── */
   .chart-row { grid-template-columns: 1fr; gap: 10px; }
 
-  /* ── Tabla de reportes: ocultar, mostrar cards ── */
   .table-wrap .table-scroll { display: none; }
   .report-cards { display: block; }
 
-  /* ── Tabla del dashboard: scroll horizontal ── */
   #page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   #page-dashboard table { min-width: 520px; }
   #page-dashboard th, #page-dashboard td { padding: 8px 10px; font-size: 11px; }
 
-  /* ── Filtros en móvil ── */
-  .filters-row { display: none; } /* ocultar filtros de escritorio */
+  .filters-row { display: none; }
   .mob-filter-toggle { display: flex; }
 
-  /* ── Botón actualizar: solo icono en móvil muy pequeño ── */
   @media (max-width: 380px) {
     .topbar-actions .btn-primary span { display: none; }
   }
 
-  /* ── Bottom nav visible ── */
   .mob-bottom-nav { display: block; }
 
-  /* ── Settings: ancho completo ── */
   .settings-card { max-width: 100%; }
 
-  /* ── Toast adaptado ── */
   .toast-container {
     top: auto;
     bottom: 76px;
@@ -1122,6 +1103,117 @@ tbody tr.atendido:hover {
   .toast.show { transform: translateY(0); opacity: 1; }
 }
 
+/* ── ESTILOS NUEVOS: Gestión de riesgos y cambio de contraseña ── */
+.risks-list-admin {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding-right: 4px;
+}
+.risks-list-admin::-webkit-scrollbar { width: 4px; }
+.risks-list-admin::-webkit-scrollbar-track { background: transparent; }
+.risks-list-admin::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.risk-admin-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 8px 12px;
+  transition: border-color 0.15s;
+}
+.risk-admin-item:hover { border-color: var(--blue-light); }
+
+.risk-admin-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+}
+.risk-admin-text.editing {
+  background: var(--surface);
+  border: 1px solid var(--blue-light);
+  border-radius: 5px;
+  padding: 3px 8px;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  width: 100%;
+}
+
+.risk-admin-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.risk-admin-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.risk-admin-btn:hover { background: var(--surface3); }
+.risk-admin-btn.del:hover { background: rgba(220,38,38,0.1); }
+
+.add-risk-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.add-risk-field {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.add-risk-field:focus { border-color: var(--blue-light); }
+.add-risk-field::placeholder { color: var(--text-dim); }
+
+.btn-add-risk {
+  background: var(--blue);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-add-risk:hover { background: var(--blue-light); }
+
+.gh-config-block {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.gh-config-block .settings-label { margin-top: 10px; }
+.gh-config-block .settings-label:first-child { margin-top: 0; }
+
+.save-feedback {
+  font-size: 12px;
+  margin-top: 8px;
+  min-height: 18px;
+  color: var(--text-dim);
+}
+.save-feedback.ok  { color: var(--success); }
+.save-feedback.err { color: var(--danger);  }
 </style>
 </head>
 <body>
@@ -1216,7 +1308,6 @@ tbody tr.atendido:hover {
 
     <!-- TOPBAR -->
     <div class="topbar">
-      <!-- Botón hamburguesa: solo visible en móvil -->
       <button class="mob-menu-btn" id="mobMenuBtn" onclick="openSidebar()" aria-label="Menú">
         <svg viewBox="0 0 16 16" fill="currentColor">
           <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -1278,7 +1369,6 @@ tbody tr.atendido:hover {
           </div>
         </div>
 
-        <!-- Últimos reportes en dashboard -->
         <div class="table-wrap">
           <div class="table-header">
             <span class="table-header-title">Últimos 10 reportes</span>
@@ -1392,6 +1482,8 @@ tbody tr.atendido:hover {
 
       <!-- SETTINGS -->
       <div class="page" id="page-settings">
+
+        <!-- ── CARD 1: Servidor Google Apps Script ── -->
         <div class="settings-card">
           <div class="settings-title">
             ⚙️ Configuración del servidor
@@ -1428,6 +1520,79 @@ tbody tr.atendido:hover {
           </div>
         </div>
 
+        <!-- ── CARD 2: GitHub Config ── -->
+        <div class="settings-card">
+          <div class="settings-title">🐙 Configuración de GitHub</div>
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">
+            Conecta con tu repositorio de GitHub para sincronizar la contraseña y la lista de riesgos entre dispositivos. El token y la config se guardan solo en este navegador.
+          </div>
+          <div class="gh-config-block">
+            <label class="settings-label">Usuario / Organización</label>
+            <input type="text" class="settings-input" id="ghOwner" placeholder="ej: miusuario">
+            <label class="settings-label">Nombre del repositorio</label>
+            <input type="text" class="settings-input" id="ghRepo" placeholder="ej: alarmavision-sgsst">
+            <label class="settings-label">Ruta del archivo de configuración en el repo</label>
+            <input type="text" class="settings-input" id="ghFilePath" placeholder="ej: config/settings.json">
+            <div class="settings-hint" style="margin-top:4px;margin-bottom:10px;">El archivo debe existir en el repo (puede estar vacío: {})</div>
+            <label class="settings-label">Token de acceso personal (PAT)</label>
+            <input type="password" class="settings-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            <div class="settings-hint" style="margin-top:4px;">Necesita permiso <b>repo → Contents (read &amp; write)</b></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveGHConfig()">💾 Guardar config GitHub</button>
+            <button class="btn btn-outline" onclick="testGHConnection()">🔌 Probar conexión</button>
+          </div>
+          <div class="save-feedback" id="ghConfigFeedback"></div>
+        </div>
+
+        <!-- ── CARD 3: Gestión de lista de riesgos ── -->
+        <div class="settings-card">
+          <div class="settings-title">📋 Lista de Riesgos (App Móvil)</div>
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">
+            Agrega, edita o elimina los riesgos que aparecen en el selector de la app móvil. Guarda en GitHub para sincronizar todos los dispositivos.
+          </div>
+
+          <ul class="risks-list-admin" id="risksListAdmin"></ul>
+
+          <div class="add-risk-row">
+            <input type="text" class="add-risk-field" id="newRiskInput"
+                   placeholder="Nuevo riesgo o reporte..."
+                   onkeydown="if(event.key==='Enter')addRisk()">
+            <button class="btn-add-risk" onclick="addRisk()">+ Agregar</button>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveRisksToGitHub()">💾 Guardar en GitHub</button>
+            <button class="btn btn-outline" onclick="renderRisksAdmin()">↺ Recargar lista</button>
+          </div>
+          <div class="save-feedback" id="risksFeedback"></div>
+        </div>
+
+        <!-- ── CARD 4: Cambio de contraseña ── -->
+        <div class="settings-card">
+          <div class="settings-title">🔑 Cambiar Contraseña del Panel Admin</div>
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">
+            Cambia la contraseña de acceso al Panel Admin. Se guardará en GitHub y en este dispositivo automáticamente.
+          </div>
+
+          <div class="settings-field">
+            <label class="settings-label">Contraseña actual</label>
+            <input type="password" class="settings-input" id="currentPwdInput" placeholder="••••••••••••">
+          </div>
+          <div class="settings-field">
+            <label class="settings-label">Nueva contraseña</label>
+            <input type="password" class="settings-input" id="newPwdInput" placeholder="••••••••••••">
+          </div>
+          <div class="settings-field">
+            <label class="settings-label">Confirmar nueva contraseña</label>
+            <input type="password" class="settings-input" id="confirmPwdInput" placeholder="••••••••••••">
+          </div>
+
+          <button class="btn btn-primary" onclick="changePassword()">🔒 Cambiar contraseña</button>
+          <div class="save-feedback" id="pwdFeedback"></div>
+        </div>
+
+        <!-- ── CARD 5: Guía de configuración ── -->
         <div class="settings-card">
           <div class="settings-title">📋 Cómo configurar paso a paso</div>
           <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
@@ -1445,12 +1610,13 @@ tbody tr.atendido:hover {
             &nbsp;&nbsp;• Clic en <b style="color:var(--text)">"Implementar"</b> → autoriza los permisos<br>
             &nbsp;&nbsp;• <b style="color:var(--success)">Copia la URL que aparece</b><br><br>
 
-            <b style="color:var(--text)">3. Pegar la URL aquí arriba</b> y clic en <b style="color:var(--text)">"Guardar y conectar"</b><br><br>
+            <b style="color:var(--text)">3. Pegar la URL arriba</b> y clic en <b style="color:var(--text)">"Guardar y conectar"</b><br><br>
 
             <b style="color:var(--text)">4. ¡Listo!</b> La hoja de cálculo se crea sola con el primer reporte enviado.
           </div>
         </div>
-      </div>
+
+      </div><!-- /page-settings -->
 
     </div>
   </div>
@@ -1510,39 +1676,354 @@ tbody tr.atendido:hover {
 </nav>
 
 <script>
-  // ============================================================
+// ============================================================
 // FORMATEAR FECHA
 // ============================================================
-  function formatearFecha(fechaString) {
+function formatearFecha(fechaString) {
   if (!fechaString) return '';
   const date = new Date(fechaString);
-  if (isNaN(date.getTime())) return fechaString; // Si hay error, devuelve el original
-  
+  if (isNaN(date.getTime())) return fechaString;
   const dia = String(date.getDate()).padStart(2, '0');
   const mes = String(date.getMonth() + 1).padStart(2, '0');
   const anio = date.getFullYear();
-  
   let horas = date.getHours();
   const minutos = String(date.getMinutes()).padStart(2, '0');
   const ampm = horas >= 12 ? 'pm' : 'am';
-  
   horas = horas % 12;
-  horas = horas ? horas : 12; // La hora '0' se convierte en '12'
+  horas = horas ? horas : 12;
   const horasStr = String(horas).padStart(2, '0');
-  
   return `${dia}/${mes}/${anio} ${horasStr}:${minutos} ${ampm}`;
 }
+
 // ============================================================
 // ESTADO GLOBAL
 // ============================================================
 let allData = [];
 let filteredData = [];
 let currentSort = { col: 'Fecha', dir: -1 };
-// La URL se lee de localStorage primero (configurada por el usuario),
-// si no hay, usa la que viene por defecto en el código.
 const URL_DEFAULT = "https://script.google.com/a/macros/alarmavision.com/s/AKfycbx-9EBUJ_xOUWyzyCow6tLjtvFxWLG7PCXAujJ86xs5L_fXDB9xd16Nz70m3w9N_0R-/exec";
 let scriptUrl = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 let currentModalId = null;
+
+// ============================================================
+// CONTRASEÑA — obtener contraseña actual
+// ============================================================
+const DEFAULT_PASSWORD = "Alarmavision2006";
+function getAdminPassword() {
+  return localStorage.getItem('SGSST_ADMIN_PASSWORD') || DEFAULT_PASSWORD;
+}
+function setAdminPassword(pwd) {
+  localStorage.setItem('SGSST_ADMIN_PASSWORD', pwd);
+}
+
+// ============================================================
+// RIESGOS — lista por defecto y helpers
+// ============================================================
+const DEFAULT_RISKS = [
+  "Daño en silla",
+  "Daño en módulo de trabajo",
+  "Cableado en mal estado",
+  "Iluminación deficiente",
+  "Riesgo eléctrico",
+  "Caídas o tropiezos",
+  "Riesgo de incendio",
+  "Señalización deficiente",
+  "Extintor vencido o ausente",
+  "Salida de emergencia bloqueada",
+  "Otros"
+];
+
+function getRisks() {
+  const saved = localStorage.getItem('SGSST_RISKS');
+  if (saved) { try { return JSON.parse(saved); } catch(e) {} }
+  return [...DEFAULT_RISKS];
+}
+function setRisks(arr) {
+  localStorage.setItem('SGSST_RISKS', JSON.stringify(arr));
+}
+
+// ============================================================
+// GITHUB — helpers
+// ============================================================
+function getGHConfig() {
+  return {
+    owner:    localStorage.getItem('gh_owner')    || '',
+    repo:     localStorage.getItem('gh_repo')     || '',
+    filePath: localStorage.getItem('gh_filePath') || 'config/settings.json',
+    token:    localStorage.getItem('gh_token')    || ''
+  };
+}
+
+function saveGHConfig() {
+  localStorage.setItem('gh_owner',    document.getElementById('ghOwner').value.trim());
+  localStorage.setItem('gh_repo',     document.getElementById('ghRepo').value.trim());
+  localStorage.setItem('gh_filePath', document.getElementById('ghFilePath').value.trim() || 'config/settings.json');
+  localStorage.setItem('gh_token',    document.getElementById('ghToken').value.trim());
+  setFeedback('ghConfigFeedback', '✅ Configuración de GitHub guardada en este navegador', 'ok');
+}
+
+function loadGHConfigToForm() {
+  const cfg = getGHConfig();
+  document.getElementById('ghOwner').value    = cfg.owner;
+  document.getElementById('ghRepo').value     = cfg.repo;
+  document.getElementById('ghFilePath').value = cfg.filePath;
+  document.getElementById('ghToken').value    = cfg.token;
+}
+
+async function ghGetFile() {
+  const cfg = getGHConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) throw new Error('Configura primero la sección GitHub Config');
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.filePath}`;
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json' }
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  const content = JSON.parse(atob(data.content.replace(/\n/g,'')));
+  return { content, sha: data.sha };
+}
+
+async function ghPutFile(content, sha, msg) {
+  const cfg = getGHConfig();
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.filePath}`;
+  const body = {
+    message: msg || 'Alarmavision: actualización de configuración',
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+    sha: sha
+  };
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${cfg.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e.message || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+async function ghCreateFile(content, msg) {
+  const cfg = getGHConfig();
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.filePath}`;
+  const body = {
+    message: msg || 'Alarmavision: creación de archivo de configuración',
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))))
+  };
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${cfg.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e.message || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+async function ghGetOrCreate() {
+  try {
+    return await ghGetFile();
+  } catch(e) {
+    if (e.message && e.message.includes('404')) {
+      // Crear archivo vacío
+      await ghCreateFile({}, 'Alarmavision: inicialización de configuración');
+      return { content: {}, sha: null };
+    }
+    throw e;
+  }
+}
+
+async function testGHConnection() {
+  setFeedback('ghConfigFeedback', '⏳ Probando conexión…', '');
+  try {
+    const { sha } = await ghGetFile();
+    setFeedback('ghConfigFeedback', `✅ Conexión OK — SHA: ${sha.slice(0,8)}`, 'ok');
+  } catch(err) {
+    setFeedback('ghConfigFeedback', `❌ Error: ${err.message}`, 'err');
+  }
+}
+
+// ============================================================
+// GUARDAR RIESGOS → GitHub
+// ============================================================
+async function saveRisksToGitHub() {
+  setFeedback('risksFeedback', '⏳ Guardando en GitHub…', '');
+  try {
+    const risks = getRisks();
+    let sha, currentContent = {};
+    try {
+      const r = await ghGetFile();
+      sha = r.sha; currentContent = r.content;
+    } catch(e) {
+      if (!e.message.includes('404')) throw e;
+    }
+    const newContent = { ...currentContent, risks };
+    if (sha) {
+      await ghPutFile(newContent, sha, 'Alarmavision: actualización lista de riesgos');
+    } else {
+      await ghCreateFile(newContent, 'Alarmavision: configuración inicial');
+    }
+    setRisks(risks);
+    setFeedback('risksFeedback', '✅ Lista de riesgos guardada en GitHub', 'ok');
+    showToast('✅', 'Riesgos guardados', `${risks.length} riesgo(s) sincronizados`, 'success');
+  } catch(err) {
+    setFeedback('risksFeedback', `❌ Error: ${err.message}`, 'err');
+    showToast('❌', 'Error al guardar', err.message, 'error');
+  }
+}
+
+// ============================================================
+// CAMBIAR CONTRASEÑA → GitHub + localStorage
+// ============================================================
+async function changePassword() {
+  const currentPwd = document.getElementById('currentPwdInput').value;
+  const newPwd     = document.getElementById('newPwdInput').value;
+  const confirmPwd = document.getElementById('confirmPwdInput').value;
+
+  if (currentPwd !== getAdminPassword()) {
+    setFeedback('pwdFeedback', '❌ La contraseña actual no es correcta', 'err'); return;
+  }
+  if (newPwd.length < 6) {
+    setFeedback('pwdFeedback', '❌ La nueva contraseña debe tener al menos 6 caracteres', 'err'); return;
+  }
+  if (newPwd !== confirmPwd) {
+    setFeedback('pwdFeedback', '❌ Las contraseñas nuevas no coinciden', 'err'); return;
+  }
+
+  setFeedback('pwdFeedback', '⏳ Guardando contraseña en GitHub…', '');
+  try {
+    let sha, currentContent = {};
+    try {
+      const r = await ghGetFile();
+      sha = r.sha; currentContent = r.content;
+    } catch(e) {
+      if (!e.message.includes('404')) throw e;
+    }
+    const newContent = { ...currentContent, admin_password: newPwd };
+    if (sha) {
+      await ghPutFile(newContent, sha, 'Alarmavision: cambio de contraseña admin');
+    } else {
+      await ghCreateFile(newContent, 'Alarmavision: configuración inicial');
+    }
+    setAdminPassword(newPwd);
+    document.getElementById('currentPwdInput').value = '';
+    document.getElementById('newPwdInput').value     = '';
+    document.getElementById('confirmPwdInput').value = '';
+    setFeedback('pwdFeedback', '✅ Contraseña actualizada en GitHub y en este dispositivo', 'ok');
+    showToast('✅', 'Contraseña cambiada', 'Se actualizó correctamente en GitHub', 'success');
+  } catch(err) {
+    setFeedback('pwdFeedback', `❌ Error: ${err.message}`, 'err');
+    showToast('❌', 'Error al cambiar contraseña', err.message, 'error');
+  }
+}
+
+// ============================================================
+// RENDER LISTA DE RIESGOS en settings
+// ============================================================
+function renderRisksAdmin() {
+  const risks = getRisks();
+  const ul = document.getElementById('risksListAdmin');
+  ul.innerHTML = '';
+  risks.forEach((risk, idx) => {
+    const li = document.createElement('li');
+    li.className = 'risk-admin-item';
+    li.dataset.idx = idx;
+
+    const span = document.createElement('span');
+    span.className = 'risk-admin-text';
+    span.textContent = risk;
+
+    const actions = document.createElement('div');
+    actions.className = 'risk-admin-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'risk-admin-btn';
+    editBtn.textContent = '✏️';
+    editBtn.title = 'Editar';
+    editBtn.onclick = () => startEditRisk(idx, span, editBtn, deleteBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'risk-admin-btn del';
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.title = 'Eliminar';
+    deleteBtn.onclick = () => deleteRisk(idx);
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    li.appendChild(span);
+    li.appendChild(actions);
+    ul.appendChild(li);
+  });
+}
+
+function startEditRisk(idx, span, editBtn, deleteBtn) {
+  const risks = getRisks();
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'risk-admin-text editing';
+  input.value = risks[idx];
+
+  const saveEdit = () => {
+    const val = input.value.trim();
+    if (!val) { renderRisksAdmin(); return; }
+    risks[idx] = val;
+    setRisks(risks);
+    renderRisksAdmin();
+  };
+
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') saveEdit();
+    if (e.key === 'Escape') renderRisksAdmin();
+  };
+
+  editBtn.textContent = '✅';
+  editBtn.onclick = saveEdit;
+  span.replaceWith(input);
+  input.focus();
+  input.select();
+}
+
+function deleteRisk(idx) {
+  const risks = getRisks();
+  if (!confirm(`¿Eliminar el riesgo "${risks[idx]}"?`)) return;
+  risks.splice(idx, 1);
+  setRisks(risks);
+  renderRisksAdmin();
+}
+
+function addRisk() {
+  const input = document.getElementById('newRiskInput');
+  const val = input.value.trim();
+  if (!val) return;
+  const risks = getRisks();
+  risks.push(val);
+  setRisks(risks);
+  input.value = '';
+  renderRisksAdmin();
+}
+
+// ============================================================
+// HELPER FEEDBACK
+// ============================================================
+function setFeedback(elId, msg, type) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'save-feedback' + (type ? ' ' + type : '');
+}
 
 // ============================================================
 // INIT
@@ -1551,14 +2032,14 @@ window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(console.error);
   }
-  
-  // Mostrar URL actual en el campo de configuración
+
   document.getElementById('settingScriptUrl').value = scriptUrl;
-  // Indicar si ya está configurada
   if (localStorage.getItem('SGSST_SCRIPT_URL')) {
     document.getElementById('urlStatusBadge').style.display = 'inline-flex';
   }
-  
+
+  loadGHConfigToForm();
+  renderRisksAdmin();
   updateOnlineStatus();
   loadData();
 
@@ -1583,7 +2064,6 @@ function updateOnlineStatus() {
   const dot = document.getElementById('sidebarDot');
   const txt = document.getElementById('onlineText');
   const online = navigator.onLine;
-  
   dot.style.background = online ? 'var(--success)' : 'var(--gray-dark)';
   dot.style.boxShadow = online ? '0 0 6px var(--success)' : 'none';
   txt.textContent = online ? 'En línea' : 'Sin conexión';
@@ -1595,33 +2075,35 @@ function updateOnlineStatus() {
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  
+
   document.getElementById('page-' + page).classList.add('active');
-  
+
   const titles = {
     dashboard: '📊 Dashboard',
     reports: '📋 Gestión de Reportes',
     settings: '⚙️ Configuración'
   };
   document.getElementById('pageTitle').textContent = titles[page] || page;
-  
-  // Activate nav item
+
   const navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(n => {
     if (n.textContent.trim().startsWith(
-      page === 'dashboard' ? 'Dashboard' : 
-      page === 'reports' ? 'Reportes' : 
+      page === 'dashboard' ? 'Dashboard' :
+      page === 'reports'   ? 'Reportes'  :
       'Configuración'
     )) n.classList.add('active');
   });
 
-  // Actualizar bottom nav móvil y cerrar sidebar si está abierto
   updateMobNav(page);
   closeSidebar();
-  
+
   if (page === 'reports') {
     renderReportsTable(filteredData);
     renderReportCards(filteredData);
+  }
+  if (page === 'settings') {
+    loadGHConfigToForm();
+    renderRisksAdmin();
   }
 }
 
@@ -1631,23 +2113,23 @@ function switchPage(page) {
 async function loadData() {
   const overlay = document.getElementById('loadingOverlay');
   overlay.classList.remove('hidden');
-  
+
   try {
     const res = await fetch(`${scriptUrl}?action=get&t=${Date.now()}`);
     const json = await res.json();
-    
+
     if (json.success) {
       allData = json.data || [];
       filteredData = [...allData];
-      
+
       updateDashboard();
       renderReportsTable(filteredData);
       updatePendingBadge();
-      
+
       const now = new Date();
-      document.getElementById('lastSync').textContent = 
+      document.getElementById('lastSync').textContent =
         `Última actualización: ${now.toLocaleTimeString('es-CO')}`;
-      
+
       showToast('✅', 'Datos actualizados', `${allData.length} reporte(s) cargado(s)`, 'success');
     } else {
       throw new Error(json.error);
@@ -1656,7 +2138,7 @@ async function loadData() {
     showToast('⚠️', 'Error al cargar', err.message || 'Verifica la conexión', 'error');
     loadDemoData();
   }
-  
+
   overlay.classList.add('hidden');
 }
 
@@ -1669,7 +2151,7 @@ function loadDemoData() {
     { ID:'RPT-0005', Nombre:'Pedro Ramírez', 'Cédula':'1143456789', 'Tipo de Riesgo':'Caídas o tropiezos', 'Nivel de Riesgo':'Medio', Observaciones:'Alfombra despegada en entrada', Fecha:'26/03/2026', Hora:'16:45:00', Estado:'No atendido', 'Fecha Atención':'' },
     { ID:'RPT-0006', Nombre:'Luisa Herrera', 'Cédula':'1099887766', 'Tipo de Riesgo':'Extintor vencido o ausente', 'Nivel de Riesgo':'Alto', Observaciones:'Extintor vencido desde enero', Fecha:'25/03/2026', Hora:'10:10:00', Estado:'No atendido', 'Fecha Atención':'' },
   ];
-  
+
   allData = demos;
   filteredData = [...allData];
   updateDashboard();
@@ -1687,16 +2169,15 @@ function updateDashboard() {
   const bajo = allData.filter(r => r['Nivel de Riesgo'] === 'Bajo').length;
   const atendidos = allData.filter(r => r['Estado'] === 'Atendido').length;
   const noAtendidos = total - atendidos;
-  
+
   document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-alto').textContent = alto;
+  document.getElementById('stat-alto').textContent  = alto;
   document.getElementById('stat-medio').textContent = medio;
-  document.getElementById('stat-bajo').textContent = bajo;
-  
-  // Chart: Estado
+  document.getElementById('stat-bajo').textContent  = bajo;
+
   const pctAtendidos = total ? Math.round(atendidos / total * 100) : 0;
   const pctNo = 100 - pctAtendidos;
-  
+
   document.getElementById('chartEstado').innerHTML = `
     <div class="progress-bar">
       <div class="progress-bar-header">
@@ -1744,20 +2225,16 @@ function updateDashboard() {
       </div>
     </div>
   `;
-  
-  // Chart: Tipos de riesgo
+
   const tipoCount = {};
   allData.forEach(r => {
     const t = r['Tipo de Riesgo'] || 'N/A';
     tipoCount[t] = (tipoCount[t] || 0) + 1;
   });
-  
-  const sortedTipos = Object.entries(tipoCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6);
-  
+
+  const sortedTipos = Object.entries(tipoCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
   const maxTipo = sortedTipos[0]?.[1] || 1;
-  
+
   document.getElementById('chartTipos').innerHTML = sortedTipos.map(([tipo, count]) => `
     <div class="progress-bar">
       <div class="progress-bar-header">
@@ -1769,8 +2246,7 @@ function updateDashboard() {
       </div>
     </div>
   `).join('') || '<div style="color:var(--text-dim);font-size:13px">Sin datos</div>';
-  
-  // Últimos 10 en dashboard
+
   const last10 = [...allData].slice(-10).reverse();
   document.getElementById('dashboardTableBody').innerHTML = last10.length > 0
     ? last10.map(r => `
@@ -1791,9 +2267,7 @@ function updateDashboard() {
 function renderReportsTable(data) {
   const tbody = document.getElementById('reportsTableBody');
   document.getElementById('reportsCount').textContent = `${data.length} reporte(s)`;
-  
-  const noAtendidos = data.filter(r => r.Estado !== 'Atendido').length;
-  
+
   if (data.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -1807,9 +2281,9 @@ function renderReportsTable(data) {
     renderReportCards(data);
     return;
   }
-  
+
   tbody.innerHTML = data.map(r => `
-    <tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}" 
+    <tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}"
         onclick="openModal('${(r.ID || '').replace(/'/g,"\\'")}')">
       <td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td>
       <td class="td-truncate">${r.Nombre || '—'}</td>
@@ -1821,7 +2295,7 @@ function renderReportsTable(data) {
       <td style="font-size:12px">${formatHora(r.Hora)}</td>
       <td>${estadoBadge(r.Estado)}</td>
       <td onclick="event.stopPropagation()">
-        <button class="btn-attend" 
+        <button class="btn-attend"
                 ${r.Estado === 'Atendido' ? 'disabled' : ''}
                 onclick="markAttended('${(r.ID || '').replace(/'/g,"\\'")}')">
           ${r.Estado === 'Atendido' ? '✓ Atendido' : '+ Atender'}
@@ -1837,29 +2311,24 @@ function renderReportsTable(data) {
 // ============================================================
 function formatFecha(val) {
   if (!val) return '—';
-  // Si ya es un objeto Date
   if (val instanceof Date && !isNaN(val.getTime())) {
     const day   = String(val.getDate()).padStart(2, '0');
     const month = String(val.getMonth() + 1).padStart(2, '0');
     return `${day}/${month}/${val.getFullYear()}`;
   }
   const s = String(val).trim();
-  // Ya está en formato dd/mm/yyyy
   if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
-  // Intentar parsear como objeto Date (cubre "Sun Mar 29 2026 ...", ISO, etc.)
   const d = new Date(s);
   if (!isNaN(d.getTime())) {
     const day   = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year  = d.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${day}/${month}/${d.getFullYear()}`;
   }
   return s;
 }
 
 function formatHora(val) {
   if (!val) return '—';
-  // Si ya es un objeto Date
   if (val instanceof Date && !isNaN(val.getTime())) {
     let h = val.getHours();
     const m = String(val.getMinutes()).padStart(2, '0');
@@ -1868,9 +2337,7 @@ function formatHora(val) {
     return `${h}:${m} ${ampm}`;
   }
   const s = String(val).trim();
-  // Ya está en formato h:mm am/pm
   if (/^\d{1,2}:\d{2}\s*(am|pm)$/i.test(s)) return s.toLowerCase();
-  // Formato HH:MM:SS o HH:MM → convertir a 12h
   const timeMatch = s.match(/(\d{1,2}):(\d{2})(?::\d{2})?/);
   if (timeMatch) {
     let h = parseInt(timeMatch[1], 10);
@@ -1879,7 +2346,6 @@ function formatHora(val) {
     h = h % 12 || 12;
     return `${h}:${m} ${ampm}`;
   }
-  // Intentar parsear como Date completo (cubre "Sun Mar 29 2026 08:30:00 GMT...")
   const d = new Date(s);
   if (!isNaN(d.getTime())) {
     let h = d.getHours();
@@ -1894,19 +2360,14 @@ function formatHora(val) {
 function formatFechaAtencion(val) {
   if (!val) return '—';
   const s = String(val).trim();
-  // Ya está en formato dd/mm/yyyy HH:MM
   if (/^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}/.test(s)) {
     const parts = s.split(/\s+/);
     return `${parts[0]} ${formatHora(parts[1])}`;
   }
-  // Intentar parsear como Date (cubre formato largo GMT)
   const d = new Date(s);
-  if (!isNaN(d.getTime())) {
-    return `${formatFecha(d)} ${formatHora(d)}`;
-  }
+  if (!isNaN(d.getTime())) return `${formatFecha(d)} ${formatHora(d)}`;
   return s;
 }
-
 
 function nivelBadge(nivel) {
   const cls = nivel === 'Alto' ? 'badge-alto' : nivel === 'Medio' ? 'badge-medio' : 'badge-bajo';
@@ -1923,30 +2384,30 @@ function estadoBadge(estado) {
 // ============================================================
 function applyFilters() {
   const nombre = document.getElementById('filterNombre').value.toLowerCase();
-  const nivel = document.getElementById('filterNivel').value;
+  const nivel  = document.getElementById('filterNivel').value;
   const estado = document.getElementById('filterEstado').value;
-  const fecha = document.getElementById('filterFecha').value;
-  
+  const fecha  = document.getElementById('filterFecha').value;
+
   filteredData = allData.filter(r => {
-    const matchNombre = !nombre || 
+    const matchNombre = !nombre ||
       (r.Nombre || '').toLowerCase().includes(nombre) ||
       (r['Cédula'] || '').toString().includes(nombre);
-    const matchNivel = !nivel || r['Nivel de Riesgo'] === nivel;
+    const matchNivel  = !nivel  || r['Nivel de Riesgo'] === nivel;
     const matchEstado = !estado || r.Estado === estado;
-    const matchFecha = !fecha || (r.Fecha || '').includes(
+    const matchFecha  = !fecha  || (r.Fecha || '').includes(
       new Date(fecha).toLocaleDateString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric'})
     );
     return matchNombre && matchNivel && matchEstado && matchFecha;
   });
-  
+
   renderReportsTable(filteredData);
 }
 
 function clearFilters() {
   document.getElementById('filterNombre').value = '';
-  document.getElementById('filterNivel').value = '';
+  document.getElementById('filterNivel').value  = '';
   document.getElementById('filterEstado').value = '';
-  document.getElementById('filterFecha').value = '';
+  document.getElementById('filterFecha').value  = '';
   filteredData = [...allData];
   renderReportsTable(filteredData);
 }
@@ -1957,13 +2418,13 @@ function clearFilters() {
 function sortBy(col) {
   if (currentSort.col === col) currentSort.dir *= -1;
   else { currentSort.col = col; currentSort.dir = 1; }
-  
+
   filteredData.sort((a, b) => {
     const va = a[col] || '';
     const vb = b[col] || '';
     return va.localeCompare(vb) * currentSort.dir;
   });
-  
+
   renderReportsTable(filteredData);
 }
 
@@ -1972,22 +2433,19 @@ function sortBy(col) {
 // ============================================================
 async function markAttended(id) {
   if (!id) return;
-  
-  // Update local
   const item = allData.find(r => r.ID === id);
   if (!item) return;
-  
+
   item.Estado = 'Atendido';
   item['Fecha Atención'] = new Date().toLocaleDateString('es-CO') + ' ' + new Date().toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit'});
-  
+
   filteredData = filteredData.map(r => r.ID === id ? item : r);
-  
+
   renderReportsTable(filteredData);
   updateDashboard();
   updatePendingBadge();
   closeModalDirect();
-  
-  // Sync with server
+
   if (scriptUrl) {
     try {
       await fetch(`${scriptUrl}?action=updateStatus&id=${encodeURIComponent(id)}`);
@@ -2014,9 +2472,8 @@ function updatePendingBadge() {
 function openModal(id) {
   const report = allData.find(r => r.ID === id);
   if (!report) return;
-  
   currentModalId = id;
-  
+
   const fields = [
     ['ID del Reporte', report.ID],
     ['Nombre', report.Nombre],
@@ -2029,18 +2486,18 @@ function openModal(id) {
     ['Estado', report.Estado],
     ['Fecha de Atención', formatFechaAtencion(report['Fecha Atención'])],
   ];
-  
+
   document.getElementById('modalBody').innerHTML = fields.map(([label, val]) => `
     <div class="modal-field">
       <div class="modal-label">${label}</div>
       <div class="modal-value">${val || '—'}</div>
     </div>`).join('');
-  
+
   const attendBtn = document.getElementById('modalAttendBtn');
   attendBtn.disabled = report.Estado === 'Atendido';
   attendBtn.textContent = report.Estado === 'Atendido' ? '✓ Ya atendido' : '✓ Marcar como Atendido';
   attendBtn.onclick = () => markAttended(id);
-  
+
   document.getElementById('modalBackdrop').classList.add('show');
 }
 
@@ -2066,82 +2523,22 @@ function exportExcel() {
 
   const data = filteredData.length > 0 ? filteredData : allData;
   const cols  = ['ID','Nombre','Cédula','Tipo de Riesgo','Nivel de Riesgo','Observaciones','Fecha','Hora','Estado','Fecha Atención'];
-  const TOTAL_COLS = cols.length; // 10
+  const TOTAL_COLS = cols.length;
 
-  // ── Estilos reutilizables ──────────────────────────────────
   const S = {
-    // Fila 1 — título corporativo (azul oscuro, texto blanco, negrita, grande)
-    title: {
-      font: { name: 'Calibri', sz: 16, bold: true, color: { rgb: 'FFFFFF' } },
-      fill: { fgColor: { rgb: '1B3A8C' } },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: {}
-    },
-    // Fila 2 — subtítulo "Generado:"
-    subtitle: {
-      font: { name: 'Calibri', sz: 10, italic: true, color: { rgb: 'FFFFFF' } },
-      fill: { fgColor: { rgb: '2E5FD9' } },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: {}
-    },
-    // Fila 3 — vacía con color de acento
-    accent: {
-      fill: { fgColor: { rgb: '5B8DEF' } },
-      border: {}
-    },
-    // Fila 4 — encabezados de columna
-    header: {
-      font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
-      fill: { fgColor: { rgb: '1B3A8C' } },
-      alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
-      border: {
-        top:    { style: 'thin', color: { rgb: '5B8DEF' } },
-        bottom: { style: 'thin', color: { rgb: '5B8DEF' } },
-        left:   { style: 'thin', color: { rgb: '5B8DEF' } },
-        right:  { style: 'thin', color: { rgb: '5B8DEF' } }
-      }
-    },
-    // Filas de datos — par
-    dataEven: {
-      font: { name: 'Calibri', sz: 10, color: { rgb: '1F2937' } },
-      fill: { fgColor: { rgb: 'EEF2FF' } },
-      alignment: { vertical: 'center', wrapText: false },
-      border: {
-        bottom: { style: 'hair', color: { rgb: 'D1D5DB' } },
-        right:  { style: 'hair', color: { rgb: 'D1D5DB' } }
-      }
-    },
-    // Filas de datos — impar
-    dataOdd: {
-      font: { name: 'Calibri', sz: 10, color: { rgb: '1F2937' } },
-      fill: { fgColor: { rgb: 'FFFFFF' } },
-      alignment: { vertical: 'center', wrapText: false },
-      border: {
-        bottom: { style: 'hair', color: { rgb: 'D1D5DB' } },
-        right:  { style: 'hair', color: { rgb: 'D1D5DB' } }
-      }
-    },
-    // Estado: Atendido
-    atendido: {
-      font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: '065F46' } },
-      fill: { fgColor: { rgb: 'D1FAE5' } },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: { bottom: { style: 'hair', color: { rgb: 'D1D5DB' } } }
-    },
-    // Estado: No atendido
-    noAtendido: {
-      font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: '991B1B' } },
-      fill: { fgColor: { rgb: 'FEE2E2' } },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: { bottom: { style: 'hair', color: { rgb: 'D1D5DB' } } }
-    },
-    // Nivel de riesgo
-    nivelAlto:  { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'991B1B'} }, fill:{fgColor:{rgb:'FEE2E2'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
-    nivelMedio: { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'92400E'} }, fill:{fgColor:{rgb:'FEF3C7'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
-    nivelBajo:  { font: { name:'Calibri', sz:10, bold:true, color:{rgb:'065F46'} }, fill:{fgColor:{rgb:'D1FAE5'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    title:    { font:{name:'Calibri',sz:16,bold:true,color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'1B3A8C'}}, alignment:{horizontal:'center',vertical:'center'}, border:{} },
+    subtitle: { font:{name:'Calibri',sz:10,italic:true,color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'2E5FD9'}}, alignment:{horizontal:'center',vertical:'center'}, border:{} },
+    accent:   { fill:{fgColor:{rgb:'5B8DEF'}}, border:{} },
+    header:   { font:{name:'Calibri',sz:11,bold:true,color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'1B3A8C'}}, alignment:{horizontal:'center',vertical:'center',wrapText:true}, border:{top:{style:'thin',color:{rgb:'5B8DEF'}},bottom:{style:'thin',color:{rgb:'5B8DEF'}},left:{style:'thin',color:{rgb:'5B8DEF'}},right:{style:'thin',color:{rgb:'5B8DEF'}}} },
+    dataEven: { font:{name:'Calibri',sz:10,color:{rgb:'1F2937'}}, fill:{fgColor:{rgb:'EEF2FF'}}, alignment:{vertical:'center',wrapText:false}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}},right:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    dataOdd:  { font:{name:'Calibri',sz:10,color:{rgb:'1F2937'}}, fill:{fgColor:{rgb:'FFFFFF'}}, alignment:{vertical:'center',wrapText:false}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}},right:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    atendido:   { font:{name:'Calibri',sz:10,bold:true,color:{rgb:'065F46'}}, fill:{fgColor:{rgb:'D1FAE5'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    noAtendido: { font:{name:'Calibri',sz:10,bold:true,color:{rgb:'991B1B'}}, fill:{fgColor:{rgb:'FEE2E2'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    nivelAlto:  { font:{name:'Calibri',sz:10,bold:true,color:{rgb:'991B1B'}}, fill:{fgColor:{rgb:'FEE2E2'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    nivelMedio: { font:{name:'Calibri',sz:10,bold:true,color:{rgb:'92400E'}}, fill:{fgColor:{rgb:'FEF3C7'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
+    nivelBajo:  { font:{name:'Calibri',sz:10,bold:true,color:{rgb:'065F46'}}, fill:{fgColor:{rgb:'D1FAE5'}}, alignment:{horizontal:'center',vertical:'center'}, border:{bottom:{style:'hair',color:{rgb:'D1D5DB'}}} },
   };
 
-  // ── Construir filas ───────────────────────────────────────
   const wsData = [
     ['ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', ...Array(TOTAL_COLS-1).fill('')],
     [`Generado: ${new Date().toLocaleString('es-CO')} | Total: ${data.length} registros`, ...Array(TOTAL_COLS-1).fill('')],
@@ -2156,65 +2553,44 @@ function exportExcel() {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-  // ── Merges ────────────────────────────────────────────────
   ws['!merges'] = [
     { s:{r:0,c:0}, e:{r:0,c:TOTAL_COLS-1} },
     { s:{r:1,c:0}, e:{r:1,c:TOTAL_COLS-1} },
     { s:{r:2,c:0}, e:{r:2,c:TOTAL_COLS-1} },
   ];
 
-  // ── Anchos de columna ─────────────────────────────────────
   ws['!cols'] = [
     {wch:12},{wch:26},{wch:14},{wch:30},{wch:14},
     {wch:36},{wch:14},{wch:10},{wch:14},{wch:18}
   ];
 
-  // ── Alturas de fila ───────────────────────────────────────
   ws['!rows'] = [
-    {hpt:36}, // título
-    {hpt:18}, // subtítulo
-    {hpt:6},  // acento
-    {hpt:22}, // encabezados
+    {hpt:36},{hpt:18},{hpt:6},{hpt:22},
     ...data.map(() => ({hpt:16}))
   ];
 
-  // ── Aplicar estilos celda por celda ──────────────────────
   const toCol = n => { let s=''; do { s=String.fromCharCode(65+n%26)+s; n=Math.floor(n/26)-1; } while(n>=0); return s; };
   const addr  = (r,c) => `${toCol(c)}${r+1}`;
 
-  // Fila 0 — título
   for (let c=0;c<TOTAL_COLS;c++) { const a=addr(0,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.title; }
-
-  // Fila 1 — subtítulo
   for (let c=0;c<TOTAL_COLS;c++) { const a=addr(1,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.subtitle; }
-
-  // Fila 2 — acento
   for (let c=0;c<TOTAL_COLS;c++) { const a=addr(2,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.accent; }
-
-  // Fila 3 — encabezados
   for (let c=0;c<TOTAL_COLS;c++) { const a=addr(3,c); if(!ws[a]) ws[a]={v:'',t:'s'}; ws[a].s=S.header; }
 
-  // Filas de datos
   data.forEach((r, i) => {
-    const row = i + 4;
+    const row  = i + 4;
     const base = i % 2 === 0 ? S.dataEven : S.dataOdd;
     for (let c=0;c<TOTAL_COLS;c++) {
       const a = addr(row,c);
       if (!ws[a]) ws[a] = {v:'',t:'s'};
-      // Columna Nivel de Riesgo (4) → color semáforo
       if (c === 4) {
         const nv = r['Nivel de Riesgo'];
         ws[a].s = nv==='Alto' ? S.nivelAlto : nv==='Medio' ? S.nivelMedio : S.nivelBajo;
         ws[a].s = { ...ws[a].s, alignment:{horizontal:'center',vertical:'center'} };
-      }
-      // Columna Estado (8) → color estado
-      else if (c === 8) {
+      } else if (c === 8) {
         ws[a].s = r.Estado === 'Atendido' ? S.atendido : S.noAtendido;
-      }
-      // Resto → fila alterna
-      else {
+      } else {
         ws[a].s = { ...base };
-        // ID centrado
         if (c===0) ws[a].s = { ...base, alignment:{horizontal:'center',vertical:'center'} };
       }
     }
@@ -2222,7 +2598,6 @@ function exportExcel() {
 
   XLSX.utils.book_append_sheet(wb, ws, 'Reportes SG-SST');
   XLSX.writeFile(wb, `AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.xlsx`);
-
   showToast('📥', 'Excel exportado', `${data.length} reporte(s)`, 'success');
 }
 
@@ -2234,26 +2609,24 @@ function exportPDF() {
     showToast('❌', 'Error', 'Librería jsPDF no disponible', 'error');
     return;
   }
-  
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  
+
   const data = filteredData.length > 0 ? filteredData : allData;
-  
-  // Header
+
   doc.setFillColor(27, 58, 140);
   doc.rect(0, 0, 297, 22, 'F');
-  
+
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', 14, 14);
-  
+
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   doc.text(`Generado: ${new Date().toLocaleString('es-CO')} | Total: ${data.length} registros`, 14, 20);
-  
-  // Tabla
+
   doc.autoTable({
     head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Fecha', 'Estado']],
     body: data.map(r => [
@@ -2271,15 +2644,14 @@ function exportPDF() {
     alternateRowStyles: { fillColor: [245,247,252] },
     didParseCell: (data) => {
       if (data.section === 'body') {
-        const nivel = data.row.raw[4];
+        const nivel  = data.row.raw[4];
         const estado = data.row.raw[6];
         if (estado === 'Atendido') data.cell.styles.fillColor = [200,240,210];
         else if (nivel === 'Alto') data.cell.styles.fillColor = [255,230,230];
       }
     }
   });
-  
-  // Footer
+
   const pageCount = doc.internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
@@ -2287,13 +2659,13 @@ function exportPDF() {
     doc.setTextColor(158,162,162);
     doc.text(`Página ${i} de ${pageCount} | Alarmavision SG-SST`, 14, doc.internal.pageSize.height - 5);
   }
-  
+
   doc.save(`AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.pdf`);
   showToast('📄', 'PDF exportado', `${data.length} reporte(s)`, 'success');
 }
 
 // ============================================================
-// SETTINGS
+// SETTINGS — Google Apps Script
 // ============================================================
 function saveSettings() {
   const url = document.getElementById('settingScriptUrl').value.trim();
@@ -2301,16 +2673,11 @@ function saveSettings() {
     showToast('⚠️', 'URL inválida', 'Pega la URL completa de Google Apps Script', 'error');
     return;
   }
-
-  // Guardar con clave compartida — la app móvil lee la misma clave
   localStorage.setItem('SGSST_SCRIPT_URL', url);
   scriptUrl = url;
-
-  // Feedback visual en el campo
   const field = document.getElementById('settingScriptUrl');
   field.style.borderColor = 'var(--success)';
   setTimeout(() => { field.style.borderColor = ''; }, 2000);
-
   showToast('✅', '¡URL guardada!', 'El panel y la app móvil usarán esta URL automáticamente.', 'success');
   setTimeout(() => loadData(), 1200);
 }
@@ -2352,10 +2719,10 @@ function showToast(icon, title, msg, type = 'info') {
       <div class="toast-title">${title}</div>
       ${msg ? `<div class="toast-msg">${msg}</div>` : ''}
     </div>`;
-  
+
   container.appendChild(toast);
   requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-  
+
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 400);
@@ -2442,8 +2809,8 @@ function renderReportCards(data) {
   }
 
   container.innerHTML = data.map(r => {
-    const nivelCls  = (r['Nivel de Riesgo'] || '').toLowerCase();
-    const atendido  = r.Estado === 'Atendido';
+    const nivelCls = (r['Nivel de Riesgo'] || '').toLowerCase();
+    const atendido = r.Estado === 'Atendido';
     return `
       <div class="report-card${atendido ? ' atendido' : ''}" onclick="openModal('${(r.ID||'').replace(/'/g,"\\'")}')">
         <div class="report-card-accent ${nivelCls}"></div>
@@ -2485,7 +2852,7 @@ function updateMobNav(page) {
 }
 
 // ============================================================
-// BADGE MÓVIL — sincronizar con el badge del sidebar
+// BADGE MÓVIL
 // ============================================================
 function updateMobPendingBadge(count) {
   const badge = document.getElementById('mobPendingBadge');
@@ -2497,7 +2864,7 @@ function updateMobPendingBadge(count) {
 // Auto-refresh cada 100 segundos
 setInterval(() => {
   if (navigator.onLine && scriptUrl) loadData();
-}, 100000);
+}, 1000000);
 </script>
 
 </body>
