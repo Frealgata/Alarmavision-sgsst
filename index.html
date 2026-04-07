@@ -261,7 +261,7 @@
     // ============================================================
     // CONTRASEÑA DINÁMICA
     // Contraseña inicial por defecto. Se sobreescribe con lo
-    // guardado en localStorage por el dashboard (vía GitHub).
+    // leído desde el archivo público de GitHub (settings.json).
     // ============================================================
     const DEFAULT_PASSWORD = "Alarmavision2006";
 
@@ -270,36 +270,25 @@
     }
 
     // ============================================================
-    // CARGAR CONTRASEÑA DESDE GITHUB AL ABRIR LA PÁGINA
-    // Si el dashboard guardó la config de GitHub en localStorage,
-    // se lee el archivo remoto para tener la contraseña más reciente.
+    // CARGAR CONFIGURACIÓN DESDE GITHUB (RAW URL pública, sin token)
+    // La RAW URL la genera el dashboard y se guarda en localStorage.
     // ============================================================
-    async function loadPasswordFromGitHub() {
-      const owner    = localStorage.getItem('gh_owner');
-      const repo     = localStorage.getItem('gh_repo');
-      const filePath = localStorage.getItem('gh_filePath') || 'settings.json';
-      const token    = localStorage.getItem('gh_token');
-
-      if (!owner || !repo || !token) return; // Sin config de GitHub, usar localStorage
+    async function loadConfigFromGitHub() {
+      const rawUrl = localStorage.getItem('SGSST_RAW_URL');
+      if (!rawUrl) return; // Sin URL configurada, usar contraseña local
 
       try {
-        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
-        const res = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/vnd.github+json'
-          }
-        });
+        const res = await fetch(rawUrl + '?t=' + Date.now());
         if (!res.ok) return;
-        const data    = await res.json();
-        const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+        const content = await res.json();
 
-        // Actualizar contraseña en localStorage si viene en el archivo
         if (content.admin_password) {
           localStorage.setItem('SGSST_ADMIN_PASSWORD', content.admin_password);
         }
+        if (content.script_url) {
+          localStorage.setItem('SGSST_SCRIPT_URL', content.script_url);
+        }
       } catch (e) {
-        // Silencioso: si falla GitHub, usa lo que hay en localStorage
         console.warn('No se pudo cargar config remota:', e.message);
       }
     }
@@ -339,9 +328,9 @@
     });
 
     // ============================================================
-    // INICIALIZACIÓN — intentar cargar contraseña desde GitHub
+    // INICIALIZACIÓN
     // ============================================================
-    loadPasswordFromGitHub();
+    loadConfigFromGitHub();
   </script>
 </body>
 </html>
