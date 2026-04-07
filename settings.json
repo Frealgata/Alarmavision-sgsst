@@ -9,7 +9,8 @@
     "Riesgo de incendio",
     "Señalización deficiente",
     "Extintor vencido o ausente",
-    "Salida de emergencia bloqueada"
+    "Salida de emergencia bloqueada",
+    "Puerta"
   ],
   "admin_password": "Alarmavision-2006"
 }
