@@ -1522,24 +1522,24 @@ tbody tr.atendido:hover {
 
         <!-- ── CARD 2: GitHub Config ── -->
         <div class="settings-card">
-          <div class="settings-title">🐙 Configuración de GitHub</div>
-          <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">
-            Conecta con tu repositorio de GitHub para sincronizar la contraseña y la lista de riesgos entre dispositivos. El token y la config se guardan solo en este navegador.
+          <div class="settings-title">🐙 Configuración de GitHub <span id="ghStatusBadge" style="display:none;margin-left:10px;font-size:11px;background:rgba(5,150,105,0.15);color:var(--success);border:1px solid rgba(5,150,105,0.3);border-radius:100px;padding:3px 10px;font-family:'Inter',sans-serif;font-weight:600;vertical-align:middle;">✓ Configurado</span></div>
+          <div style="background:rgba(27,58,140,0.08);border:1px solid rgba(27,58,140,0.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.7;">
+            🔧 <b style="color:var(--text)">Solo se configura una vez aquí.</b> Al guardar, el sistema publica automáticamente el archivo de configuración en GitHub. La App Móvil lo leerá desde cualquier dispositivo usando solo la URL pública que se genera — sin necesidad de ingresar tokens ni credenciales en el celular.
           </div>
           <div class="gh-config-block">
-            <label class="settings-label">Usuario / Organización</label>
+            <label class="settings-label">Usuario / Organización de GitHub</label>
             <input type="text" class="settings-input" id="ghOwner" placeholder="ej: miusuario">
             <label class="settings-label">Nombre del repositorio</label>
             <input type="text" class="settings-input" id="ghRepo" placeholder="ej: alarmavision-sgsst">
-            <label class="settings-label">Ruta del archivo de configuración en el repo</label>
+            <label class="settings-label">Ruta del archivo de configuración</label>
             <input type="text" class="settings-input" id="ghFilePath" placeholder="ej: config/settings.json">
-            <div class="settings-hint" style="margin-top:4px;margin-bottom:10px;">El archivo debe existir en el repo (puede estar vacío: {})</div>
-            <label class="settings-label">Token de acceso personal (PAT)</label>
+            <div class="settings-hint" style="margin-top:4px;margin-bottom:10px;">⚠️ El repositorio debe ser <b>público</b> para que la App Móvil pueda leer el archivo sin autenticación.</div>
+            <label class="settings-label">Token de acceso personal (PAT) — solo se usa aquí en el panel</label>
             <input type="password" class="settings-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-            <div class="settings-hint" style="margin-top:4px;">Necesita permiso <b>repo → Contents (read &amp; write)</b></div>
+            <div class="settings-hint" style="margin-top:4px;">Necesita permiso <b>repo → Contents (read &amp; write)</b>. El token nunca sale del panel admin.</div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="saveGHConfig()">💾 Guardar config GitHub</button>
+            <button class="btn btn-primary" onclick="saveGHConfig()">🚀 Guardar y publicar en GitHub</button>
             <button class="btn btn-outline" onclick="testGHConnection()">🔌 Probar conexión</button>
           </div>
           <div class="save-feedback" id="ghConfigFeedback"></div>
@@ -1548,8 +1548,8 @@ tbody tr.atendido:hover {
         <!-- ── CARD 3: Gestión de lista de riesgos ── -->
         <div class="settings-card">
           <div class="settings-title">📋 Lista de Riesgos (App Móvil)</div>
-          <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">
-            Agrega, edita o elimina los riesgos que aparecen en el selector de la app móvil. Guarda en GitHub para sincronizar todos los dispositivos.
+          <div style="background:rgba(27,58,140,0.08);border:1px solid rgba(27,58,140,0.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.6;">
+            ⚡ <b style="color:var(--text)">Sincronización automática:</b> cada vez que agregues, edites o elimines un riesgo se guarda automáticamente en GitHub y la App Móvil lo verá al recargar.
           </div>
 
           <ul class="risks-list-admin" id="risksListAdmin"></ul>
@@ -1562,8 +1562,8 @@ tbody tr.atendido:hover {
           </div>
 
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="saveRisksToGitHub()">💾 Guardar en GitHub</button>
-            <button class="btn btn-outline" onclick="renderRisksAdmin()">↺ Recargar lista</button>
+            <button class="btn btn-primary" onclick="saveRisksToGitHub()">💾 Forzar guardado en GitHub</button>
+            <button class="btn btn-outline" onclick="loadRisksFromGitHubAdmin()">☁️ Cargar desde GitHub</button>
           </div>
           <div class="save-feedback" id="risksFeedback"></div>
         </div>
@@ -1754,12 +1754,113 @@ function getGHConfig() {
   };
 }
 
-function saveGHConfig() {
-  localStorage.setItem('gh_owner',    document.getElementById('ghOwner').value.trim());
-  localStorage.setItem('gh_repo',     document.getElementById('ghRepo').value.trim());
-  localStorage.setItem('gh_filePath', document.getElementById('ghFilePath').value.trim() || 'config/settings.json');
-  localStorage.setItem('gh_token',    document.getElementById('ghToken').value.trim());
-  setFeedback('ghConfigFeedback', '✅ Configuración de GitHub guardada en este navegador', 'ok');
+async function saveGHConfig() {
+  const owner    = document.getElementById('ghOwner').value.trim();
+  const repo     = document.getElementById('ghRepo').value.trim();
+  const filePath = document.getElementById('ghFilePath').value.trim() || 'config/settings.json';
+  const token    = document.getElementById('ghToken').value.trim();
+
+  if (!owner || !repo || !token) {
+    setFeedback('ghConfigFeedback', '❌ Completa todos los campos antes de guardar', 'err'); return;
+  }
+
+  localStorage.setItem('gh_owner',    owner);
+  localStorage.setItem('gh_repo',     repo);
+  localStorage.setItem('gh_filePath', filePath);
+  localStorage.setItem('gh_token',    token);
+
+  // Calcular URL raw pública (sin token) — la usará el móvil
+  const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${filePath}`;
+  localStorage.setItem('SGSST_RAW_URL', rawUrl);
+
+  setFeedback('ghConfigFeedback', '⏳ Guardando configuración inicial en GitHub…', '');
+
+  // Publicar el archivo en GitHub con la configuración base
+  try {
+    const risks = getRisks();
+    const adminPwd = getAdminPassword();
+    const scriptUrlVal = localStorage.getItem('SGSST_SCRIPT_URL') || '';
+
+    // Contenido completo del archivo settings.json
+    const newContent = {
+      raw_url:        rawUrl,
+      admin_password: adminPwd,
+      script_url:     scriptUrlVal,
+      risks:          risks
+    };
+
+    // Intentar leer SHA existente
+    let sha = null;
+    try {
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+      const res = await fetch(apiUrl, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        sha = data.sha;
+      }
+    } catch(e) { /* archivo no existe aún */ }
+
+    // Escribir archivo en GitHub
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+    const body = {
+      message: 'Alarmavision: configuración inicial del sistema',
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(newContent, null, 2))))
+    };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const e = await res.json().catch(()=>({}));
+      throw new Error(e.message || `HTTP ${res.status}`);
+    }
+
+    // Mostrar la RAW URL para que el admin la configure en la app móvil
+    showRawUrlBanner(rawUrl);
+    setFeedback('ghConfigFeedback', '✅ GitHub configurado. Copia la URL de abajo y pégala en la App Móvil.', 'ok');
+    showToast('✅', 'GitHub configurado', 'El archivo settings.json fue creado/actualizado', 'success');
+
+  } catch(err) {
+    setFeedback('ghConfigFeedback', `❌ Error al escribir en GitHub: ${err.message}`, 'err');
+    showToast('❌', 'Error GitHub', err.message, 'error');
+  }
+}
+
+function showRawUrlBanner(rawUrl) {
+  let banner = document.getElementById('rawUrlBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'rawUrlBanner';
+    banner.style.cssText = 'margin-top:14px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.35);border-radius:8px;padding:14px 16px;font-size:13px;';
+    document.getElementById('ghConfigFeedback').after(banner);
+  }
+  banner.innerHTML = `
+    <div style="font-weight:600;color:var(--success);margin-bottom:8px;">📋 URL pública para la App Móvil:</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <code id="rawUrlText" style="flex:1;background:var(--surface3);border-radius:6px;padding:8px 10px;font-size:12px;word-break:break-all;color:var(--text);">${rawUrl}</code>
+      <button onclick="copyRawUrl()" style="flex-shrink:0;background:var(--blue);border:none;border-radius:6px;padding:8px 12px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Rajdhani',sans-serif;">Copiar</button>
+    </div>
+    <div style="margin-top:8px;font-size:11.5px;color:var(--text-dim);">
+      Pega esta URL en la App Móvil → sección <b>Configuración</b> → campo <b>URL de configuración</b>. Solo se hace una vez.
+    </div>`;
+}
+
+function copyRawUrl() {
+  const url = document.getElementById('rawUrlText')?.textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('📋', 'URL copiada', 'Pégala en la App Móvil', 'success');
+  });
 }
 
 function loadGHConfigToForm() {
@@ -1768,6 +1869,14 @@ function loadGHConfigToForm() {
   document.getElementById('ghRepo').value     = cfg.repo;
   document.getElementById('ghFilePath').value = cfg.filePath;
   document.getElementById('ghToken').value    = cfg.token;
+
+  // Si ya está configurado, mostrar badge y RAW URL
+  if (cfg.owner && cfg.repo && cfg.token) {
+    const badge = document.getElementById('ghStatusBadge');
+    if (badge) badge.style.display = 'inline-flex';
+    const rawUrl = localStorage.getItem('SGSST_RAW_URL');
+    if (rawUrl) showRawUrlBanner(rawUrl);
+  }
 }
 
 async function ghGetFile() {
@@ -1982,6 +2091,7 @@ function startEditRisk(idx, span, editBtn, deleteBtn) {
     risks[idx] = val;
     setRisks(risks);
     renderRisksAdmin();
+    saveRisksToGitHub();
   };
 
   input.onkeydown = (e) => {
@@ -2002,6 +2112,7 @@ function deleteRisk(idx) {
   risks.splice(idx, 1);
   setRisks(risks);
   renderRisksAdmin();
+  saveRisksToGitHub();
 }
 
 function addRisk() {
@@ -2013,6 +2124,26 @@ function addRisk() {
   setRisks(risks);
   input.value = '';
   renderRisksAdmin();
+  saveRisksToGitHub();
+}
+
+// ============================================================
+// CARGAR RIESGOS DESDE GITHUB → dashboard (botón "Cargar desde GitHub")
+// ============================================================
+async function loadRisksFromGitHubAdmin() {
+  setFeedback('risksFeedback', '⏳ Cargando desde GitHub…', '');
+  try {
+    const { content } = await ghGetFile();
+    if (Array.isArray(content.risks) && content.risks.length > 0) {
+      setRisks(content.risks);
+      renderRisksAdmin();
+      setFeedback('risksFeedback', `✅ ${content.risks.length} riesgo(s) cargados desde GitHub`, 'ok');
+    } else {
+      setFeedback('risksFeedback', '⚠️ No hay lista de riesgos en el archivo de GitHub', 'err');
+    }
+  } catch(err) {
+    setFeedback('risksFeedback', `❌ Error: ${err.message}`, 'err');
+  }
 }
 
 // ============================================================
@@ -2667,7 +2798,7 @@ function exportPDF() {
 // ============================================================
 // SETTINGS — Google Apps Script
 // ============================================================
-function saveSettings() {
+async function saveSettings() {
   const url = document.getElementById('settingScriptUrl').value.trim();
   if (!url || !url.startsWith('https://script.google.com')) {
     showToast('⚠️', 'URL inválida', 'Pega la URL completa de Google Apps Script', 'error');
@@ -2675,10 +2806,28 @@ function saveSettings() {
   }
   localStorage.setItem('SGSST_SCRIPT_URL', url);
   scriptUrl = url;
+
   const field = document.getElementById('settingScriptUrl');
   field.style.borderColor = 'var(--success)';
   setTimeout(() => { field.style.borderColor = ''; }, 2000);
-  showToast('✅', '¡URL guardada!', 'El panel y la app móvil usarán esta URL automáticamente.', 'success');
+
+  // También guardar script_url en GitHub para que el móvil lo use
+  const cfg = getGHConfig();
+  if (cfg.owner && cfg.repo && cfg.token) {
+    try {
+      let sha = null, currentContent = {};
+      try { const r = await ghGetFile(); sha = r.sha; currentContent = r.content; } catch(e) { if (!e.message.includes('404')) throw e; }
+      const newContent = { ...currentContent, script_url: url };
+      if (sha) { await ghPutFile(newContent, sha, 'Alarmavision: actualización URL de script'); }
+      else { await ghCreateFile(newContent, 'Alarmavision: configuración inicial'); }
+      showToast('✅', '¡URL guardada!', 'Panel, app móvil y GitHub actualizados.', 'success');
+    } catch(e) {
+      showToast('✅', '¡URL guardada localmente!', 'No se pudo sincronizar con GitHub: ' + e.message, 'info');
+    }
+  } else {
+    showToast('✅', '¡URL guardada!', 'Configura GitHub para sincronizar con la app móvil.', 'success');
+  }
+
   setTimeout(() => loadData(), 1200);
 }
 
@@ -2864,7 +3013,7 @@ function updateMobPendingBadge(count) {
 // Auto-refresh cada 100 segundos
 setInterval(() => {
   if (navigator.onLine && scriptUrl) loadData();
-}, 1000000);
+}, 100000);
 </script>
 
 </body>
