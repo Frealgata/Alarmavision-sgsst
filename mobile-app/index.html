@@ -749,11 +749,20 @@ const SCRIPT_URL = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 // RIESGOS — lista dinámica (sincronizada por el dashboard)
 // ============================================================
 const DEFAULT_RISKS = [
-  //"Daño en silla","Daño en módulo de trabajo","Cableado en mal estado",
- // "Iluminación deficiente","Riesgo eléctrico","Caídas o tropiezos",
-  //"Riesgo de incendio","Señalización deficiente","Extintor vencido o ausente",
-  //"Salida de emergencia bloqueada","Otros"
+  "Daño en silla","Daño en módulo de trabajo","Cableado en mal estado",
+  "Iluminación deficiente","Riesgo eléctrico","Caídas o tropiezos",
+  "Riesgo de incendio","Señalización deficiente","Extintor vencido o ausente",
+  "Salida de emergencia bloqueada","Otros"
 ];
+
+// ============================================================
+// RAW URL — única configuración del móvil
+// El admin del dashboard la obtiene al guardar GitHub Config
+// y se la pasa al móvil una sola vez.
+// ============================================================
+function getRawUrl() {
+  return localStorage.getItem('SGSST_RAW_URL') || '';
+}
 
 function getRisks() {
   const saved = localStorage.getItem('SGSST_RISKS');
@@ -761,7 +770,7 @@ function getRisks() {
   return [...DEFAULT_RISKS];
 }
 
-// Carga la lista actual (localStorage o default) en el select — respaldo inmediato
+// Carga lista en el select (desde caché local — instantáneo)
 function loadRisksIntoSelect() {
   const select = document.getElementById('tipoRiesgo');
   const risks  = getRisks();
@@ -774,57 +783,86 @@ function loadRisksIntoSelect() {
   });
 }
 
-// Fuente primaria: siempre consulta GitHub al cargar
-// Si tiene config → lee el JSON remoto, actualiza localStorage y recarga el select
-// Si no tiene config o falla → usa localStorage (que puede tener lista anterior)
+// Fuente de verdad: lee el JSON público de GitHub (sin token)
+// Solo necesita la RAW URL pública.
 async function loadRisksFromGitHub() {
-  const owner    = localStorage.getItem('gh_owner');
-  const repo     = localStorage.getItem('gh_repo');
-  const filePath = localStorage.getItem('gh_filePath') || 'settings.json';
-  const token    = localStorage.getItem('gh_token');
-
-  // Mostrar indicador de carga en el select mientras se consulta GitHub
+  const rawUrl = getRawUrl();
   const select = document.getElementById('tipoRiesgo');
-  if (owner && repo && token) {
-    select.innerHTML = '<option value="">⏳ Cargando lista actualizada…</option>';
-    select.disabled = true;
+
+  if (!rawUrl) {
+    // Sin URL configurada: usar lista local y mostrar aviso
+    loadRisksIntoSelect();
+    showConfigBanner();
+    return;
   }
 
+  select.innerHTML = '<option value="">⏳ Cargando lista…</option>';
+  select.disabled = true;
+
   try {
-    if (!owner || !repo || !token) {
-      // Sin config de GitHub: usar localStorage directamente
-      loadRisksIntoSelect();
-      return;
-    }
+    // Añadir timestamp para evitar caché del navegador
+    const res = await fetch(rawUrl + '?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const content = await res.json();
 
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
-    const res = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
-    });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const data    = await res.json();
-    const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
-
-    // Actualizar riesgos en localStorage y en el select
     if (Array.isArray(content.risks) && content.risks.length > 0) {
       localStorage.setItem('SGSST_RISKS', JSON.stringify(content.risks));
     }
-    // Actualizar contraseña si viene en el archivo
     if (content.admin_password) {
       localStorage.setItem('SGSST_ADMIN_PASSWORD', content.admin_password);
     }
-
+    if (content.script_url) {
+      localStorage.setItem('SGSST_SCRIPT_URL', content.script_url);
+    }
     loadRisksIntoSelect();
+    hideConfigBanner();
 
   } catch(e) {
-    console.warn('No se pudieron cargar datos desde GitHub, usando lista local:', e.message);
-    // Fallback: usar lo que hay en localStorage (puede ser la lista anterior)
+    console.warn('GitHub no disponible, usando caché local:', e.message);
     loadRisksIntoSelect();
   } finally {
     select.disabled = false;
   }
+}
+
+// Banner de configuración — solo aparece si no hay RAW URL guardada
+function showConfigBanner() {
+  if (document.getElementById('configBanner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'configBanner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:500;background:#1B3A8C;color:#fff;padding:12px 16px;font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;';
+  banner.innerHTML = `
+    <span style="flex:1;min-width:180px;">⚙️ <b>Configuración inicial requerida.</b> Pega la URL de configuración que te dio el administrador.</span>
+    <div style="display:flex;gap:6px;align-items:center;flex:1;min-width:200px;">
+      <input id="rawUrlInputMob" type="url" placeholder="https://raw.githubusercontent.com/..."
+        style="flex:1;padding:7px 10px;border-radius:6px;border:none;font-size:12px;font-family:'Inter',sans-serif;color:#111;outline:none;">
+      <button onclick="saveRawUrlMob()" style="padding:7px 12px;background:#2E5FD9;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;">
+        Guardar
+      </button>
+    </div>`;
+  document.body.prepend(banner);
+  // Ajustar padding del contenido para que no tape el header
+  const wrapper = document.querySelector('.app-wrapper');
+  if (wrapper) wrapper.style.paddingTop = '60px';
+}
+
+function hideConfigBanner() {
+  const banner = document.getElementById('configBanner');
+  if (banner) banner.remove();
+  const wrapper = document.querySelector('.app-wrapper');
+  if (wrapper) wrapper.style.paddingTop = '';
+}
+
+function saveRawUrlMob() {
+  const val = document.getElementById('rawUrlInputMob')?.value.trim();
+  if (!val || !val.startsWith('https://raw.githubusercontent.com')) {
+    showToast('⚠️', 'URL inválida', 'Debe empezar con https://raw.githubusercontent.com', 'error');
+    return;
+  }
+  localStorage.setItem('SGSST_RAW_URL', val);
+  hideConfigBanner();
+  showToast('✅', 'URL guardada', 'Cargando configuración…', 'success');
+  loadRisksFromGitHub();
 }
 
 // ============================================================
@@ -849,11 +887,11 @@ window.addEventListener('load', () => {
   
   updateOnlineStatus();
   renderHistory();
-  // Primero cargar lista local inmediatamente (para no tener select vacío)
+  // 1) Cargar lista local inmediatamente (sin esperar red)
   loadRisksIntoSelect();
-  // Luego consultar GitHub para tener la lista más actualizada
+  // 2) Consultar GitHub para actualizar (incluye riesgos, contraseña y script_url)
   loadRisksFromGitHub();
-  // Intentar sincronizar pendientes al arrancar
+  // 3) Sincronizar reportes pendientes
   if (navigator.onLine) setTimeout(() => syncPending(), 2000);
 });
 
@@ -861,8 +899,7 @@ window.addEventListener('online', () => {
   isOnline = true;
   updateOnlineStatus();
   syncPending();
-  // Al recuperar conexión, recargar la lista actualizada desde GitHub
-  loadRisksFromGitHub();
+  loadRisksFromGitHub(); // Actualizar lista al recuperar conexión
 });
 
 window.addEventListener('offline', () => {
