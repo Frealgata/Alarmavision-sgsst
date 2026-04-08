@@ -1,919 +1,1059 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<meta name="theme-color" content="#1B3A8C">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Alarmavision SG-SST — Reporte de Riesgos</title>
-<link rel="manifest" href="manifest-movil.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1B3A8C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SG-SST">
+  <title>Alarmavision SG-SST — Reporte de Riesgos</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="../shared/icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+  <style>
 :root {
-  --blue: #1B3A8C;
-  --blue-light: #2E5FD9;
-  --blue-dim: rgba(27,58,140,0.1);
-  --gray: #6B7280;
-  --gray-dark: #374151;
-  --bg: #F3F4F6;
-  --surface: #FFFFFF;
-  --surface2: #F9FAFB;
-  --border: #E5E7EB;
-  --text: #111827;
-  --text-dim: #6B7280;
-  --success: #059669;
-  --danger: #DC2626;
-  --warning: #D97706;
-  --radius: 12px;
-  --radius-sm: 8px;
+  --blue:        #1B3A8C;
+  --blue-mid:    #2352C8;
+  --blue-light:  #3B6FE8;
+  --blue-tint:   #EEF3FB;
+  --blue-glow:   rgba(27,58,140,0.12);
+  --gray-brand:  #4B5563;
+  --gray-dark:   #374151;
+  --gray-light:  #9CA3AF;
+  --bg:          #F0F4F8;
+  --surface:     #FFFFFF;
+  --surface2:    #F7F9FC;
+  --border:      #D9E2EE;
+  --border2:     #E8EDF5;
+  --text:        #0F1E36;
+  --text-dim:    #5A6A80;
+  --success:     #059669;
+  --danger:      #DC2626;
+  --warning:     #D97706;
+  --radius:      10px;
+  --radius-sm:   7px;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
   background: var(--bg);
   color: var(--text);
-  padding-bottom: 80px;
-  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
 .app-header {
-  background: var(--blue);
-  padding: 20px 16px 16px;
-  color: white;
+  background: var(--surface);
+  border-bottom: 2px solid var(--blue);
+  padding: 13px 18px 11px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px rgba(27,58,140,0.08);
 }
 
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.logo-icon {
-  width: 36px;
-  height: 36px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.logo-text {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.logo-text span {
-  font-weight: 400;
-  opacity: 0.9;
-}
-
-.online-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,0.15);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-}
-
-.online-dot {
-  width: 8px;
-  height: 8px;
-  background: #4ade80;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
+.header-logos { display: flex; align-items: center; gap: 10px; }
+.logo-img { height: 42px; width: 42px; object-fit: contain; border-radius: 6px; }
+.logo-sgsst { height: 38px; width: 38px; object-fit: contain; border-radius: 6px; }
+.divider-v { width: 1px; height: 30px; background: var(--border); }
+.header-info { flex: 1; }
 
 .header-title {
-  font-size: 22px;
-  font-weight: 700;
   font-family: 'Rajdhani', sans-serif;
-  margin-bottom: 4px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
 }
+.header-title span  { color: var(--gray-brand); }
+.header-title span1 { color: var(--blue); }
 
-.header-sub {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.container {
-  padding: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.config-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  border: 1px solid var(--border);
-}
-
-.config-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.config-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  background: var(--surface2);
-  margin-bottom: 12px;
-}
-
-.config-input:focus {
-  outline: none;
-  border-color: var(--blue-light);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-  width: 100%;
-}
-
-.btn-primary {
-  background: var(--blue);
-  color: white;
-}
-
-.btn-primary:active {
-  background: var(--blue-light);
-  transform: scale(0.98);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
+.header-subtitle {
+  font-size: 10.5px;
   color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 1px;
 }
 
-.btn-outline:active {
-  background: var(--surface2);
-}
-
-.btn-success {
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
   background: var(--success);
-  color: white;
+  box-shadow: 0 0 7px var(--success);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+  flex-shrink: 0;
 }
+.status-dot.offline { background: var(--gray-light); box-shadow: none; animation: none; }
+@keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
 
-.btn-success:active {
-  opacity: 0.9;
-  transform: scale(0.98);
-}
-
-.btn-refresh {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--blue);
-  width: auto;
-  padding: 8px 16px;
-  font-size: 12px;
-}
-
-.form-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  border: 1px solid var(--border);
-}
-
-.form-title {
-  font-size: 18px;
-  font-weight: 700;
-  font-family: 'Rajdhani', sans-serif;
-  margin-bottom: 16px;
-  color: var(--text);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-dim);
-  margin-bottom: 6px;
-}
-
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  background: var(--surface2);
-  transition: border-color 0.2s;
-}
-
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none;
-  border-color: var(--blue-light);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.risk-select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-}
-
-.radio-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.radio-option {
-  flex: 1;
-  position: relative;
-}
-
-.radio-option input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 12px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.radio-option input:checked + .radio-label {
-  border-color: var(--blue-light);
-  background: var(--blue-dim);
-  color: var(--blue);
-}
-
-.btn-submit {
-  background: var(--blue);
-  color: white;
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 700;
-  margin-top: 8px;
-}
-
-.btn-submit:active {
-  transform: scale(0.98);
-}
-
-.status-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-}
-
-.empty-risks {
-  text-align: center;
-  padding: 40px 20px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-
-.empty-risks-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  opacity: 0.5;
-}
-
-.empty-risks-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.empty-risks-text {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 16px;
-}
-
-.toast-container {
-  position: fixed;
-  bottom: 20px;
-  left: 16px;
-  right: 16px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.toast {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-left: 4px solid;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transform: translateY(100px);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.toast.show {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.toast.success { border-left-color: var(--success); }
-.toast.error { border-left-color: var(--danger); }
-.toast.info { border-left-color: var(--blue); }
-.toast.warning { border-left-color: var(--warning); }
-
-.toast-icon { font-size: 20px; }
-.toast-body { flex: 1; }
-.toast-title { font-weight: 600; font-size: 14px; }
-.toast-msg { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
+/* ── LOADING RIESGOS ── */
+.risks-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  gap: 14px;
+  padding: 28px 20px;
+  gap: 12px;
+  color: var(--text-dim);
+  font-size: 13px;
 }
-
-.loading-overlay.hidden {
-  display: none;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255,255,255,0.3);
-  border-top-color: white;
+.risks-loading-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid rgba(27,58,140,0.2);
+  border-top-color: var(--blue-mid);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading-text {
-  color: white;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
-}
-
-.pull-to-refresh {
+/* ── SIN DATOS EN EXCEL ── */
+.risks-empty-state {
+  background: var(--blue-tint);
+  border: 1px dashed rgba(27,58,140,0.3);
+  border-radius: var(--radius);
+  padding: 24px 20px;
   text-align: center;
-  padding: 10px;
-  font-size: 12px;
   color: var(--text-dim);
 }
+.risks-empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; opacity: 0.3; }
+.risks-empty-state strong { display: block; color: var(--blue); font-size: 15px; margin-bottom: 6px; }
+.risks-empty-state p { font-size: 13px; line-height: 1.6; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111827;
-    --surface: #1F2937;
-    --surface2: #374151;
-    --border: #4B5563;
-    --text: #F9FAFB;
-    --text-dim: #9CA3AF;
-  }
+/* ── MAIN ── */
+.main-content { flex: 1; padding: 20px 16px 100px; }
+
+/* ── SECTION BADGE ── */
+.section-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blue-tint); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 15px;
+  font-family: 'Rajdhani', sans-serif; font-size: 12.5px; font-weight: 600;
+  color: var(--blue-mid); letter-spacing: 0.8px; text-transform: uppercase;
+  margin-bottom: 20px;
 }
-</style>
+.section-badge svg { width: 13px; height: 13px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 14px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(27,58,140,0.06);
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--blue) 0%, var(--blue-light) 100%);
+}
+
+.card-title {
+  font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--gray-dark); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.card-title svg { width: 15px; height: 15px; color: var(--blue-mid); }
+
+/* ── FORM ── */
+.field-group { margin-bottom: 16px; }
+
+.field-label {
+  display: block; font-size: 11.5px; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 7px;
+}
+.field-label .required { color: var(--danger); margin-left: 2px; }
+
+.field-input, .field-select, .field-textarea {
+  width: 100%; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px;
+  padding: 11px 13px; transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none; appearance: none; outline: none;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color: var(--blue-mid); box-shadow: 0 0 0 3px var(--blue-glow);
+  background: var(--surface);
+}
+.field-input::placeholder, .field-textarea::placeholder { color: var(--gray-light); }
+
+.field-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%235A6A80' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center;
+  padding-right: 38px; cursor: pointer;
+}
+.field-select option { background: #ffffff; color: #0F1E36; }
+
+.field-textarea { min-height: 90px; resize: vertical; line-height: 1.5; }
+
+/* ── NIVEL DE RIESGO ── */
+.risk-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.risk-level-btn { position: relative; cursor: pointer; }
+.risk-level-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.risk-level-label {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 13px 8px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--surface2);
+  transition: all 0.2s; cursor: pointer; text-align: center;
+}
+.risk-level-label .level-icon { font-size: 20px; }
+.risk-level-label .level-text {
+  font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700;
+  letter-spacing: 0.5px; color: var(--text-dim);
+}
+
+.risk-level-btn input[value="Alto"]:checked ~ .risk-level-label {
+  border-color: var(--danger); background: rgba(220,38,38,0.07);
+  box-shadow: 0 0 10px rgba(220,38,38,0.15);
+}
+.risk-level-btn input[value="Alto"]:checked ~ .risk-level-label .level-text { color: var(--danger); }
+
+.risk-level-btn input[value="Medio"]:checked ~ .risk-level-label {
+  border-color: var(--warning); background: rgba(217,119,6,0.08);
+  box-shadow: 0 0 10px rgba(217,119,6,0.15);
+}
+.risk-level-btn input[value="Medio"]:checked ~ .risk-level-label .level-text { color: var(--warning); }
+
+.risk-level-btn input[value="Bajo"]:checked ~ .risk-level-label {
+  border-color: var(--success); background: rgba(5,150,105,0.07);
+  box-shadow: 0 0 10px rgba(5,150,105,0.12);
+}
+.risk-level-btn input[value="Bajo"]:checked ~ .risk-level-label .level-text { color: var(--success); }
+
+/* ── OFFLINE QUEUE ── */
+.queue-banner {
+  display: none; align-items: center; gap: 10px;
+  background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.3);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 13px; color: var(--warning); margin-bottom: 16px;
+}
+.queue-banner.visible { display: flex; }
+.queue-count {
+  background: var(--warning); color: #fff; border-radius: 100px;
+  padding: 1px 8px; font-weight: 700; font-size: 12px;
+}
+
+/* ── BOTÓN ENVIAR ── */
+.btn-send {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+  border: none; border-radius: var(--radius); color: white;
+  font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 4px 18px rgba(27,58,140,0.35);
+}
+.btn-send:hover  { opacity: 0.93; box-shadow: 0 6px 22px rgba(27,58,140,0.45); }
+.btn-send:active { opacity: 0.85; }
+.btn-send:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-send.loading { pointer-events: none; }
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.65s linear infinite; display: none;
+}
+.btn-send.loading .spinner  { display: block; }
+.btn-send.loading .btn-icon { display: none; }
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed; bottom: 24px; left: 16px; right: 16px;
+  z-index: 1000; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+  background: var(--surface); border-radius: var(--radius); padding: 13px 15px;
+  display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--border); box-shadow: 0 6px 28px rgba(15,30,54,0.18);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error   { border-left: 3px solid var(--danger);  }
+.toast.warning { border-left: 3px solid var(--warning); }
+.toast.info    { border-left: 3px solid var(--blue-mid); }
+
+.toast-icon { font-size: 20px; flex-shrink: 0; }
+.toast-text { flex: 1; }
+.toast-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+.toast-msg { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+/* ── HISTORIAL ── */
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+
+.history-item {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 3px rgba(27,58,140,0.05);
+}
+.history-item-info { flex: 1; min-width: 0; }
+.history-item-type {
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.history-item-meta { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+.history-badge {
+  padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700;
+  font-family: 'Rajdhani', sans-serif; letter-spacing: 0.3px; white-space: nowrap; flex-shrink: 0;
+}
+.badge-alto    { background: rgba(220,38,38,0.1);  color: #B91C1C; border: 1px solid rgba(220,38,38,0.25); }
+.badge-medio   { background: rgba(217,119,6,0.1);  color: #92400E; border: 1px solid rgba(217,119,6,0.25); }
+.badge-bajo    { background: rgba(5,150,105,0.1);  color: #065F46; border: 1px solid rgba(5,150,105,0.25); }
+.badge-pending { background: var(--blue-tint);     color: var(--blue-mid); border: 1px solid var(--border); }
+
+.empty-state {
+  text-align: center; padding: 30px 20px;
+  color: var(--text-dim); font-size: 14px;
+}
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; opacity: 0.25; display: block; }
+
+/* ── NAV BOTTOM ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 2px solid var(--blue);
+  box-shadow: 0 -2px 12px rgba(27,58,140,0.08);
+  display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 8px; border: none; background: none; color: var(--gray-light);
+  cursor: pointer; transition: color 0.2s; font-family: 'Inter', sans-serif;
+}
+.nav-btn svg  { width: 22px; height: 22px; }
+.nav-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
+.nav-btn.active { color: var(--blue); }
+.nav-btn.active svg { filter: drop-shadow(0 0 5px rgba(27,58,140,0.4)); }
+
+/* ── TABS ── */
+.tab-content        { display: none; }
+.tab-content.active { display: block; }
+
+/* ── ANIMACIONES ── */
+.card { animation: slideUp 0.28s ease both; }
+@keyframes slideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.card:nth-child(2) { animation-delay: 0.05s; }
+.card:nth-child(3) { animation-delay: 0.1s; }
+.card:nth-child(4) { animation-delay: 0.15s; }
+
+/* ── VALIDACIÓN ── */
+.field-input.valid,   .field-select.valid,   .field-textarea.valid   { border-color: rgba(5,150,105,0.5); }
+.field-input.invalid, .field-select.invalid, .field-textarea.invalid { border-color: rgba(220,38,38,0.5); }
+.field-error { font-size: 11px; color: var(--danger); margin-top: 5px; display: none; }
+.field-error.show { display: block; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
 </head>
 <body>
 
-<div class="loading-overlay hidden" id="loadingOverlay">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">Cargando...</div>
-</div>
+<div class="app-wrapper">
 
-<div class="app-header">
-  <div class="header-top">
-    <div class="header-logo">
-      <div class="logo-icon">⚠️</div>
-      <div class="logo-text"><span>Alarma</span>vision</div>
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-logos">
+      <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
+      <div class="divider-v"></div>
+      <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
     </div>
-    <div class="online-badge">
-      <div class="online-dot" id="onlineDot"></div>
-      <span id="onlineStatus">Conectando...</span>
+    <div class="header-info">
+      <div class="header-title"><span1>Alarma</span1><span>vision</span></div>
+      <div class="header-subtitle">Reporte de Riesgos SG-SST</div>
     </div>
-  </div>
-  <div class="header-title">Reporte de Riesgos</div>
-  <div class="header-sub">SG-SST • Reporta condiciones peligrosas</div>
-</div>
+    <div class="status-dot" id="statusDot" title="En línea"></div>
+  </header>
 
-<div class="container">
-  <!-- Configuración inicial (solo visible si no hay URL) -->
-  <div id="configSection" class="config-card" style="display: none;">
-    <div class="config-title">
-      <span>⚙️</span> Configuración inicial
-    </div>
-    <input type="url" class="config-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
-    <button class="btn btn-primary" onclick="saveAndConnect()">🔌 Conectar al sistema</button>
-    <div style="font-size: 11px; color: var(--text-dim); margin-top: 12px; text-align: center;">
-      Ingresa la URL proporcionada por el administrador
-    </div>
-  </div>
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
 
-  <!-- Formulario principal (visible cuando hay conexión) -->
-  <div id="formSection" style="display: none;">
-    <div class="status-bar">
-      <span>📡 Sistema conectado</span>
-      <button class="btn-refresh" onclick="refreshRisks()">🔄 Actualizar lista</button>
-    </div>
+    <!-- TAB: FORMULARIO -->
+    <div class="tab-content active" id="tab-form">
 
-    <!-- Contenedor de lista de riesgos (dinámico) -->
-    <div id="risksContainer"></div>
-
-    <div class="config-card" style="margin-top: 8px;">
-      <div class="config-title">
-        <span>ℹ️</span> Información
+      <div class="queue-banner" id="queueBanner">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        Sin conexión — <span class="queue-count" id="queueCount">0</span> pendiente(s)
       </div>
-      <div style="font-size: 12px; color: var(--text-dim); line-height: 1.5;">
-        • Los tipos de riesgo son configurados por el área de SST.<br>
-        • Todos los reportes se guardan en la nube de Google Sheets.<br>
-        • Reporta solo riesgos reales que requieran atención.
+
+      <div class="section-badge">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+        </svg>
+        Riesgos SG-SST en la oficina
       </div>
+
+      <!-- DATOS DEL REPORTANTE -->
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+          Datos del reportante
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="nombre">Nombre completo <span class="required">*</span></label>
+          <input type="text" id="nombre" class="field-input" placeholder="Ej: Julanito Perez" autocomplete="name">
+          <div class="field-error" id="nombre-error">Campo obligatorio</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="cedula">Cédula de ciudadanía <span class="required">*</span></label>
+          <input type="number" id="cedula" class="field-input" placeholder="Ej: 1234567890" inputmode="numeric">
+          <div class="field-error" id="cedula-error">Ingresa un número de cédula válido</div>
+        </div>
+      </div>
+
+      <!-- TIPO DE RIESGO -->
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/></svg>
+          Tipo de riesgo
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="tipoRiesgo">Selecciona el tipo de riesgo <span class="required">*</span></label>
+
+          <!-- Estado de carga de riesgos -->
+          <div id="risksLoadingState" class="risks-loading" style="display:none">
+            <div class="risks-loading-spinner"></div>
+            <span>Cargando lista de riesgos desde Excel...</span>
+          </div>
+
+          <!-- Sin datos en Excel -->
+          <div id="risksEmptyState" class="risks-empty-state" style="display:none">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM9.5 3A1.5 1.5 0 0 1 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/></svg>
+            <strong>No hay tipos de riesgo configurados</strong>
+            <p>El administrador aún no ha guardado la lista de riesgos en el Excel. Contacta al administrador del panel para configurar los tipos de riesgo.</p>
+          </div>
+
+          <!-- Select con riesgos cargados desde Excel -->
+          <select id="tipoRiesgo" class="field-select" style="display:none">
+            <option value="">— Seleccionar —</option>
+          </select>
+
+          <div class="field-error" id="tipo-error">Selecciona un tipo de riesgo</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Nivel de riesgo <span class="required">*</span></label>
+          <div class="risk-levels">
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Alto">
+              <div class="risk-level-label">
+                <span class="level-icon">🔴</span>
+                <span class="level-text">Alto</span>
+              </div>
+            </label>
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Medio">
+              <div class="risk-level-label">
+                <span class="level-icon">🟡</span>
+                <span class="level-text">Medio</span>
+              </div>
+            </label>
+            <label class="risk-level-btn">
+              <input type="radio" name="nivelRiesgo" value="Bajo">
+              <div class="risk-level-label">
+                <span class="level-icon">🟢</span>
+                <span class="level-text">Bajo</span>
+              </div>
+            </label>
+          </div>
+          <div class="field-error" id="nivel-error">Selecciona el nivel de riesgo</div>
+        </div>
+
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" for="observaciones">Descripción del riesgo</label>
+          <textarea id="observaciones" class="field-textarea" placeholder="Describe brevemente el riesgo observado..."></textarea>
+        </div>
+      </div>
+
+      <!-- BOTÓN ENVIAR -->
+      <button class="btn-send" id="btnSend" onclick="handleSubmit()">
+        <svg class="btn-icon" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+        </svg>
+        <div class="spinner"></div>
+        Enviar Reporte
+      </button>
+
     </div>
-  </div>
+
+    <!-- TAB: HISTORIAL -->
+    <div class="tab-content" id="tab-history">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div class="section-badge" style="margin-bottom:0">
+          <svg viewBox="0 0 16 16" fill="currentColor" style="width:14px;height:14px">
+            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+          </svg>
+          Mis reportes
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="retrySend()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(27,58,140,0.1);border:1px solid rgba(27,58,140,0.3);border-radius:8px;color:var(--blue-mid);font-size:12px;font-weight:600;cursor:pointer;">
+            🔄 Reintentar envío
+          </button>
+          <button onclick="deletePending()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.3);border-radius:8px;color:var(--warning);font-size:12px;font-weight:600;cursor:pointer;">
+            🗑️ Borrar pendientes
+          </button>
+          <button onclick="clearHistory()" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);border-radius:8px;color:var(--danger);font-size:12px;font-weight:600;cursor:pointer;">
+            ✕ Borrar todo
+          </button>
+        </div>
+      </div>
+
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+  </main>
+
+  <!-- NAV BOTTOM -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-form" onclick="switchTab('form')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1zM2 3.5a.5.5 0 0 1 .5-.5H4v.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3h4v.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3h1.5a.5.5 0 0 1 .5.5v2h-13V3.5zM2 7h12v5.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V7z"/>
+      </svg>
+      <span>Reportar</span>
+    </button>
+    <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+        <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+        <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+      </svg>
+      <span>Historial</span>
+    </button>
+  </nav>
+
 </div>
 
+<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ==========================================
-// APP MÓVIL - REPORTE DE RIESGOS SG-SST
-// CORREGIDA: Solo muestra lo que hay en Excel
-// NADA de listas por defecto
-// ==========================================
+// ============================================================
+// CONFIGURACIÓN
+// Lee URL del localStorage (configurada en el panel admin)
+// ============================================================
+const URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwdJ1vT4Z5od6RGEwLiCAVZeUqNvWO9eWKqeWwq480b0lwbSO8xAjP70Weg69yByAdPyw/exec";
+const SCRIPT_URL = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 
-let scriptUrl = localStorage.getItem('SGSST_MOVIL_URL') || '';
-let risksList = [];
+// ============================================================
+// ESTADO
+// ============================================================
+let isOnline = navigator.onLine;
+let pendingQueue = JSON.parse(localStorage.getItem('pending_queue') || '[]');
+let myReports = JSON.parse(localStorage.getItem('my_reports') || '[]');
+let risksLoaded = false; // ¿ya cargamos la lista desde el Excel?
 
-// ==========================================
-// INICIALIZACIÓN
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data.type === 'SYNC_NEEDED') syncPending();
+    });
+  }
+
   updateOnlineStatus();
-  
-  if (scriptUrl) {
-    document.getElementById('configSection').style.display = 'none';
-    document.getElementById('formSection').style.display = 'block';
-    loadRisksFromSheet();
-  } else {
-    document.getElementById('configSection').style.display = 'block';
-    document.getElementById('formSection').style.display = 'none';
-    document.getElementById('scriptUrlInput').value = '';
-  }
-  
-  // Autocompletar campos si están guardados
-  const savedNombre = localStorage.getItem('SGSST_NOMBRE');
-  const savedCedula = localStorage.getItem('SGSST_CEDULA');
-  if (savedNombre) document.getElementById('nombre')?.setAttribute('value', savedNombre);
-  if (savedCedula) document.getElementById('cedula')?.setAttribute('value', savedCedula);
-  
-  // Guardar nombre y cédula al escribir
-  const nombreInput = document.getElementById('nombre');
-  const cedulaInput = document.getElementById('cedula');
-  if (nombreInput) {
-    nombreInput.addEventListener('input', () => {
-      localStorage.setItem('SGSST_NOMBRE', nombreInput.value);
-    });
-  }
-  if (cedulaInput) {
-    cedulaInput.addEventListener('input', () => {
-      localStorage.setItem('SGSST_CEDULA', cedulaInput.value);
-    });
-  }
+  renderHistory();
+
+  // Cargar lista de riesgos desde Excel al iniciar
+  loadRisksFromExcel();
+
+  // Intentar sincronizar pendientes al arrancar
+  if (navigator.onLine) setTimeout(() => syncPending(), 2000);
 });
 
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
+window.addEventListener('online', () => {
+  isOnline = true;
+  updateOnlineStatus();
+  syncPending();
+  // Si los riesgos no se cargaron aún (era offline), reintentamos
+  if (!risksLoaded) loadRisksFromExcel();
+});
 
+window.addEventListener('offline', () => {
+  isOnline = false;
+  updateOnlineStatus();
+});
+
+// ============================================================
+// CARGAR RIESGOS DESDE EXCEL
+// Muestra: spinner → lista cargada | mensaje "sin datos" | fallback a local
+// ============================================================
+async function loadRisksFromExcel() {
+  const loadingEl  = document.getElementById('risksLoadingState');
+  const emptyEl    = document.getElementById('risksEmptyState');
+  const selectEl   = document.getElementById('tipoRiesgo');
+
+  // Mostrar spinner
+  loadingEl.style.display = 'flex';
+  emptyEl.style.display   = 'none';
+  selectEl.style.display  = 'none';
+
+  try {
+    if (!isOnline) throw new Error('offline');
+
+    const params = new URLSearchParams({ action: 'getConfig', t: Date.now() });
+    const res = await fetch(`${SCRIPT_URL}?${params}`);
+    const data = await res.json();
+
+    loadingEl.style.display = 'none';
+
+    if (data.success && data.config && data.config.risks && data.config.risks.length > 0) {
+      // ✅ Hay riesgos en el Excel — poblar el select
+      populateRiskSelect(data.config.risks);
+      // Guardar en local para uso offline posterior
+      localStorage.setItem('SGSST_RISKS', JSON.stringify(data.config.risks));
+      risksLoaded = true;
+      showToast('✅', 'Lista cargada', `${data.config.risks.length} tipos de riesgo disponibles`, 'success');
+    } else {
+      // ⚠️ No hay riesgos en el Excel
+      emptyEl.style.display = 'block';
+      selectEl.style.display = 'none';
+      showToast('⚠️', 'Sin riesgos en Excel', 'El administrador debe configurar la lista de riesgos', 'warning');
+    }
+  } catch(err) {
+    loadingEl.style.display = 'none';
+
+    // Intentar cargar desde cache local
+    const cached = localStorage.getItem('SGSST_RISKS');
+    if (cached) {
+      try {
+        const localRisks = JSON.parse(cached);
+        if (localRisks.length > 0) {
+          populateRiskSelect(localRisks);
+          risksLoaded = true;
+          showToast('📦', 'Lista local', 'Usando riesgos guardados (sin conexión)', 'warning');
+          return;
+        }
+      } catch(e) {}
+    }
+
+    // Sin nada disponible — mostrar estado vacío
+    emptyEl.style.display = 'block';
+    selectEl.style.display = 'none';
+    if (err.message !== 'offline') {
+      showToast('⚠️', 'No se pudo cargar', 'Verifica la URL del script en el panel admin', 'warning');
+    } else {
+      showToast('📡', 'Sin conexión', 'Conéctate para cargar la lista de riesgos', 'warning');
+    }
+  }
+}
+
+// Poblar el select con la lista de riesgos
+function populateRiskSelect(risks) {
+  const selectEl = document.getElementById('tipoRiesgo');
+  const emptyEl  = document.getElementById('risksEmptyState');
+
+  selectEl.innerHTML = '<option value="">— Seleccionar —</option>';
+  risks.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r;
+    opt.textContent = r;
+    selectEl.appendChild(opt);
+  });
+
+  emptyEl.style.display  = 'none';
+  selectEl.style.display = 'block';
+}
+
+// ============================================================
+// ONLINE STATUS
+// ============================================================
 function updateOnlineStatus() {
-  const dot = document.getElementById('onlineDot');
-  const status = document.getElementById('onlineStatus');
-  const online = navigator.onLine;
-  
-  if (online) {
-    dot.style.background = '#4ade80';
-    status.textContent = 'En línea';
-  } else {
-    dot.style.background = '#9CA3AF';
-    status.textContent = 'Sin conexión';
-  }
+  const dot = document.getElementById('statusDot');
+  if (isOnline) { dot.classList.remove('offline'); dot.title = 'En línea'; }
+  else          { dot.classList.add('offline');    dot.title = 'Sin conexión'; }
+  updateQueueBanner();
 }
 
-// ==========================================
-// CONEXIÓN CON GOOGLE SHEETS
-// ==========================================
-async function callSheetsApi(params) {
-  if (!scriptUrl) throw new Error('URL no configurada');
-  
-  const isPost = ['submit', 'updateStatus', 'saveConfig'].includes(params.action);
-  
-  if (isPost) {
-    const response = await fetch(scriptUrl, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(params).toString()
-    });
-    return response.json();
-  } else {
-    const q = new URLSearchParams(params).toString();
-    const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`);
-    return response.json();
-  }
+function updateQueueBanner() {
+  const banner = document.getElementById('queueBanner');
+  const count  = document.getElementById('queueCount');
+  count.textContent = pendingQueue.length;
+  if (!isOnline && pendingQueue.length > 0) banner.classList.add('visible');
+  else banner.classList.remove('visible');
 }
 
-function saveAndConnect() {
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  if (!url || !url.includes('script.google.com')) {
-    showToast('⚠️', 'URL inválida', 'Debe ser una URL de Google Apps Script', 'error');
-    return;
-  }
-  
-  scriptUrl = url;
-  localStorage.setItem('SGSST_MOVIL_URL', url);
-  
-  document.getElementById('configSection').style.display = 'none';
-  document.getElementById('formSection').style.display = 'block';
-  
-  showToast('✅', 'Conectado', 'Cargando lista de riesgos...', 'success');
-  loadRisksFromSheet();
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+
+  // Al regresar al formulario, recargar riesgos si cambiaron
+  if (tab === 'form' && isOnline) loadRisksFromExcel();
+  if (tab === 'history') renderHistory();
 }
 
-// ==========================================
-// CARGAR RIESGOS DESDE GOOGLE SHEETS
-// SOLO MUESTRA LO QUE HAY EN EXCEL, NADA POR DEFECTO
-// ==========================================
-async function loadRisksFromSheet() {
-  if (!scriptUrl) return;
-  
-  showLoading(true);
-  
-  try {
-    const result = await callSheetsApi({ action: 'getConfig' });
-    
-    if (result.success && result.config) {
-      // Cargar lista de riesgos desde la columna C
-      // SI NO HAY RIESGOS EN EXCEL, risksList queda como array VACÍO
-      if (result.config.risks && Array.isArray(result.config.risks) && result.config.risks.length > 0) {
-        risksList = result.config.risks;
-        showToast('📋', 'Lista cargada', `${risksList.length} tipos de riesgo disponibles`, 'success');
-      } else {
-        risksList = [];
-        showToast('⚠️', 'Sin riesgos', 'El administrador no ha configurado riesgos en Excel', 'warning');
-      }
-      
-      // Actualizar la interfaz
-      renderRisksUI();
-      
-    } else {
-      throw new Error('No se pudo obtener la configuración');
-    }
-  } catch (error) {
-    console.error('Error al cargar riesgos:', error);
-    showToast('❌', 'Error', 'No se pudo conectar con el servidor', 'error');
-    risksList = [];
-    renderRisksUI();
-  }
-  
-  showLoading(false);
-}
+// ============================================================
+// VALIDACIÓN
+// ============================================================
+function validate() {
+  let valid = true;
+  const nombre     = document.getElementById('nombre');
+  const cedula     = document.getElementById('cedula');
+  const tipoRiesgo = document.getElementById('tipoRiesgo');
+  const nivelRiesgo = document.querySelector('input[name="nivelRiesgo"]:checked');
 
-// ==========================================
-// RENDERIZAR UI DE RIESGOS
-// SI NO HAY RIESGOS, MUESTRA MENSAJE CLARO
-// ==========================================
-function renderRisksUI() {
-  const container = document.getElementById('risksContainer');
-  
-  if (!container) return;
-  
-  // Si no hay riesgos configurados en Excel
-  if (!risksList || risksList.length === 0) {
-    container.innerHTML = `
-      <div class="empty-risks">
-        <div class="empty-risks-icon">📋</div>
-        <div class="empty-risks-title">No hay tipos de riesgo configurados</div>
-        <div class="empty-risks-text">
-          El área de SST debe configurar la lista de riesgos en Google Sheets.<br>
-          Contacta al administrador del sistema.
-        </div>
-        <button class="btn btn-outline" onclick="refreshRisks()" style="width: auto; padding: 8px 20px;">
-          🔄 Intentar de nuevo
-        </button>
-      </div>
-    `;
-    return;
-  }
-  
-  // Si hay riesgos, mostrar el formulario completo
-  container.innerHTML = `
-    <div class="form-card">
-      <div class="form-title">
-        📝 Nuevo Reporte
-        <span style="font-size: 11px; font-weight: normal; color: var(--text-dim);">${risksList.length} riesgos</span>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Nombre completo *</label>
-        <input type="text" class="form-input" id="nombre" placeholder="Ej: Carlos Gómez" autocomplete="name" value="${localStorage.getItem('SGSST_NOMBRE') || ''}">
-      </div>
+  if (!nombre.value.trim() || nombre.value.trim().length < 3) {
+    nombre.classList.add('invalid');
+    document.getElementById('nombre-error').classList.add('show');
+    valid = false;
+  } else { nombre.classList.remove('invalid'); nombre.classList.add('valid'); document.getElementById('nombre-error').classList.remove('show'); }
 
-      <div class="form-group">
-        <label class="form-label">Número de cédula *</label>
-        <input type="text" class="form-input" id="cedula" placeholder="Ej: 1234567890" inputmode="numeric" autocomplete="off" value="${localStorage.getItem('SGSST_CEDULA') || ''}">
-      </div>
+  if (!cedula.value.trim() || cedula.value.trim().length < 6) {
+    cedula.classList.add('invalid');
+    document.getElementById('cedula-error').classList.add('show');
+    valid = false;
+  } else { cedula.classList.remove('invalid'); cedula.classList.add('valid'); document.getElementById('cedula-error').classList.remove('show'); }
 
-      <div class="form-group">
-        <label class="form-label">Tipo de riesgo / hallazgo *</label>
-        <select class="form-input risk-select" id="tipoRiesgo">
-          <option value="">Seleccione un tipo de riesgo...</option>
-          ${risksList.map(risk => `<option value="${escapeHtml(risk)}">${escapeHtml(risk)}</option>`).join('')}
-        </select>
-      </div>
+  if (!tipoRiesgo.value || tipoRiesgo.style.display === 'none') {
+    tipoRiesgo.classList.add('invalid');
+    document.getElementById('tipo-error').classList.add('show');
+    valid = false;
+  } else { tipoRiesgo.classList.remove('invalid'); tipoRiesgo.classList.add('valid'); document.getElementById('tipo-error').classList.remove('show'); }
 
-      <div class="form-group">
-        <label class="form-label">Nivel de riesgo *</label>
-        <div class="radio-group" id="nivelRiesgoGroup">
-          <label class="radio-option">
-            <input type="radio" name="nivel" value="Alto">
-            <span class="radio-label">🔴 Alto</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="nivel" value="Medio">
-            <span class="radio-label">🟡 Medio</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="nivel" value="Bajo">
-            <span class="radio-label">🟢 Bajo</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Observaciones (opcional)</label>
-        <textarea class="form-textarea" id="observaciones" placeholder="Describe detalles adicionales del riesgo encontrado..."></textarea>
-      </div>
-
-      <button class="btn btn-submit" id="submitBtn" onclick="submitReport()">
-        📤 Enviar reporte
-      </button>
-    </div>
-  `;
-  
-  // Reconectar eventos de autoguardado
-  const nombreInput = document.getElementById('nombre');
-  const cedulaInput = document.getElementById('cedula');
-  if (nombreInput) {
-    nombreInput.addEventListener('input', () => {
-      localStorage.setItem('SGSST_NOMBRE', nombreInput.value);
-    });
-  }
-  if (cedulaInput) {
-    cedulaInput.addEventListener('input', () => {
-      localStorage.setItem('SGSST_CEDULA', cedulaInput.value);
-    });
-  }
-}
-
-function escapeHtml(text) {
-  if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-// ==========================================
-// ENVIAR REPORTE
-// ==========================================
-async function submitReport() {
-  const nombre = document.getElementById('nombre')?.value.trim();
-  const cedula = document.getElementById('cedula')?.value.trim();
-  const tipoRiesgo = document.getElementById('tipoRiesgo')?.value;
-  const nivelRiesgo = document.querySelector('input[name="nivel"]:checked');
-  const observaciones = document.getElementById('observaciones')?.value.trim() || '';
-  
-  // Validaciones
-  if (!nombre) {
-    showToast('⚠️', 'Campo requerido', 'Por favor ingresa tu nombre', 'error');
-    document.getElementById('nombre')?.focus();
-    return;
-  }
-  
-  if (!cedula) {
-    showToast('⚠️', 'Campo requerido', 'Por favor ingresa tu número de cédula', 'error');
-    document.getElementById('cedula')?.focus();
-    return;
-  }
-  
-  if (!tipoRiesgo) {
-    showToast('⚠️', 'Campo requerido', 'Selecciona un tipo de riesgo', 'error');
-    document.getElementById('tipoRiesgo')?.focus();
-    return;
-  }
-  
   if (!nivelRiesgo) {
-    showToast('⚠️', 'Campo requerido', 'Selecciona el nivel de riesgo', 'error');
-    return;
-  }
-  
-  if (!navigator.onLine) {
-    showToast('📡', 'Sin conexión', 'Conéctate a internet para enviar reportes', 'error');
-    return;
-  }
-  
-  showLoading(true);
-  
+    document.getElementById('nivel-error').classList.add('show'); valid = false;
+  } else { document.getElementById('nivel-error').classList.remove('show'); }
+
+  return valid;
+}
+
+// ============================================================
+// ENVIAR REPORTE
+// ============================================================
+async function handleSubmit() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('btnSend');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const now = new Date();
+  const report = {
+    nombre:        document.getElementById('nombre').value.trim(),
+    cedula:        document.getElementById('cedula').value.trim(),
+    tipoRiesgo:    document.getElementById('tipoRiesgo').value,
+    nivelRiesgo:   document.querySelector('input[name="nivelRiesgo"]:checked').value,
+    observaciones: document.getElementById('observaciones').value.trim(),
+    fecha:         now.toLocaleDateString('es-CO'),
+    hora:          now.toLocaleTimeString('es-CO'),
+    timestamp:     now.toISOString(),
+    localId:       'L' + Date.now()
+  };
+
   try {
-    const result = await callSheetsApi({
+    if (!isOnline) throw new Error('offline');
+
+    const params = new URLSearchParams({
       action: 'submit',
-      nombre: nombre,
-      cedula: cedula,
-      tipoRiesgo: tipoRiesgo,
-      nivelRiesgo: nivelRiesgo.value,
-      observaciones: observaciones
+      nombre:        report.nombre,
+      cedula:        report.cedula,
+      tipoRiesgo:    report.tipoRiesgo,
+      nivelRiesgo:   report.nivelRiesgo,
+      observaciones: report.observaciones || ''
     });
-    
+    const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, { method: 'GET' });
+    const result = await response.json();
+
     if (result.success) {
-      showToast('✅', '¡Reporte enviado!', `ID: ${result.id} - El área de SST revisará tu reporte`, 'success');
-      
-      // Limpiar solo algunos campos
-      const tipoSelect = document.getElementById('tipoRiesgo');
-      if (tipoSelect) tipoSelect.value = '';
-      
-      const radios = document.querySelectorAll('input[name="nivel"]');
-      radios.forEach(radio => radio.checked = false);
-      
-      const observacionesTextarea = document.getElementById('observaciones');
-      if (observacionesTextarea) observacionesTextarea.value = '';
-      
-      // Opcional: vibrar si está disponible
-      if (navigator.vibrate) navigator.vibrate(200);
-      
+      report.id   = result.id;
+      report.sent = true;
+      saveReport(report);
+      resetForm();
+      showToast('✅', '¡Reporte enviado!', `ID: ${result.id} — ${report.tipoRiesgo}`, 'success');
     } else {
-      throw new Error(result.error || 'Error al enviar');
+      throw new Error(result.error || 'Error del servidor');
     }
-  } catch (error) {
-    console.error('Error al enviar:', error);
-    showToast('❌', 'Error', 'No se pudo enviar el reporte. Intenta de nuevo.', 'error');
+  } catch (err) {
+    report.sent = false;
+    pendingQueue.push(report);
+    localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+    saveReport(report);
+    updateQueueBanner();
+    const msg = err.message === 'offline'
+      ? 'Sin conexión — se enviará al recuperar señal'
+      : `Error: ${err.message} — guardado localmente`;
+    showToast('📥', 'Guardado localmente', msg, 'warning');
+    resetForm();
   }
-  
-  showLoading(false);
+
+  btn.classList.remove('loading');
+  btn.disabled = false;
 }
 
-// ==========================================
-// REFRESCAR LISTA (Pull to refresh manual)
-// ==========================================
-async function refreshRisks() {
-  if (!scriptUrl) {
-    showToast('⚠️', 'No conectado', 'Configura la URL primero', 'error');
+// ============================================================
+// SINCRONIZAR PENDIENTES
+// ============================================================
+async function syncPending() {
+  if (!isOnline || pendingQueue.length === 0) return;
+  const toSync = [...pendingQueue];
+  let synced = 0;
+
+  for (const report of toSync) {
+    try {
+      const params = new URLSearchParams({
+        action: 'submit', nombre: report.nombre, cedula: report.cedula,
+        tipoRiesgo: report.tipoRiesgo, nivelRiesgo: report.nivelRiesgo,
+        observaciones: report.observaciones || ''
+      });
+      const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, { method: 'GET' });
+      const result = await response.json();
+
+      if (result.success) {
+        pendingQueue = pendingQueue.filter(r => r.localId !== report.localId);
+        const idx = myReports.findIndex(r => r.localId === report.localId);
+        if (idx !== -1) { myReports[idx].sent = true; myReports[idx].id = result.id; }
+        synced++;
+      }
+    } catch (e) { break; }
+  }
+
+  if (synced > 0) {
+    localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+    localStorage.setItem('my_reports', JSON.stringify(myReports));
+    updateQueueBanner();
+    renderHistory();
+    showToast('🔄', 'Sincronizado', `${synced} reporte(s) enviado(s) al Excel`, 'success');
+  }
+}
+
+// ============================================================
+// GUARDAR & RENDERIZAR HISTORIAL
+// ============================================================
+function saveReport(report) {
+  myReports.unshift(report);
+  if (myReports.length > 50) myReports = myReports.slice(0, 50);
+  localStorage.setItem('my_reports', JSON.stringify(myReports));
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  const pendientes = myReports.filter(r => !r.sent).length;
+
+  if (myReports.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></svg>
+        Historial vacío
+      </div>`;
     return;
   }
-  showToast('🔄', 'Actualizando', 'Cargando lista desde Excel...', 'info');
-  await loadRisksFromSheet();
+
+  const resumen = pendientes > 0
+    ? `<div style="background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.3);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--warning);margin-bottom:12px;">
+        ⏳ <b>${pendientes}</b> reporte(s) pendiente(s) de enviar. Presiona <b>Reintentar envío</b> cuando tengas conexión.
+       </div>`
+    : '';
+
+  list.innerHTML = resumen + myReports.map(r => {
+    const nivel = r.nivelRiesgo || '';
+    const badgeClass = nivel === 'Alto' ? 'badge-alto' : nivel === 'Medio' ? 'badge-medio' : 'badge-bajo';
+
+    if (r.sent) {
+      return `
+        <div class="history-item" style="opacity:0.85">
+          <div class="history-item-info">
+            <div class="history-item-type">${r.tipoRiesgo}</div>
+            <div class="history-item-meta">${r.fecha} ${r.hora} · ✅ ${r.id || 'Enviado'}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="history-badge ${badgeClass}">${nivel}</div>
+            <button onclick="deleteOne('${r.localId}')" title="Eliminar del historial"
+              style="background:none;border:none;cursor:pointer;color:var(--gray-dark);font-size:16px;padding:2px 4px;line-height:1;">✕</button>
+          </div>
+        </div>`;
+    } else {
+      return `
+        <div class="history-item" style="border-color:rgba(217,119,6,0.35);background:rgba(217,119,6,0.05);">
+          <div class="history-item-info">
+            <div class="history-item-type">${r.tipoRiesgo}</div>
+            <div class="history-item-meta">${r.fecha} ${r.hora} · ⏳ Pendiente</div>
+            <div style="margin-top:6px;display:flex;gap:6px;">
+              <button onclick="retrySingle('${r.localId}')"
+                style="padding:4px 10px;background:rgba(27,58,140,0.1);border:1px solid rgba(27,58,140,0.3);border-radius:6px;color:var(--blue-mid);font-size:11px;font-weight:600;cursor:pointer;">
+                🔄 Reintentar
+              </button>
+              <button onclick="deleteOne('${r.localId}')"
+                style="padding:4px 10px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);border-radius:6px;color:var(--danger);font-size:11px;font-weight:600;cursor:pointer;">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+          <div class="history-badge ${badgeClass}">${nivel}</div>
+        </div>`;
+    }
+  }).join('');
 }
 
-// ==========================================
-// UTILIDADES
-// ==========================================
-function showLoading(show) {
-  const overlay = document.getElementById('loadingOverlay');
-  if (show) {
-    overlay.classList.remove('hidden');
-  } else {
-    overlay.classList.add('hidden');
+function deleteOne(localId) {
+  myReports    = myReports.filter(r => r.localId !== localId);
+  pendingQueue = pendingQueue.filter(r => r.localId !== localId);
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+}
+
+function deletePending() {
+  const n = myReports.filter(r => !r.sent).length;
+  if (n === 0) { showToast('ℹ️', 'Sin pendientes', 'No hay reportes pendientes', 'info'); return; }
+  if (!confirm(`¿Eliminar ${n} reporte(s) pendiente(s)? Esto no los enviará.`)) return;
+  myReports    = myReports.filter(r => r.sent);
+  pendingQueue = [];
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+  showToast('🗑️', 'Pendientes eliminados', `${n} reporte(s) eliminados`, 'success');
+}
+
+function clearHistory() {
+  if (!confirm('¿Borrar todo el historial local? Los reportes ya enviados siguen en Google Sheets.')) return;
+  myReports    = [];
+  pendingQueue = [];
+  localStorage.setItem('my_reports',    JSON.stringify(myReports));
+  localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+  updateQueueBanner();
+  renderHistory();
+  showToast('🗑️', 'Historial borrado', 'Los datos en Google Sheets no se afectaron', 'info');
+}
+
+async function retrySend() {
+  if (!isOnline) { showToast('📡', 'Sin conexión', 'Conéctate a internet para reintentar', 'warning'); return; }
+  await syncPending();
+}
+
+async function retrySingle(localId) {
+  const report = myReports.find(r => r.localId === localId);
+  if (!report) return;
+  showToast('🔄', 'Reintentando...', report.tipoRiesgo, 'info');
+  try {
+    const params = new URLSearchParams({
+      action: 'submit', nombre: report.nombre, cedula: report.cedula,
+      tipoRiesgo: report.tipoRiesgo, nivelRiesgo: report.nivelRiesgo,
+      observaciones: report.observaciones || ''
+    });
+    const res    = await fetch(`${SCRIPT_URL}?${params}`, { method: 'GET' });
+    const result = await res.json();
+    if (result.success) {
+      myReports    = myReports.map(r => r.localId === localId ? { ...r, sent: true, id: result.id } : r);
+      pendingQueue = pendingQueue.filter(r => r.localId !== localId);
+      localStorage.setItem('my_reports',    JSON.stringify(myReports));
+      localStorage.setItem('pending_queue', JSON.stringify(pendingQueue));
+      updateQueueBanner();
+      renderHistory();
+      showToast('✅', '¡Enviado!', `ID: ${result.id}`, 'success');
+    } else throw new Error(result.error);
+  } catch (e) {
+    showToast('❌', 'No se pudo enviar', 'Verifica la URL en el panel de administración', 'error');
   }
 }
 
-function showToast(icon, title, msg, type = 'info') {
+// ============================================================
+// RESET FORM
+// ============================================================
+function resetForm() {
+  document.getElementById('nombre').value = '';
+  document.getElementById('cedula').value = '';
+  document.getElementById('tipoRiesgo').value = '';
+  document.getElementById('observaciones').value = '';
+  document.querySelectorAll('input[name="nivelRiesgo"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.field-input, .field-select, .field-textarea').forEach(el => {
+    el.classList.remove('valid', 'invalid');
+  });
+  document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(icon, title, msg, type = 'success') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.innerHTML = `
     <div class="toast-icon">${icon}</div>
-    <div class="toast-body">
+    <div class="toast-text">
       <div class="toast-title">${title}</div>
       ${msg ? `<div class="toast-msg">${msg}</div>` : ''}
-    </div>
-  `;
-  
+    </div>`;
   container.appendChild(toast);
-  
-  setTimeout(() => toast.classList.add('show'), 10);
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 5000);
 }
 
-// Exponer funciones globalmente
-window.saveAndConnect = saveAndConnect;
-window.submitReport = submitReport;
-window.refreshRisks = refreshRisks;
+// ============================================================
+// INPUT LISTENERS — validación en tiempo real
+// ============================================================
+['nombre', 'cedula'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', () => {
+    const el = document.getElementById(id);
+    if (el.value.trim()) {
+      el.classList.remove('invalid');
+      el.classList.add('valid');
+      document.getElementById(id + '-error')?.classList.remove('show');
+    }
+  });
+});
 
-// Recargar riesgos cada 3 minutos si está conectado
-setInterval(() => {
-  if (scriptUrl && navigator.onLine) {
-    loadRisksFromSheet();
+document.getElementById('tipoRiesgo')?.addEventListener('change', () => {
+  const el = document.getElementById('tipoRiesgo');
+  if (el.value) {
+    el.classList.remove('invalid'); el.classList.add('valid');
+    document.getElementById('tipo-error')?.classList.remove('show');
   }
-}, 180000);
+});
 </script>
+
 </body>
 </html>
