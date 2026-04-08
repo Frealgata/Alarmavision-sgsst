@@ -12,23 +12,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
+/* ==========================================
+   VARIABLES & RESET
+   ========================================== */
 :root {
---blue: #1B3A8C; --blue-light: #2E5FD9; --blue-dim: rgba(27,58,140,0.08); --blue-glow: rgba(27,58,140,0.15);
---gray: #6B7280; --gray-dark: #374151; --black: #F3F4F6; --surface: #FFFFFF; --surface2: #F9FAFB; --surface3: #E5E7EB;
---border: #D1D5DB; --border2: #E5E7EB; --text: #111827; --text-dim: #4B5563;
---success: #059669; --danger: #DC2626; --warning: #D97706; --alto: #DC2626; --medio: #D97706; --bajo: #059669;
---radius: 8px; --sidebar-w: 220px;
+  --blue: #1B3A8C; --blue-light: #2E5FD9; --blue-dim: rgba(27,58,140,0.08); --blue-glow: rgba(27,58,140,0.15);
+  --gray: #6B7280; --gray-dark: #374151; --black: #F3F4F6; --surface: #FFFFFF; --surface2: #F9FAFB; --surface3: #E5E7EB;
+  --border: #D1D5DB; --border2: #E5E7EB; --text: #111827; --text-dim: #4B5563;
+  --success: #059669; --danger: #DC2626; --warning: #D97706; --alto: #DC2626; --medio: #D97706; --bajo: #059669;
+  --radius: 8px; --sidebar-w: 220px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; background: var(--black); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; overflow: hidden; }
+
+/* ==========================================
+   LAYOUT PRINCIPAL
+   ========================================== */
 .app-layout { display: flex; height: 100vh; overflow: hidden; }
+
+/* ==========================================
+   SIDEBAR
+   ========================================== */
 .sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; }
 .sidebar-header { padding: 20px 16px 16px; border-bottom: 1px solid var(--border); }
 .sidebar-logos { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .sidebar-logo { height: 36px; width: 36px; object-fit: contain; border-radius: 6px; }
 .sidebar-divider { width: 1px; height: 28px; background: var(--border); }
 .sidebar-brand { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; line-height: 1.1; }
-.sidebar-brand span { color: var(--gray-dark); } .sidebar-brand span1 { color: var(--blue); }
+.sidebar-brand span { color: var(--gray-dark); }
+.sidebar-brand span1 { color: var(--blue); }
 .sidebar-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.3px; margin-top: 6px; }
 .sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
 .nav-section { margin-bottom: 20px; }
@@ -43,40 +55,75 @@ html, body { height: 100%; background: var(--black); color: var(--text); font-fa
 .status-indicator { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: pulse 2s infinite; }
 @keyframes pulse { 50% { opacity: 0.5; } }
 .last-sync { font-size: 10px; color: var(--text-dim); margin-top: 6px; }
+
+/* ==========================================
+   ÁREA PRINCIPAL
+   ========================================== */
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .topbar { height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; padding: 0 20px; flex-shrink: 0; }
 .topbar-title { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; flex: 1; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
+.page-content { flex: 1; overflow-y: auto; padding: 20px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ==========================================
+   BOTONES
+   ========================================== */
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; border: none; transition: all 0.15s; white-space: nowrap; }
 .btn svg { width: 14px; height: 14px; }
-.btn-primary { background: var(--blue); color: white; } .btn-primary:hover { background: var(--blue-light); }
-.btn-outline { background: transparent; color: var(--text-dim); border: 1px solid var(--border2); } .btn-outline:hover { background: var(--surface2); color: var(--text); }
-.btn-success { background: rgba(63,185,80,0.15); color: var(--success); border: 1px solid rgba(63,185,80,0.3); } .btn-success:hover { background: rgba(63,185,80,0.25); }
-.btn-excel { background: rgba(21,128,61,0.15); color: #4ade80; border: 1px solid rgba(21,128,61,0.3); } .btn-excel:hover { background: rgba(21,128,61,0.25); }
-.btn-pdf { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); } .btn-pdf:hover { background: rgba(239,68,68,0.22); }
-.page-content { flex: 1; overflow-y: auto; padding: 20px; }
-.page { display: none; } .page.active { display: block; }
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: var(--blue-light); }
+.btn-outline { background: transparent; color: var(--text-dim); border: 1px solid var(--border2); }
+.btn-outline:hover { background: var(--surface2); color: var(--text); }
+.btn-success { background: rgba(5,150,105,0.12); color: var(--success); border: 1px solid rgba(5,150,105,0.3); }
+.btn-success:hover { background: rgba(5,150,105,0.22); }
+.btn-excel { background: rgba(21,128,61,0.15); color: #16a34a; border: 1px solid rgba(21,128,61,0.3); }
+.btn-excel:hover { background: rgba(21,128,61,0.25); }
+.btn-pdf { background: rgba(220,38,38,0.1); color: var(--danger); border: 1px solid rgba(220,38,38,0.25); }
+.btn-pdf:hover { background: rgba(220,38,38,0.2); }
+
+/* ==========================================
+   STATS CARDS
+   ========================================== */
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; }
 .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
-.stat-card.total::before { background: var(--blue-light); } .stat-card.alto::before { background: var(--alto); } .stat-card.medio::before { background: var(--medio); } .stat-card.bajo::before { background: var(--bajo); }
+.stat-card.total::before { background: var(--blue-light); }
+.stat-card.alto::before { background: var(--alto); }
+.stat-card.medio::before { background: var(--medio); }
+.stat-card.bajo::before { background: var(--bajo); }
 .stat-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
 .stat-value { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-.stat-card.total .stat-value { color: var(--blue-light); } .stat-card.alto .stat-value { color: var(--alto); } .stat-card.medio .stat-value { color: var(--medio); } .stat-card.bajo .stat-value { color: var(--bajo); }
+.stat-card.total .stat-value { color: var(--blue-light); }
+.stat-card.alto .stat-value { color: var(--alto); }
+.stat-card.medio .stat-value { color: var(--medio); }
+.stat-card.bajo .stat-value { color: var(--bajo); }
 .stat-sub { font-size: 11px; color: var(--text-dim); }
+
+/* ==========================================
+   CHARTS
+   ========================================== */
 .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
 @media (max-width: 900px) { .chart-row { grid-template-columns: 1fr; } }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
 .chart-card-title { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
 .progress-bar { margin-bottom: 10px; }
 .progress-bar-header { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 5px; }
-.progress-bar-label { color: var(--text); font-weight: 500; } .progress-bar-value { color: var(--text-dim); }
+.progress-bar-label { color: var(--text); font-weight: 500; }
+.progress-bar-value { color: var(--text-dim); }
 .progress-track { height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+/* ==========================================
+   FILTROS & TABLA
+   ========================================== */
 .filters-row { display: flex; gap: 10px; align-items: center; padding: 12px 0; flex-wrap: wrap; }
 .filter-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 7px 12px; outline: none; transition: border-color 0.15s; }
-.filter-input:focus { border-color: var(--blue-light); } .filter-input::placeholder { color: var(--text-dim); } .filter-input.search { min-width: 220px; flex: 1; }
+.filter-input:focus { border-color: var(--blue-light); }
+.filter-input::placeholder { color: var(--text-dim); }
+.filter-input.search { min-width: 220px; flex: 1; }
 select.filter-input { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238B949E' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; -webkit-appearance: none; appearance: none; }
 select.filter-input option { background: #FFFFFF; color: #111827; }
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
@@ -89,730 +136,1248 @@ th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; co
 th:hover { color: var(--text); }
 td { padding: 10px 14px; border-bottom: 1px solid var(--border2); vertical-align: middle; max-width: 220px; }
 .td-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-tbody tr { transition: background 0.1s; } tbody tr:hover { background: rgba(0,0,0,0.03); } tbody tr.atendido { background: rgba(63,185,80,0.05); } tbody tr.atendido:hover { background: rgba(63,185,80,0.09); }
+tbody tr { transition: background 0.1s; }
+tbody tr:hover { background: rgba(0,0,0,0.03); }
+tbody tr.atendido { background: rgba(5,150,105,0.05); }
+tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
+
+/* ==========================================
+   BADGES & ACCIONES
+   ========================================== */
 .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.3px; white-space: nowrap; }
-.badge-alto { background: rgba(248,81,73,0.15); color: #FF6B63; border: 1px solid rgba(248,81,73,0.3); } .badge-medio { background: rgba(210,153,34,0.15); color: #E3B341; border: 1px solid rgba(210,153,34,0.3); } .badge-bajo { background: rgba(63,185,80,0.12); color: #3FB950; border: 1px solid rgba(63,185,80,0.3); } .badge-atendido { background: rgba(63,185,80,0.12); color: #3FB950; border: 1px solid rgba(63,185,80,0.3); } .badge-no-atendido { background: rgba(248,81,73,0.1); color: #F85149; border: 1px solid rgba(248,81,73,0.2); }
-.btn-attend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(63,185,80,0.3); background: rgba(63,185,80,0.1); color: var(--success); transition: all 0.15s; white-space: nowrap; } .btn-attend:hover { background: rgba(63,185,80,0.2); } .btn-attend:disabled { opacity: 0.4; cursor: not-allowed; }
-.empty-table { text-align: center; padding: 50px 20px; color: var(--text-dim); } .empty-table svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; opacity: 0.3; }
-.loading-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.7); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 14px; } .loading-overlay.hidden { display: none; } .loading-spinner { width: 36px; height: 36px; border: 3px solid rgba(27,58,140,0.3); border-top-color: var(--blue-light); border-radius: 50%; animation: spin 0.7s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } } .loading-text { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-dim); }
+.badge-alto { background: rgba(220,38,38,0.12); color: #DC2626; border: 1px solid rgba(220,38,38,0.3); }
+.badge-medio { background: rgba(217,119,6,0.12); color: #D97706; border: 1px solid rgba(217,119,6,0.3); }
+.badge-bajo { background: rgba(5,150,105,0.1); color: #059669; border: 1px solid rgba(5,150,105,0.3); }
+.badge-atendido { background: rgba(5,150,105,0.1); color: #059669; border: 1px solid rgba(5,150,105,0.3); }
+.badge-no-atendido { background: rgba(220,38,38,0.08); color: #DC2626; border: 1px solid rgba(220,38,38,0.2); }
+.btn-attend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(5,150,105,0.3); background: rgba(5,150,105,0.1); color: var(--success); transition: all 0.15s; white-space: nowrap; }
+.btn-attend:hover { background: rgba(5,150,105,0.2); }
+.btn-attend:disabled { opacity: 0.4; cursor: not-allowed; }
+.empty-table { text-align: center; padding: 50px 20px; color: var(--text-dim); }
+.empty-table svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; opacity: 0.3; }
+
+/* ==========================================
+   LOADING & TOAST
+   ========================================== */
+.loading-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.7); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 14px; }
+.loading-overlay.hidden { display: none; }
+.loading-spinner { width: 36px; height: 36px; border: 3px solid rgba(27,58,140,0.3); border-top-color: var(--blue-light); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--text-dim); }
 .toast-container { position: fixed; top: 70px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
-.toast { background: var(--surface2); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); min-width: 260px; max-width: 360px; } .toast.show { transform: translateX(0); } .toast.success { border-color: rgba(63,185,80,0.4); } .toast.error { border-color: rgba(248,81,73,0.4); } .toast.info { border-color: rgba(27,58,140,0.5); }
-.toast-icon { font-size: 18px; flex-shrink: 0; } .toast-body { flex: 1; } .toast-title { font-weight: 600; font-size: 13.5px; } .toast-msg { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 1500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; } .modal-backdrop.show { opacity: 1; pointer-events: auto; }
-.modal { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 28px; width: 90%; max-width: 480px; transform: scale(0.95); transition: transform 0.2s; box-shadow: 0 24px 64px rgba(0,0,0,0.5); } .modal-backdrop.show .modal { transform: scale(1); }
+.toast { background: var(--surface2); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.2); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); min-width: 260px; max-width: 360px; }
+.toast.show { transform: translateX(0); }
+.toast.success { border-color: rgba(5,150,105,0.4); }
+.toast.error { border-color: rgba(220,38,38,0.4); }
+.toast.info { border-color: rgba(27,58,140,0.5); }
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+.toast-body { flex: 1; }
+.toast-title { font-weight: 600; font-size: 13.5px; }
+.toast-msg { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+/* ==========================================
+   MODAL
+   ========================================== */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 1500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-backdrop.show { opacity: 1; pointer-events: auto; }
+.modal { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 28px; width: 90%; max-width: 480px; transform: scale(0.95); transition: transform 0.2s; box-shadow: 0 24px 64px rgba(0,0,0,0.3); }
+.modal-backdrop.show .modal { transform: scale(1); }
 .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
-.modal-field { margin-bottom: 12px; } .modal-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; } .modal-value { font-size: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 8px 12px; word-break: break-word; }
+.modal-field { margin-bottom: 12px; }
+.modal-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
+.modal-value { font-size: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 8px 12px; word-break: break-word; }
 .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+/* ==========================================
+   SETTINGS
+   ========================================== */
 .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; max-width: 600px; }
 .settings-title { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
-.settings-field { margin-bottom: 14px; } .settings-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 7px; }
-.settings-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 9px 12px; outline: none; transition: border-color 0.15s; } .settings-input:focus { border-color: var(--blue-light); }
-.settings-hint { font-size: 11.5px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; } .settings-hint a { color: var(--blue-light); text-decoration: none; }
-.risks-list-admin { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px; }
-.risk-admin-item { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 12px; transition: border-color 0.15s; } .risk-admin-item:hover { border-color: var(--blue-light); }
-.risk-admin-text { flex: 1; font-size: 13px; color: var(--text); } .risk-admin-text.editing { background: var(--surface); border: 1px solid var(--blue-light); border-radius: 5px; padding: 3px 8px; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); width: 100%; }
+.settings-field { margin-bottom: 14px; }
+.settings-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 7px; }
+.settings-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 9px 12px; outline: none; transition: border-color 0.15s; }
+.settings-input:focus { border-color: var(--blue-light); }
+.settings-hint { font-size: 11.5px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
+
+/* ==========================================
+   RIESGOS ADMIN
+   ========================================== */
+.risks-list-admin { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px; }
+.risk-admin-item { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 12px; transition: border-color 0.15s; }
+.risk-admin-item:hover { border-color: var(--blue-light); }
+.risk-admin-text { flex: 1; font-size: 13px; color: var(--text); }
+.risk-admin-text.editing { background: var(--surface); border: 1px solid var(--blue-light); border-radius: 5px; padding: 3px 8px; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); width: 100%; }
 .risk-admin-actions { display: flex; gap: 4px; flex-shrink: 0; }
-.risk-admin-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 3px 6px; border-radius: 5px; transition: background 0.15s; line-height: 1; } .risk-admin-btn:hover { background: var(--surface3); } .risk-admin-btn.del:hover { background: rgba(220,38,38,0.1); }
+.risk-admin-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 3px 6px; border-radius: 5px; transition: background 0.15s; line-height: 1; }
+.risk-admin-btn:hover { background: var(--surface3); }
+.risk-admin-btn.del:hover { background: rgba(220,38,38,0.1); }
 .add-risk-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.add-risk-field { flex: 1; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.15s; } .add-risk-field:focus { border-color: var(--blue-light); } .add-risk-field::placeholder { color: var(--text-dim); }
-.btn-add-risk { background: var(--blue); border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'Rajdhani', sans-serif; transition: background 0.2s; white-space: nowrap; } .btn-add-risk:hover { background: var(--blue-light); }
-.save-feedback { font-size: 12px; margin-top: 8px; min-height: 18px; color: var(--text-dim); } .save-feedback.ok { color: var(--success); } .save-feedback.err { color: var(--danger); }
-::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; } ::-webkit-scrollbar-thumb:hover { background: var(--gray-dark); }
-.mob-menu-btn { display: none; align-items: center; justify-content: center; width: 38px; height: 38px; border: none; background: none; color: var(--text); cursor: pointer; border-radius: 8px; flex-shrink: 0; } .mob-menu-btn:active { background: var(--surface2); } .mob-menu-btn svg { width: 22px; height: 22px; }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 299; opacity: 0; transition: opacity 0.25s; } .sidebar-overlay.open { opacity: 1; }
+.add-risk-field { flex: 1; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.15s; }
+.add-risk-field:focus { border-color: var(--blue-light); }
+.add-risk-field::placeholder { color: var(--text-dim); }
+.btn-add-risk { background: var(--blue); border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'Rajdhani', sans-serif; transition: background 0.2s; white-space: nowrap; }
+.btn-add-risk:hover { background: var(--blue-light); }
+.save-feedback { font-size: 12px; margin-top: 8px; min-height: 18px; color: var(--text-dim); }
+.save-feedback.ok { color: var(--success); }
+.save-feedback.err { color: var(--danger); }
+.risks-status-bar { display: flex; align-items: center; justify-content: space-between; background: var(--blue-dim); border: 1px solid rgba(27,58,140,0.2); border-radius: 7px; padding: 8px 12px; margin-bottom: 12px; font-size: 12px; color: var(--text-dim); }
+.risks-status-bar b { color: var(--blue-light); }
+
+/* Sin datos en Excel — estado vacío */
+.empty-risks-info { background: rgba(27,58,140,0.06); border: 1px dashed rgba(27,58,140,0.3); border-radius: 8px; padding: 16px 18px; text-align: center; color: var(--text-dim); font-size: 13px; margin-bottom: 12px; }
+.empty-risks-info strong { color: var(--blue-light); display: block; margin-bottom: 4px; font-size: 14px; }
+
+/* ==========================================
+   SCROLLBAR
+   ========================================== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-dark); }
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+.mob-menu-btn { display: none; align-items: center; justify-content: center; width: 38px; height: 38px; border: none; background: none; color: var(--text); cursor: pointer; border-radius: 8px; flex-shrink: 0; }
+.mob-menu-btn:active { background: var(--surface2); }
+.mob-menu-btn svg { width: 22px; height: 22px; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 299; opacity: 0; transition: opacity 0.25s; }
+.sidebar-overlay.open { opacity: 1; }
 .mob-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 2px solid var(--blue); box-shadow: 0 -2px 12px rgba(27,58,140,0.10); z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
 .mob-bottom-nav-inner { display: flex; align-items: stretch; }
 .mob-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 9px 6px 7px; border: none; background: none; color: var(--gray); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.2px; position: relative; transition: color 0.15s; -webkit-tap-highlight-color: transparent; }
-.mob-nav-btn svg { width: 20px; height: 20px; } .mob-nav-btn.active { color: var(--blue); } .mob-nav-btn.active svg { filter: drop-shadow(0 0 4px rgba(27,58,140,0.35)); }
+.mob-nav-btn svg { width: 20px; height: 20px; }
+.mob-nav-btn.active { color: var(--blue); }
+.mob-nav-btn.active svg { filter: drop-shadow(0 0 4px rgba(27,58,140,0.35)); }
 .mob-nav-badge { position: absolute; top: 6px; right: calc(50% - 18px); background: var(--danger); color: white; font-size: 9px; font-weight: 700; border-radius: 100px; padding: 1px 5px; min-width: 16px; text-align: center; line-height: 1.4; }
 .report-cards { display: none; }
 .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; cursor: pointer; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; transition: box-shadow 0.15s; box-shadow: 0 1px 3px rgba(27,58,140,0.06); }
 .report-card:active { box-shadow: 0 2px 8px rgba(27,58,140,0.14); }
-.report-card-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; } .report-card-accent.alto { background: var(--alto); } .report-card-accent.medio { background: var(--medio); } .report-card-accent.bajo { background: var(--bajo); }
+.report-card-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.report-card-accent.alto { background: var(--alto); }
+.report-card-accent.medio { background: var(--medio); }
+.report-card-accent.bajo { background: var(--bajo); }
 .report-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .report-card-id { font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 0.5px; }
 .report-card-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
 .report-card-tipo { font-size: 12.5px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; margin-bottom: 10px; }
 .report-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.report-card-date { font-size: 11px; color: var(--text-dim); } .report-card-actions { display: flex; gap: 8px; align-items: center; }
-@media (max-width: 640px) { .modal-backdrop { align-items: flex-end !important; } .modal { width: 100% !important; max-width: 100% !important; border-radius: 18px 18px 0 0 !important; padding: 20px 18px 32px !important; max-height: 88vh; overflow-y: auto; transform: translateY(40px) !important; } .modal-backdrop.show .modal { transform: translateY(0) !important; } .modal-actions { flex-direction: column !important; } .modal-actions .btn { width: 100%; justify-content: center; padding: 12px !important; font-size: 14px !important; } }
+.report-card-date { font-size: 11px; color: var(--text-dim); }
+.report-card-actions { display: flex; gap: 8px; align-items: center; }
+
+@media (max-width: 640px) {
+  .modal-backdrop { align-items: flex-end !important; }
+  .modal { width: 100% !important; max-width: 100% !important; border-radius: 18px 18px 0 0 !important; padding: 20px 18px 32px !important; max-height: 88vh; overflow-y: auto; transform: translateY(40px) !important; }
+  .modal-backdrop.show .modal { transform: translateY(0) !important; }
+  .modal-actions { flex-direction: column !important; }
+  .modal-actions .btn { width: 100%; justify-content: center; padding: 12px !important; font-size: 14px !important; }
+}
+
 @media (max-width: 768px) {
-html, body { overflow: hidden; }
-.sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; z-index: 300; transform: translateX(-100%); transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: none; }
-.sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(27,58,140,0.15); }
-.sidebar-overlay { display: block; pointer-events: none; } .sidebar-overlay.open { pointer-events: auto; }
-.mob-menu-btn { display: flex; }
-.topbar { padding: 0 12px; gap: 8px; } .topbar-title { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar-actions .btn-excel, .topbar-actions .btn-pdf { display: none; } .topbar-actions .btn-primary { padding: 7px 10px; font-size: 12px; }
-.page-content { padding: 14px 12px 80px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } .stat-value { font-size: 26px; } .chart-row { grid-template-columns: 1fr; gap: 10px; }
-.table-wrap .table-scroll { display: none; } .report-cards { display: block; }
-#page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } #page-dashboard table { min-width: 520px; } #page-dashboard th, #page-dashboard td { padding: 8px 10px; font-size: 11px; }
-.filters-row { display: none; } @media (max-width: 380px) { .topbar-actions .btn-primary span { display: none; } }
-.mob-bottom-nav { display: block; } .settings-card { max-width: 100%; }
-.toast-container { top: auto; bottom: 76px; left: 12px; right: 12px; } .toast { min-width: unset; max-width: 100%; transform: translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; } .toast.show { transform: translateY(0); opacity: 1; }
+  html, body { overflow: hidden; }
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; z-index: 300; transform: translateX(-100%); transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: none; }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(27,58,140,0.15); }
+  .sidebar-overlay { display: block; pointer-events: none; }
+  .sidebar-overlay.open { pointer-events: auto; }
+  .mob-menu-btn { display: flex; }
+  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar-title { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-actions .btn-excel, .topbar-actions .btn-pdf { display: none; }
+  .topbar-actions .btn-primary { padding: 7px 10px; font-size: 12px; }
+  .page-content { padding: 14px 12px 80px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-value { font-size: 26px; }
+  .chart-row { grid-template-columns: 1fr; gap: 10px; }
+  .table-wrap .table-scroll { display: none; }
+  .report-cards { display: block; }
+  #page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #page-dashboard table { min-width: 520px; }
+  #page-dashboard th, #page-dashboard td { padding: 8px 10px; font-size: 11px; }
+  .filters-row { display: none; }
+  .mob-bottom-nav { display: block; }
+  .settings-card { max-width: 100%; }
+  .toast-container { top: auto; bottom: 76px; left: 12px; right: 12px; }
+  .toast { min-width: unset; max-width: 100%; transform: translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+}
+@media (max-width: 380px) {
+  .topbar-actions .btn-primary span { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div><div class="loading-text">Cargando datos...</div></div>
+
+<!-- ==========================================
+     OVERLAYS
+     ========================================== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Cargando datos...</div>
+</div>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ==========================================
+     LAYOUT PRINCIPAL
+     ========================================== -->
 <div class="app-layout">
-<aside class="sidebar" id="sidebar">
-<div class="sidebar-header">
-<div class="sidebar-logos"><img src="../shared/assets/logo-company.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'"><div class="sidebar-divider"></div><img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'"></div>
-<div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div><div class="sidebar-sub">Panel SG-SST · Admin</div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logos">
+        <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
+        <div class="sidebar-divider"></div>
+        <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
+      </div>
+      <div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div>
+      <div class="sidebar-sub">Panel SG-SST · Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Principal</div>
+        <button class="nav-item active" onclick="switchPage('dashboard')">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" onclick="switchPage('reports')">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/></svg>
+          Reportes
+          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Exportar</div>
+        <button class="nav-item" onclick="exportExcel()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>
+          Exportar Excel
+        </button>
+        <button class="nav-item" onclick="exportPDF()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/></svg>
+          Exportar PDF
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Sistema</div>
+        <button class="nav-item" onclick="switchPage('settings')">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/></svg>
+          Configuración
+        </button>
+        <button class="nav-item" onclick="loadData()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>
+          Actualizar datos
+        </button>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="online-status">
+        <div class="status-indicator" id="sidebarDot"></div>
+        <span id="onlineText">En línea</span>
+      </div>
+      <div class="last-sync" id="lastSync">Última actualización: —</div>
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+  <div class="main-area">
+    <div class="topbar">
+      <button class="mob-menu-btn" id="mobMenuBtn" onclick="openSidebar()" aria-label="Menú">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
+      </button>
+      <div class="topbar-title" id="pageTitle">📊 Dashboard</div>
+      <div class="topbar-actions">
+        <button class="btn btn-excel" onclick="exportExcel()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>
+          Excel
+        </button>
+        <button class="btn btn-pdf" onclick="exportPDF()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2z"/></svg>
+          PDF
+        </button>
+        <button class="btn btn-primary" onclick="loadData()">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>
+          <span>Actualizar</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- ======== DASHBOARD ======== -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card total"><div class="stat-label">Total Reportes</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">Todos los registros</div></div>
+          <div class="stat-card alto"><div class="stat-label">Riesgo Alto</div><div class="stat-value" id="stat-alto">0</div><div class="stat-sub">Atención inmediata</div></div>
+          <div class="stat-card medio"><div class="stat-label">Riesgo Medio</div><div class="stat-value" id="stat-medio">0</div><div class="stat-sub">Seguimiento activo</div></div>
+          <div class="stat-card bajo"><div class="stat-label">Riesgo Bajo</div><div class="stat-value" id="stat-bajo">0</div><div class="stat-sub">Monitoreo periódico</div></div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-card"><div class="chart-card-title">Estado de atención</div><div id="chartEstado"></div></div>
+          <div class="chart-card"><div class="chart-card-title">Tipos de riesgo más frecuentes</div><div id="chartTipos"></div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-header-title">Últimos 10 reportes</span>
+            <button class="btn btn-outline" onclick="switchPage('reports')">Ver todos →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>ID</th><th>Nombre</th><th>Tipo de riesgo</th><th>Nivel</th><th>Fecha</th><th>Estado</th></tr></thead>
+              <tbody id="dashboardTableBody"><tr><td colspan="6" class="empty-table">Cargando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======== REPORTES ======== -->
+      <div class="page" id="page-reports">
+        <div class="filters-row">
+          <input type="text" class="filter-input search" id="filterNombre" placeholder="🔍 Buscar por nombre o cédula..." oninput="applyFilters()">
+          <select class="filter-input" id="filterNivel" onchange="applyFilters()">
+            <option value="">Todos los niveles</option>
+            <option value="Alto">Alto</option>
+            <option value="Medio">Medio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+          <select class="filter-input" id="filterEstado" onchange="applyFilters()">
+            <option value="">Todos los estados</option>
+            <option value="No atendido">No atendido</option>
+            <option value="Atendido">Atendido</option>
+          </select>
+          <input type="date" class="filter-input" id="filterFecha" onchange="applyFilters()">
+          <button class="btn btn-outline" onclick="clearFilters()">Limpiar</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-header-title" id="reportsCount">Reportes</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-excel" onclick="exportExcel()">Excel</button>
+              <button class="btn btn-pdf" onclick="exportPDF()">PDF</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr>
+                <th onclick="sortBy('ID')">ID ↕</th>
+                <th onclick="sortBy('Nombre')">Nombre ↕</th>
+                <th>Cédula</th>
+                <th>Tipo de riesgo</th>
+                <th onclick="sortBy('Nivel de Riesgo')">Nivel ↕</th>
+                <th>Observaciones</th>
+                <th onclick="sortBy('Fecha')">Fecha ↕</th>
+                <th>Hora</th>
+                <th onclick="sortBy('Estado')">Estado ↕</th>
+                <th>Acción</th>
+              </tr></thead>
+              <tbody id="reportsTableBody"><tr><td colspan="10" class="empty-table">Cargando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="report-cards" id="reportCards"></div>
+      </div>
+
+      <!-- ======== CONFIGURACIÓN ======== -->
+      <div class="page" id="page-settings">
+
+        <!-- URL Script -->
+        <div class="settings-card">
+          <div class="settings-title">⚙️ Configuración Centralizada</div>
+          <div style="background:rgba(27,58,140,0.08);border:1px solid rgba(27,58,140,0.2);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--text-dim);line-height:1.6;">
+            📌 <b style="color:var(--text)">Un solo link:</b> Toda la configuración (contraseña y lista de riesgos) se guarda automáticamente en la pestaña <b>Configuración</b> de tu hoja de Google Sheets. Al abrir el dashboard se cargan automáticamente los datos del Excel.
+          </div>
+          <div class="settings-field">
+            <label class="settings-label">URL de Google Apps Script (Único)</label>
+            <input type="url" class="settings-input" id="settingScriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button class="btn btn-primary" onclick="saveSettings()">💾 Guardar y conectar</button>
+            <button class="btn btn-outline" onclick="testConnection()">🔌 Probar conexión</button>
+          </div>
+        </div>
+
+        <!-- Lista de Riesgos -->
+        <div class="settings-card">
+          <div class="settings-title">📋 Lista de Riesgos (App Móvil)</div>
+          <div style="background:rgba(27,58,140,0.06);border:1px solid rgba(27,58,140,0.18);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.6;">
+            ⚡ <b style="color:var(--text)">Sincronización bidireccional:</b> cada cambio se escribe en la hoja <b>Configuración</b> (Columna C). La App Móvil carga esta lista al iniciar.<br>
+            <span style="color:var(--success);font-weight:600;">Los cambios (agregar, editar, eliminar) se ven en la lista de inmediato. Presiona "Guardar en Excel" para persistirlos.</span>
+          </div>
+
+          <!-- Barra de estado -->
+          <div class="risks-status-bar" id="risksStatusBar">
+            <span>📊 Riesgos en lista: <b id="risksCount">0</b></span>
+            <button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="loadConfigFromSheet()">☁️ Recargar desde Excel</button>
+          </div>
+
+          <!-- Lista editable -->
+          <ul class="risks-list-admin" id="risksListAdmin"></ul>
+
+          <!-- Agregar nuevo riesgo -->
+          <div class="add-risk-row">
+            <input type="text" class="add-risk-field" id="newRiskInput" placeholder="Nuevo tipo de riesgo..." onkeydown="if(event.key==='Enter')addRisk()">
+            <button class="btn-add-risk" onclick="addRisk()">+ Agregar</button>
+          </div>
+
+          <!-- Acciones -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveConfigToSheet('risks')">💾 Guardar lista en Excel</button>
+            <button class="btn btn-outline" onclick="loadConfigFromSheet()">☁️ Recargar desde Excel</button>
+          </div>
+          <div class="save-feedback" id="configFeedback"></div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="settings-card">
+          <div class="settings-title">🔑 Cambiar Contraseña del Panel Admin</div>
+          <div class="settings-field">
+            <label class="settings-label">Contraseña actual</label>
+            <input type="password" class="settings-input" id="currentPwdInput" placeholder="••••••••••••">
+          </div>
+          <div class="settings-field">
+            <label class="settings-label">Nueva contraseña</label>
+            <input type="password" class="settings-input" id="newPwdInput" placeholder="••••••••••••">
+          </div>
+          <div class="settings-field">
+            <label class="settings-label">Confirmar nueva contraseña</label>
+            <input type="password" class="settings-input" id="confirmPwdInput" placeholder="••••••••••••">
+          </div>
+          <button class="btn btn-primary" onclick="changePassword()">🔒 Cambiar contraseña</button>
+          <div class="save-feedback" id="pwdFeedback"></div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="settings-card">
+          <div class="settings-title">📋 Cómo configurar paso a paso</div>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
+            <b style="color:var(--text)">1. Crear hoja en Google Drive:</b><br>
+            • Nueva hoja de cálculo de Google<br>
+            • Ve a <b>Extensiones → Apps Script</b><br>
+            • Pega el código del backend y guarda<br>
+            • <b>Implementar → Nueva implementación → Aplicación web</b><br>
+            • Ejecutar como: <b>Yo</b> · Acceso: <b>Cualquier usuario</b><br>
+            • Copia la URL generada y pégala arriba.<br><br>
+            <b style="color:var(--text)">2. ¡Listo!</b> La hoja creará automáticamente las pestañas <b>Reportes-SG-SST</b> y <b>Configuracion</b> al primer uso.
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /page-content -->
+  </div><!-- /main-area -->
+</div><!-- /app-layout -->
+
+<!-- ==========================================
+     MODAL
+     ========================================== -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <div class="modal-title">📄 Detalle del Reporte</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModalDirect()">Cerrar</button>
+      <button class="btn btn-success" id="modalAttendBtn">✓ Marcar como Atendido</button>
+    </div>
+  </div>
 </div>
-<nav class="sidebar-nav">
-<div class="nav-section"><div class="nav-section-title">Principal</div>
-<button class="nav-item active" onclick="switchPage('dashboard')"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/></svg>Dashboard</button>
-<button class="nav-item" onclick="switchPage('reports')"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/></svg>Reportes<span class="nav-badge" id="pendingBadge" style="display:none">0</span></button>
-</div>
-<div class="nav-section"><div class="nav-section-title">Exportar</div>
-<button class="nav-item" onclick="exportExcel()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>Exportar Excel</button>
-<button class="nav-item" onclick="exportPDF()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/></svg>Exportar PDF</button>
-</div>
-<div class="nav-section"><div class="nav-section-title">Sistema</div>
-<button class="nav-item" onclick="switchPage('settings')"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/></svg>Configuración</button>
-<button class="nav-item" onclick="loadData()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>Actualizar datos</button>
-</div>
-</nav>
-<div class="sidebar-footer"><div class="online-status"><div class="status-indicator" id="sidebarDot"></div><span id="onlineText">En línea</span></div><div class="last-sync" id="lastSync">Última actualización: —</div></div>
-</aside>
-<div class="main-area">
-<div class="topbar">
-<button class="mob-menu-btn" id="mobMenuBtn" onclick="openSidebar()" aria-label="Menú"><svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg></button>
-<div class="topbar-title" id="pageTitle">📊 Dashboard</div>
-<div class="topbar-actions">
-<button class="btn btn-excel" onclick="exportExcel()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>Excel</button>
-<button class="btn btn-pdf" onclick="exportPDF()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2z"/></svg>PDF</button>
-<button class="btn btn-primary" onclick="loadData()"><svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>Actualizar</button>
-</div>
-</div>
-<div class="page-content">
-<div class="page active" id="page-dashboard">
-<div class="stats-grid">
-<div class="stat-card total"><div class="stat-label">Total Reportes</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">Todos los registros</div></div>
-<div class="stat-card alto"><div class="stat-label">Riesgo Alto</div><div class="stat-value" id="stat-alto">0</div><div class="stat-sub">Atención inmediata</div></div>
-<div class="stat-card medio"><div class="stat-label">Riesgo Medio</div><div class="stat-value" id="stat-medio">0</div><div class="stat-sub">Seguimiento activo</div></div>
-<div class="stat-card bajo"><div class="stat-label">Riesgo Bajo</div><div class="stat-value" id="stat-bajo">0</div><div class="stat-sub">Monitoreo periódico</div></div>
-</div>
-<div class="chart-row">
-<div class="chart-card"><div class="chart-card-title">Estado de atención</div><div id="chartEstado"></div></div>
-<div class="chart-card"><div class="chart-card-title">Tipos de riesgo más frecuentes</div><div id="chartTipos"></div></div>
-</div>
-<div class="table-wrap">
-<div class="table-header"><span class="table-header-title">Últimos 10 reportes</span><button class="btn btn-outline" onclick="switchPage('reports')">Ver todos →</button></div>
-<div class="table-scroll">
-<table>
-<thead>
-<th>ID</th><th>Nombre</th><th>Tipo de riesgo</th><th>Nivel</th><th>Fecha</th><th>Estado</th>
-</thead>
-<tbody id="dashboardTableBody"><tr><td colspan="6" class="empty-table">Cargando...</td></tr></tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="page" id="page-reports">
-<div class="filters-row">
-<input type="text" class="filter-input search" id="filterNombre" placeholder="🔍 Buscar por nombre o cédula..." oninput="applyFilters()">
-<select class="filter-input" id="filterNivel" onchange="applyFilters()"><option value="">Todos los niveles</option><option value="Alto">Alto</option><option value="Medio">Medio</option><option value="Bajo">Bajo</option></select>
-<select class="filter-input" id="filterEstado" onchange="applyFilters()"><option value="">Todos los estados</option><option value="No atendido">No atendido</option><option value="Atendido">Atendido</option></select>
-<input type="date" class="filter-input" id="filterFecha" onchange="applyFilters()">
-<button class="btn btn-outline" onclick="clearFilters()">Limpiar</button>
-</div>
-<div class="table-wrap">
-<div class="table-header"><span class="table-header-title" id="reportsCount">Reportes</span><div style="display:flex;gap:8px"><button class="btn btn-excel" onclick="exportExcel()">Excel</button><button class="btn btn-pdf" onclick="exportPDF()">PDF</button></div></div>
-<div class="table-scroll">
-<table>
-<thead>
-<th onclick="sortBy('ID')">ID ↕</th><th onclick="sortBy('Nombre')">Nombre ↕</th><th>Cédula</th><th>Tipo de riesgo</th><th onclick="sortBy('Nivel de Riesgo')">Nivel ↕</th><th>Observaciones</th><th onclick="sortBy('Fecha')">Fecha ↕</th><th>Hora</th><th onclick="sortBy('Estado')">Estado ↕</th><th>Acción</th>
-</thead>
-<tbody id="reportsTableBody"><tr><td colspan="10" class="empty-table">Cargando...</td></tr></tbody>
-</table>
-</div>
-</div>
-<div class="report-cards" id="reportCards"></div>
-</div>
-<div class="page" id="page-settings">
-<div class="settings-card">
-<div class="settings-title">⚙️ Configuración Centralizada</div>
-<div style="background:rgba(27,58,140,0.12);border:1px solid rgba(27,58,140,0.25);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:var(--text-dim);line-height:1.6;">
-📌 <b style="color:var(--text)">Un solo link:</b> Toda la configuración (contraseña y lista de riesgos) se guarda automáticamente en la pestaña <b>Configuración</b> de tu hoja de Google Sheets.
-</div>
-<div class="settings-field"><label class="settings-label">URL de Google Apps Script (Único)</label><input type="url" class="settings-input" id="settingScriptUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
-<button class="btn btn-primary" onclick="saveSettings()">💾 Guardar y conectar</button>
-<button class="btn btn-outline" onclick="testConnection()">🔌 Probar conexión</button>
-</div>
-</div>
-<div class="settings-card">
-<div class="settings-title">📋 Lista de Riesgos (App Móvil)</div>
-<div style="background:rgba(27,58,140,0.08);border:1px solid rgba(27,58,140,0.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.6;">⚡ <b style="color:var(--text)">Sincronización automática:</b> cada cambio se guarda en la hoja <b>Configuración</b> (Columna C, una celda por riesgo). La App Móvil lo leerá al iniciar.</div>
-<ul class="risks-list-admin" id="risksListAdmin"></ul>
-<div class="add-risk-row"><input type="text" class="add-risk-field" id="newRiskInput" placeholder="Nuevo riesgo o reporte..." onkeydown="if(event.key==='Enter')addRisk()"><button class="btn-add-risk" onclick="addRisk()">+ Agregar</button></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;">
-<button class="btn btn-primary" onclick="saveConfigToSheet('risks')">💾 Guardar lista en Sheets</button>
-<button class="btn btn-outline" onclick="loadConfigFromSheet()">☁️ Recargar desde Sheets</button>
-</div>
-<div class="save-feedback" id="configFeedback"></div>
-</div>
-<div class="settings-card">
-<div class="settings-title">🔑 Cambiar Contraseña del Panel Admin</div>
-<div class="settings-field"><label class="settings-label">Contraseña actual</label><input type="password" class="settings-input" id="currentPwdInput" placeholder="••••••••••••"></div>
-<div class="settings-field"><label class="settings-label">Nueva contraseña</label><input type="password" class="settings-input" id="newPwdInput" placeholder="••••••••••••"></div>
-<div class="settings-field"><label class="settings-label">Confirmar nueva contraseña</label><input type="password" class="settings-input" id="confirmPwdInput" placeholder="••••••••••••"></div>
-<button class="btn btn-primary" onclick="changePassword()">🔒 Cambiar contraseña</button>
-<div class="save-feedback" id="pwdFeedback"></div>
-</div>
-<div class="settings-card">
-<div class="settings-title">📋 Cómo configurar paso a paso</div>
-<div style="font-size:13px;color:var(--text-dim);line-height:1.8">
-<b style="color:var(--text)">1. Crear hoja en Google Drive:</b><br>• Nueva hoja de cálculo de Google<br>• Ve a <b>Extensiones → Apps Script</b><br>• Pega el código del backend y guarda<br>• <b>Implementar → Nueva implementación → Aplicación web</b><br>• Ejecutar como: <b>Yo</b> · Acceso: <b>Cualquier usuario</b><br>• Copia la URL generada y pégala arriba.<br><br>
-<b style="color:var(--text)">2. ¡Listo!</b> La hoja creará automáticamente las pestañas <b>Reportes-SG-SST</b> y <b>Configuracion</b> al primer uso.
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)"><div class="modal" id="modalContent"><div class="modal-title">📄 Detalle del Reporte</div><div id="modalBody"></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModalDirect()">Cerrar</button><button class="btn btn-success" id="modalAttendBtn">✓ Marcar como Atendido</button></div></div></div>
+
+<!-- Toast container -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Bottom Nav Móvil -->
 <nav class="mob-bottom-nav" id="mobBottomNav">
-<div class="mob-bottom-nav-inner">
-<button class="mob-nav-btn active" id="mobNavDashboard" onclick="switchPage('dashboard')"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zm8 0A1.5 1.5 0 0 1 9.5 0h2A1.5 1.5 0 0 1 13 1.5v2A1.5 1.5 0 0 1 11.5 5h-2A1.5 1.5 0 0 1 8 3.5v-2zM0 9.5A1.5 1.5 0 0 1 1.5 8h2A1.5 1.5 0 0 1 5 9.5v2A1.5 1.5 0 0 1 3.5 13h-2A1.5 1.5 0 0 1 0 11.5v-2zm8 0A1.5 1.5 0 0 1 9.5 8h2a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-2A1.5 1.5 0 0 1 8 11.5v-2z"/></svg><span>Dashboard</span></button>
-<button class="mob-nav-btn" id="mobNavReports" onclick="switchPage('reports')" style="position:relative"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/></svg><span>Reportes</span><span class="mob-nav-badge" id="mobPendingBadge" style="display:none">0</span></button>
-<button class="mob-nav-btn" id="mobNavExcel" onclick="exportExcel()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg><span>Excel</span></button>
-<button class="mob-nav-btn" id="mobNavRefresh" onclick="loadData()"><svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg><span>Actualizar</span></button>
-<button class="mob-nav-btn" id="mobNavSettings" onclick="switchPage('settings')"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/></svg><span>Config</span></button>
-</div>
+  <div class="mob-bottom-nav-inner">
+    <button class="mob-nav-btn active" id="mobNavDashboard" onclick="switchPage('dashboard')">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zm8 0A1.5 1.5 0 0 1 9.5 0h2A1.5 1.5 0 0 1 13 1.5v2A1.5 1.5 0 0 1 11.5 5h-2A1.5 1.5 0 0 1 8 3.5v-2zM0 9.5A1.5 1.5 0 0 1 1.5 8h2A1.5 1.5 0 0 1 5 9.5v2A1.5 1.5 0 0 1 3.5 13h-2A1.5 1.5 0 0 1 0 11.5v-2zm8 0A1.5 1.5 0 0 1 9.5 8h2a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-2A1.5 1.5 0 0 1 8 11.5v-2z"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavReports" onclick="switchPage('reports')" style="position:relative">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/></svg>
+      <span>Reportes</span>
+      <span class="mob-nav-badge" id="mobPendingBadge" style="display:none">0</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavExcel" onclick="exportExcel()">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>
+      <span>Excel</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavRefresh" onclick="loadData()">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/></svg>
+      <span>Actualizar</span>
+    </button>
+    <button class="mob-nav-btn" id="mobNavSettings" onclick="switchPage('settings')">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.892-1.64-.901-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/></svg>
+      <span>Config</span>
+    </button>
+  </div>
 </nav>
+
 <script>
 // ==========================================
-// FUNCIONES DE UTILIDAD
+// ESTADO GLOBAL
 // ==========================================
-function formatearFecha(fechaString) { 
-  if (!fechaString) return ''; 
-  const d = new Date(fechaString); 
-  if (isNaN(d.getTime())) return fechaString; 
-  const dia = String(d.getDate()).padStart(2,'0'); 
-  const mes = String(d.getMonth()+1).padStart(2,'0'); 
-  let h = d.getHours(); 
-  const m = String(d.getMinutes()).padStart(2,'0'); 
-  const ampm = h>=12?'pm':'am'; 
-  h = h%12||12; 
-  return `${dia}/${mes}/${d.getFullYear()} ${h}:${m} ${ampm}`; 
-}
-
-let allData = []; 
-let filteredData = []; 
+let allData = [];
+let filteredData = [];
 let currentSort = { col: 'Fecha', dir: -1 };
 let scriptUrl = localStorage.getItem('SGSST_SCRIPT_URL') || '';
 let currentModalId = null;
-const DEFAULT_PASSWORD = "Alarmavision2006";
+const DEFAULT_PASSWORD = 'Alarmavision2006';
 
+// ==========================================
+// GESTIÓN DE CONTRASEÑA
+// ==========================================
 function getAdminPassword() { return localStorage.getItem('SGSST_ADMIN_PASSWORD') || DEFAULT_PASSWORD; }
 function setAdminPassword(p) { localStorage.setItem('SGSST_ADMIN_PASSWORD', p); }
 
-const DEFAULT_RISKS = ["Daño en silla","Daño en módulo de trabajo","Cableado en mal estado","Iluminación deficiente","Riesgo eléctrico","Caídas o tropiezos","Riesgo de incendio","Señalización deficiente","Extintor vencido o ausente","Salida de emergencia bloqueada","Otros"];
+// ==========================================
+// GESTIÓN DE RIESGOS (local + sheets)
+// ==========================================
+const DEFAULT_RISKS = [
+  'Daño en silla','Daño en módulo de trabajo','Cableado en mal estado',
+  'Iluminación deficiente','Riesgo eléctrico','Caídas o tropiezos',
+  'Riesgo de incendio','Señalización deficiente','Extintor vencido o ausente',
+  'Salida de emergencia bloqueada','Otros'
+];
 
-function getRisks() { 
-  const s = localStorage.getItem('SGSST_RISKS'); 
-  if(s) { 
-    try{ return JSON.parse(s); } catch(e){} 
-  } 
-  return [...DEFAULT_RISKS]; 
+function getRisks() {
+  const s = localStorage.getItem('SGSST_RISKS');
+  if (s) { try { return JSON.parse(s); } catch(e) {} }
+  return [...DEFAULT_RISKS];
 }
 
-function setRisks(arr) { localStorage.setItem('SGSST_RISKS', JSON.stringify(arr)); }
-function setFeedback(elId, msg, type) { const el = document.getElementById(elId); if(!el)return; el.textContent=msg; el.className='save-feedback'+(type?' '+type:''); }
+function setRisks(arr) {
+  localStorage.setItem('SGSST_RISKS', JSON.stringify(arr));
+  updateRisksCountBar();
+}
+
+function updateRisksCountBar() {
+  const el = document.getElementById('risksCount');
+  if (el) el.textContent = getRisks().length;
+}
+
+function setFeedback(elId, msg, type) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'save-feedback' + (type ? ' ' + type : '');
+}
 
 // ==========================================
-// API GOOGLE SHEETS (Single Link) - CORREGIDO para POST
+// API GOOGLE SHEETS — siempre GET para evitar CORS
 // ==========================================
 async function callSheetsApi(params) {
-  if(!scriptUrl) throw new Error('URL de script no configurada');
-  
-  // Usar POST para operaciones que modifican datos, GET para consultas
-  const isPost = ['submit', 'updateStatus', 'saveConfig'].includes(params.action);
-  
-  if (isPost) {
-    const response = await fetch(scriptUrl, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(params).toString()
-    });
-    return response.json();
-  } else {
-    const q = new URLSearchParams(params).toString();
-    const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`);
-    return response.json();
-  }
+  if (!scriptUrl) throw new Error('URL de script no configurada');
+  const q = new URLSearchParams(params).toString();
+  const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
 }
 
+// ==========================================
+// CARGAR CONFIGURACIÓN DESDE EXCEL
+// Se ejecuta al iniciar si hay URL configurada
+// ==========================================
 async function loadConfigFromSheet() {
-  setFeedback('configFeedback', '⏳ Cargando desde Sheets…', '');
+  if (!scriptUrl) return;
+  setFeedback('configFeedback', '⏳ Cargando desde Excel…', '');
   try {
     const r = await callSheetsApi({ action: 'getConfig' });
-    if(r.success && r.config) {
-      // Actualizar lista de riesgos (ahora viene como array desde la columna C)
-      if(r.config.risks && Array.isArray(r.config.risks) && r.config.risks.length > 0) { 
-        setRisks(r.config.risks); 
-        renderRisksAdmin(); 
+    if (r.success && r.config) {
+      if (r.config.risks && Array.isArray(r.config.risks) && r.config.risks.length > 0) {
+        setRisks(r.config.risks);
+        renderRisksAdmin();
+        setFeedback('configFeedback', `✅ ${r.config.risks.length} riesgos cargados desde Excel`, 'ok');
+        showToast('✅', 'Riesgos cargados', `${r.config.risks.length} tipos de riesgo desde Excel`, 'success');
+      } else {
+        // No hay riesgos en Excel — mostrar aviso y se puede guardar lista local
+        renderRisksAdmin(); // muestra la lista local actual (puede ser la de DEFAULT o la guardada localmente)
+        setFeedback('configFeedback', '⚠️ No hay riesgos en el Excel aún. Agrega y presiona "Guardar lista en Excel".', '');
+        showToast('⚠️', 'Excel sin riesgos', 'Agrega riesgos y guárdalos para sincronizar con la app móvil', 'info');
       }
-      if(r.config.admin_password) setAdminPassword(r.config.admin_password);
-      setFeedback('configFeedback', '✅ Configuración cargada correctamente', 'ok');
-      showToast('✅', 'Configuración cargada', `${r.config.risks?.length || 0} riesgos cargados`, 'success');
-    } else throw new Error('Respuesta inválida del servidor');
-  } catch(err) { 
-    setFeedback('configFeedback', '❌ ' + err.message, 'err'); 
-    showToast('❌', 'Error al cargar', err.message, 'error');
+      if (r.config.admin_password) setAdminPassword(r.config.admin_password);
+    } else {
+      throw new Error('Respuesta inválida del servidor');
+    }
+  } catch(err) {
+    setFeedback('configFeedback', '❌ ' + err.message, 'err');
+    showToast('❌', 'Error al cargar configuración', err.message, 'error');
+    renderRisksAdmin(); // igual mostrar la lista local
   }
 }
 
+// ==========================================
+// GUARDAR CONFIGURACIÓN EN EXCEL
+// ==========================================
 async function saveConfigToSheet(key) {
   let feedbackId = key === 'risks' ? 'configFeedback' : 'pwdFeedback';
-  setFeedback(feedbackId, '⏳ Guardando en Sheets…', '');
+  setFeedback(feedbackId, '⏳ Guardando en Excel…', '');
   try {
     let value;
-    if(key === 'risks') {
-      // Enviar el array completo - el backend lo guardará en celdas individuales
+    if (key === 'risks') {
       value = JSON.stringify(getRisks());
-    } else if(key === 'admin_password') {
+    } else if (key === 'admin_password') {
       value = document.getElementById('newPwdInput').value;
     }
-    
+
     const result = await callSheetsApi({ action: 'saveConfig', key, value });
-    
-    if(result.success) {
-      if(key === 'admin_password') { 
-        setAdminPassword(value); 
-        document.getElementById('currentPwdInput').value=''; 
-        document.getElementById('newPwdInput').value=''; 
-        document.getElementById('confirmPwdInput').value=''; 
+
+    if (result.success) {
+      if (key === 'admin_password') {
+        setAdminPassword(value);
+        document.getElementById('currentPwdInput').value = '';
+        document.getElementById('newPwdInput').value = '';
+        document.getElementById('confirmPwdInput').value = '';
       }
-      setFeedback(feedbackId, '✅ Guardado correctamente en Google Sheets', 'ok');
-      showToast('✅', 'Sincronizado', key === 'risks' ? 'Lista de riesgos actualizada' : 'Contraseña actualizada', 'success');
+      const msg = key === 'risks'
+        ? `Lista de ${getRisks().length} riesgos guardada en Excel`
+        : 'Contraseña actualizada en Excel';
+      setFeedback(feedbackId, '✅ ' + msg, 'ok');
+      showToast('✅', 'Guardado en Excel', msg, 'success');
     } else {
       throw new Error(result.error || 'Error desconocido');
     }
-  } catch(err) { 
-    setFeedback(feedbackId, '❌ ' + err.message, 'err'); 
+  } catch(err) {
+    setFeedback(feedbackId, '❌ ' + err.message, 'err');
     showToast('❌', 'Error al guardar', err.message, 'error');
   }
 }
 
 // ==========================================
-// INIT & NAV
+// INICIALIZACIÓN
 // ==========================================
 window.addEventListener('load', () => {
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
   document.getElementById('settingScriptUrl').value = scriptUrl;
   renderRisksAdmin();
+  updateRisksCountBar();
   updateOnlineStatus();
-  loadData();
-  
+
+  // Cargar datos del Excel al iniciar (reportes + configuración)
+  if (scriptUrl) {
+    loadData();
+  } else {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    showToast('ℹ️', 'Sin configurar', 'Ve a Configuración y pega la URL del script', 'info');
+    renderRisksAdmin();
+  }
+
+  // Touch para cerrar sidebar en móvil
+  const sb = document.getElementById('sidebar');
   let touchStartX = 0;
-  document.getElementById('sidebar').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  document.getElementById('sidebar').addEventListener('touchend', e => { if(e.changedTouches[0].clientX - touchStartX < -60) closeSidebar(); }, { passive: true });
+  sb.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  sb.addEventListener('touchend', e => { if (e.changedTouches[0].clientX - touchStartX < -60) closeSidebar(); }, { passive: true });
 });
 
-window.addEventListener('online', updateOnlineStatus); 
+window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-function updateOnlineStatus() { 
-  const dot = document.getElementById('sidebarDot'); 
-  const txt = document.getElementById('onlineText'); 
-  const on = navigator.onLine; 
-  dot.style.background = on?'var(--success)':'var(--gray-dark)'; 
-  dot.style.boxShadow = on?'0 0 6px var(--success)':'none'; 
-  txt.textContent = on?'En línea':'Sin conexión'; 
+function updateOnlineStatus() {
+  const dot = document.getElementById('sidebarDot');
+  const txt = document.getElementById('onlineText');
+  const on = navigator.onLine;
+  dot.style.background = on ? 'var(--success)' : 'var(--gray-dark)';
+  dot.style.boxShadow = on ? '0 0 6px var(--success)' : 'none';
+  txt.textContent = on ? 'En línea' : 'Sin conexión';
 }
 
+// ==========================================
+// NAVEGACIÓN
+// ==========================================
 function switchPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  const titles = { dashboard:'📊 Dashboard', reports:'📋 Gestión de Reportes', settings:'⚙️ Configuración' };
+
+  const titles = { dashboard: '📊 Dashboard', reports: '📋 Gestión de Reportes', settings: '⚙️ Configuración' };
   document.getElementById('pageTitle').textContent = titles[page] || page;
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(n => { const t = page==='dashboard'?'Dashboard':page==='reports'?'Reportes':'Configuración'; if(n.textContent.trim().startsWith(t)) n.classList.add('active'); });
-  updateMobNav(page); 
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    const t = page === 'dashboard' ? 'Dashboard' : page === 'reports' ? 'Reportes' : 'Configuración';
+    if (n.textContent.trim().startsWith(t)) n.classList.add('active');
+  });
+
+  updateMobNav(page);
   closeSidebar();
-  if(page==='reports') { renderReportsTable(filteredData); renderReportCards(filteredData); }
-  if(page==='settings') { renderRisksAdmin(); }
+
+  if (page === 'reports') { renderReportsTable(filteredData); renderReportCards(filteredData); }
+  if (page === 'settings') {
+    renderRisksAdmin();
+    updateRisksCountBar();
+    // Recargar desde Excel al entrar a configuración si hay URL
+    if (scriptUrl) loadConfigFromSheet();
+  }
 }
 
 // ==========================================
 // DATOS & DASHBOARD
 // ==========================================
 async function loadData() {
-  const overlay = document.getElementById('loadingOverlay'); 
+  const overlay = document.getElementById('loadingOverlay');
+  const loadTxt = document.getElementById('loadingText');
   overlay.classList.remove('hidden');
+  loadTxt.textContent = 'Cargando datos del Excel...';
   try {
-    if(!scriptUrl) throw new Error('Configura la URL del script primero');
+    if (!scriptUrl) throw new Error('Configura la URL del script primero');
     const r = await callSheetsApi({ action: 'get' });
-    if(r.success) { 
-      allData = r.data || []; 
-      filteredData = [...allData]; 
-      updateDashboard(); 
-      renderReportsTable(filteredData); 
-      updatePendingBadge(); 
-      document.getElementById('lastSync').textContent = `Última actualización: ${new Date().toLocaleTimeString('es-CO')}`; 
-      showToast('✅', 'Actualizado', `${allData.length} registros`, 'success'); 
-    } else throw new Error(r.error);
-  } catch(err) { 
-    showToast('⚠️', 'Error', err.message || 'Verifica la conexión', 'error'); 
-    loadDemoData(); 
+    if (r.success) {
+      allData = r.data || [];
+      filteredData = [...allData];
+      updateDashboard();
+      renderReportsTable(filteredData);
+      updatePendingBadge();
+      document.getElementById('lastSync').textContent = `Actualizado: ${new Date().toLocaleTimeString('es-CO')}`;
+      showToast('✅', 'Datos actualizados', `${allData.length} registros cargados desde Excel`, 'success');
+      // Cargar también la configuración (riesgos) en paralelo
+      loadConfigFromSheet().catch(() => {});
+    } else {
+      throw new Error(r.error);
+    }
+  } catch(err) {
+    showToast('⚠️', 'Error al cargar', err.message || 'Verifica la conexión y la URL', 'error');
+    // Mostrar datos demo si no hay conexión
+    if (allData.length === 0) loadDemoData();
   }
   overlay.classList.add('hidden');
 }
 
-function loadDemoData() { 
-  allData = [{ID:'RPT-0001',Nombre:'Carlos Gómez','Cédula':'1023456789','Tipo de Riesgo':'Cableado en mal estado','Nivel de Riesgo':'Alto',Observaciones:'Cables expuestos',Fecha:'28/03/2026',Hora:'08:30:00',Estado:'No atendido'}]; 
-  filteredData = [...allData]; 
-  updateDashboard(); 
-  renderReportsTable(filteredData); 
-  updatePendingBadge(); 
+function loadDemoData() {
+  allData = [{ ID: 'RPT-DEMO', Nombre: 'Ejemplo Demo', 'Cédula': '0000000000', 'Tipo de Riesgo': 'Cableado en mal estado', 'Nivel de Riesgo': 'Alto', Observaciones: 'Configura la URL del script', Fecha: new Date().toLocaleDateString('es-CO'), Hora: '00:00:00', Estado: 'No atendido' }];
+  filteredData = [...allData];
+  updateDashboard();
+  renderReportsTable(filteredData);
+  updatePendingBadge();
 }
 
 function updateDashboard() {
-  const total = allData.length; 
-  const alto = allData.filter(r=>r['Nivel de Riesgo']==='Alto').length; 
-  const medio = allData.filter(r=>r['Nivel de Riesgo']==='Medio').length; 
-  const bajo = allData.filter(r=>r['Nivel de Riesgo']==='Bajo').length; 
-  const atendidos = allData.filter(r=>r.Estado==='Atendido').length;
-  document.getElementById('stat-total').textContent = total; 
-  document.getElementById('stat-alto').textContent = alto; 
-  document.getElementById('stat-medio').textContent = medio; 
+  const total = allData.length;
+  const alto = allData.filter(r => r['Nivel de Riesgo'] === 'Alto').length;
+  const medio = allData.filter(r => r['Nivel de Riesgo'] === 'Medio').length;
+  const bajo = allData.filter(r => r['Nivel de Riesgo'] === 'Bajo').length;
+  const atendidos = allData.filter(r => r.Estado === 'Atendido').length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-alto').textContent = alto;
+  document.getElementById('stat-medio').textContent = medio;
   document.getElementById('stat-bajo').textContent = bajo;
-  
-  const pctAt = total?Math.round(atendidos/total*100):0; 
-  document.getElementById('chartEstado').innerHTML = `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">✅ Atendidos</span><span class="progress-bar-value">${atendidos} (${pctAt}%)</span></div><div class="progress-track"><div class="progress-fill" style="width:${pctAt}%;background:var(--success)"></div></div></div><div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">❌ No atendidos</span><span class="progress-bar-value">${total-atendidos} (${100-pctAt}%)</span></div><div class="progress-track"><div class="progress-fill" style="width:${100-pctAt}%;background:var(--danger)"></div></div></div><div class="progress-bar" style="margin-top:16px"><div class="progress-bar-header"><span class="progress-bar-label">🔴 Alto</span><span class="progress-bar-value">${alto}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total?alto/total*100:0}%;background:var(--danger)"></div></div></div><div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">🟡 Medio</span><span class="progress-bar-value">${medio}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total?medio/total*100:0}%;background:var(--warning)"></div></div></div><div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">🟢 Bajo</span><span class="progress-bar-value">${bajo}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total?bajo/total*100:0}%;background:var(--success)"></div></div></div>`;
-  
-  const tc = {}; 
-  allData.forEach(r=>{ const t=r['Tipo de Riesgo']||'N/A'; tc[t]=(tc[t]||0)+1; }); 
-  const st = Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,6); 
-  const mx = st[0]?.[1]||1;
-  document.getElementById('chartTipos').innerHTML = st.map(([t,c])=>`<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label td-truncate" style="max-width:200px">${t}</span><span class="progress-bar-value">${c}</span></div><div class="progress-track"><div class="progress-fill" style="width:${c/mx*100}%;background:var(--blue-light)"></div></div></div>`).join('')||'<div style="color:var(--text-dim);font-size:13px">Sin datos</div>';
-  
-  const l10 = [...allData].slice(-10).reverse(); 
-  document.getElementById('dashboardTableBody').innerHTML = l10.length?l10.map(r=>`<tr class="${r.Estado==='Atendido'?'atendido':''}"><td style="font-size:12px;color:var(--text-dim)">${r.ID||'—'}</td><td class="td-truncate">${r.Nombre||'—'}</td><td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo']||'—'}</td><td>${nivelBadge(r['Nivel de Riesgo'])}</td><td style="font-size:12px">${formatFecha(r.Fecha)}</td><td>${estadoBadge(r.Estado)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty-table">Sin reportes</td></tr>';
+
+  const pctAt = total ? Math.round(atendidos / total * 100) : 0;
+  document.getElementById('chartEstado').innerHTML =
+    `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">✅ Atendidos</span><span class="progress-bar-value">${atendidos} (${pctAt}%)</span></div><div class="progress-track"><div class="progress-fill" style="width:${pctAt}%;background:var(--success)"></div></div></div>` +
+    `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">❌ No atendidos</span><span class="progress-bar-value">${total - atendidos} (${100 - pctAt}%)</span></div><div class="progress-track"><div class="progress-fill" style="width:${100 - pctAt}%;background:var(--danger)"></div></div></div>` +
+    `<div class="progress-bar" style="margin-top:16px"><div class="progress-bar-header"><span class="progress-bar-label">🔴 Alto</span><span class="progress-bar-value">${alto}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total ? alto / total * 100 : 0}%;background:var(--danger)"></div></div></div>` +
+    `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">🟡 Medio</span><span class="progress-bar-value">${medio}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total ? medio / total * 100 : 0}%;background:var(--warning)"></div></div></div>` +
+    `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label">🟢 Bajo</span><span class="progress-bar-value">${bajo}</span></div><div class="progress-track"><div class="progress-fill" style="width:${total ? bajo / total * 100 : 0}%;background:var(--success)"></div></div></div>`;
+
+  const tc = {};
+  allData.forEach(r => { const t = r['Tipo de Riesgo'] || 'N/A'; tc[t] = (tc[t] || 0) + 1; });
+  const st = Object.entries(tc).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const mx = st[0]?.[1] || 1;
+  document.getElementById('chartTipos').innerHTML = st.map(([t, c]) =>
+    `<div class="progress-bar"><div class="progress-bar-header"><span class="progress-bar-label td-truncate" style="max-width:200px">${t}</span><span class="progress-bar-value">${c}</span></div><div class="progress-track"><div class="progress-fill" style="width:${c / mx * 100}%;background:var(--blue-light)"></div></div></div>`
+  ).join('') || '<div style="color:var(--text-dim);font-size:13px">Sin datos</div>';
+
+  const l10 = [...allData].slice(-10).reverse();
+  document.getElementById('dashboardTableBody').innerHTML = l10.length
+    ? l10.map(r => `<tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}"><td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td><td class="td-truncate">${r.Nombre || '—'}</td><td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo'] || '—'}</td><td>${nivelBadge(r['Nivel de Riesgo'])}</td><td style="font-size:12px">${formatFecha(r.Fecha)}</td><td>${estadoBadge(r.Estado)}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty-table">Sin reportes</td></tr>';
 }
 
 // ==========================================
 // TABLA & REPORTES
 // ==========================================
 function renderReportsTable(data) {
-  const tbody = document.getElementById('reportsTableBody'); 
+  const tbody = document.getElementById('reportsTableBody');
   document.getElementById('reportsCount').textContent = `${data.length} reporte(s)`;
-  if(!data.length) { 
-    tbody.innerHTML = '<tr><td colspan="10"><div class="empty-table"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>No hay reportes</div></td></tr>'; 
-    renderReportCards(data); 
-    return; 
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty-table"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>No hay reportes</div></td></tr>';
+    renderReportCards(data);
+    return;
   }
-  tbody.innerHTML = data.map(r=>`<tr class="${r.Estado==='Atendido'?'atendido':''}" onclick="openModal('${(r.ID||'').replace(/'/g,"\\'")}')"><td style="font-size:12px;color:var(--text-dim)">${r.ID||'—'}</td><td class="td-truncate">${r.Nombre||'—'}</td><td style="font-size:12px">${r['Cédula']||'—'}</td><td class="td-truncate">${r['Tipo de Riesgo']||'—'}</td><td>${nivelBadge(r['Nivel de Riesgo'])}</td><td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${r.Observaciones||'—'}</td><td style="font-size:12px">${formatFecha(r.Fecha)}</td><td style="font-size:12px">${formatHora(r.Hora)}</td><td>${estadoBadge(r.Estado)}</td><td onclick="event.stopPropagation()"><button class="btn-attend" ${r.Estado==='Atendido'?'disabled':''} onclick="markAttended('${(r.ID||'').replace(/'/g,"\\'")}')">${r.Estado==='Atendido'?'✓ Atendido':'+ Atender'}</button></td></tr>`).join('');
+  tbody.innerHTML = data.map(r =>
+    `<tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}" onclick="openModal('${(r.ID || '').replace(/'/g, "\\'")}')">
+      <td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td>
+      <td class="td-truncate">${r.Nombre || '—'}</td>
+      <td style="font-size:12px">${r['Cédula'] || '—'}</td>
+      <td class="td-truncate">${r['Tipo de Riesgo'] || '—'}</td>
+      <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
+      <td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${r.Observaciones || '—'}</td>
+      <td style="font-size:12px">${formatFecha(r.Fecha)}</td>
+      <td style="font-size:12px">${formatHora(r.Hora)}</td>
+      <td>${estadoBadge(r.Estado)}</td>
+      <td onclick="event.stopPropagation()">
+        <button class="btn-attend" ${r.Estado === 'Atendido' ? 'disabled' : ''} onclick="markAttended('${(r.ID || '').replace(/'/g, "\\'")}')">
+          ${r.Estado === 'Atendido' ? '✓ Atendido' : '+ Atender'}
+        </button>
+      </td>
+    </tr>`
+  ).join('');
   renderReportCards(data);
 }
 
-function formatFecha(val) { 
-  if(!val)return '—'; 
-  const s=String(val).trim(); 
-  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s; 
-  const d=new Date(s); 
-  return !isNaN(d.getTime())?`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`:s; 
+function formatFecha(val) {
+  if (!val) return '—';
+  const s = String(val).trim();
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  const d = new Date(s);
+  return !isNaN(d.getTime()) ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}` : s;
 }
 
-function formatHora(val) { 
-  if(!val)return '—'; 
-  const s=String(val).trim(); 
-  const m=s.match(/(\d{1,2}):(\d{2})/); 
-  return m?`${m[1]}:${m[2]} ${parseInt(m[1])>=12?'pm':'am'}`:s; 
+function formatHora(val) {
+  if (!val) return '—';
+  const s = String(val).trim();
+  const m = s.match(/(\d{1,2}):(\d{2})/);
+  return m ? `${m[1]}:${m[2]} ${parseInt(m[1]) >= 12 ? 'pm' : 'am'}` : s;
 }
 
 function nivelBadge(n) { return `<span class="badge ${n==='Alto'?'badge-alto':n==='Medio'?'badge-medio':'badge-bajo'}">${n||'—'}</span>`; }
 function estadoBadge(e) { return `<span class="badge ${e==='Atendido'?'badge-atendido':'badge-no-atendido'}">${e||'No atendido'}</span>`; }
 
-function applyFilters() { 
-  const n=document.getElementById('filterNombre').value.toLowerCase(); 
-  const l=document.getElementById('filterNivel').value; 
-  const e=document.getElementById('filterEstado').value; 
-  const f=document.getElementById('filterFecha').value; 
-  filteredData=allData.filter(r=>{ 
-    const mn=!n||(r.Nombre||'').toLowerCase().includes(n)||(r['Cédula']||'').toString().includes(n); 
-    const ml=!l||r['Nivel de Riesgo']===l; 
-    const me=!e||r.Estado===e; 
-    const mf=!f||(r.Fecha||'').includes(new Date(f).toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})); 
-    return mn&&ml&&me&&mf; 
-  }); 
-  renderReportsTable(filteredData); 
+// ==========================================
+// FILTROS & ORDENAMIENTO
+// ==========================================
+function applyFilters() {
+  const n = document.getElementById('filterNombre').value.toLowerCase();
+  const l = document.getElementById('filterNivel').value;
+  const e = document.getElementById('filterEstado').value;
+  const f = document.getElementById('filterFecha').value;
+  filteredData = allData.filter(r => {
+    const mn = !n || (r.Nombre||'').toLowerCase().includes(n) || (r['Cédula']||'').toString().includes(n);
+    const ml = !l || r['Nivel de Riesgo'] === l;
+    const me = !e || r.Estado === e;
+    const mf = !f || (r.Fecha||'').includes(new Date(f).toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}));
+    return mn && ml && me && mf;
+  });
+  renderReportsTable(filteredData);
 }
 
-function clearFilters() { 
-  document.getElementById('filterNombre').value=''; 
-  document.getElementById('filterNivel').value=''; 
-  document.getElementById('filterEstado').value=''; 
-  document.getElementById('filterFecha').value=''; 
-  filteredData=[...allData]; 
-  renderReportsTable(filteredData); 
+function clearFilters() {
+  document.getElementById('filterNombre').value = '';
+  document.getElementById('filterNivel').value = '';
+  document.getElementById('filterEstado').value = '';
+  document.getElementById('filterFecha').value = '';
+  filteredData = [...allData];
+  renderReportsTable(filteredData);
 }
 
-function sortBy(col) { 
-  if(currentSort.col===col) currentSort.dir*=-1; 
-  else{ currentSort.col=col; currentSort.dir=1; } 
-  filteredData.sort((a,b)=>(a[col]||'').localeCompare(b[col]||'')*currentSort.dir); 
-  renderReportsTable(filteredData); 
+function sortBy(col) {
+  if (currentSort.col === col) currentSort.dir *= -1;
+  else { currentSort.col = col; currentSort.dir = 1; }
+  filteredData.sort((a, b) => (a[col]||'').localeCompare(b[col]||'') * currentSort.dir);
+  renderReportsTable(filteredData);
 }
 
-async function markAttended(id) { 
-  if(!id)return; 
-  const item=allData.find(r=>r.ID===id); 
-  if(!item)return; 
-  item.Estado='Atendido'; 
-  item['Fecha Atención']=new Date().toLocaleString('es-CO'); 
-  filteredData=filteredData.map(r=>r.ID===id?item:r); 
-  renderReportsTable(filteredData); 
-  updateDashboard(); 
-  updatePendingBadge(); 
-  closeModalDirect(); 
-  if(scriptUrl) { 
-    try{ await callSheetsApi({action:'updateStatus',id}); showToast('✅','Actualizado',`Reporte ${id} atendido`,'success'); } 
-    catch(e){ showToast('⚠️','Localmente','Sincronizará al conectar','info'); } 
-  } 
+// ==========================================
+// MARCAR ATENDIDO
+// ==========================================
+async function markAttended(id) {
+  if (!id) return;
+  const item = allData.find(r => r.ID === id);
+  if (!item) return;
+  item.Estado = 'Atendido';
+  item['Fecha Atención'] = new Date().toLocaleString('es-CO');
+  filteredData = filteredData.map(r => r.ID === id ? item : r);
+  renderReportsTable(filteredData);
+  updateDashboard();
+  updatePendingBadge();
+  closeModalDirect();
+  if (scriptUrl) {
+    try {
+      await callSheetsApi({ action: 'updateStatus', id });
+      showToast('✅', 'Actualizado en Excel', `Reporte ${id} marcado como atendido`, 'success');
+    } catch(e) {
+      showToast('⚠️', 'Guardado localmente', 'Sincronizará al reconectar', 'info');
+    }
+  }
 }
 
-function updatePendingBadge() { 
-  const na=allData.filter(r=>r.Estado!=='Atendido').length; 
-  const b=document.getElementById('pendingBadge'); 
-  b.textContent=na; 
-  b.style.display=na>0?'inline':'none'; 
-  updateMobPendingBadge(na); 
+function updatePendingBadge() {
+  const na = allData.filter(r => r.Estado !== 'Atendido').length;
+  const b = document.getElementById('pendingBadge');
+  b.textContent = na;
+  b.style.display = na > 0 ? 'inline' : 'none';
+  updateMobPendingBadge(na);
 }
 
 // ==========================================
 // MODAL
 // ==========================================
-function openModal(id) { 
-  const r=allData.find(x=>x.ID===id); 
-  if(!r)return; 
-  currentModalId=id; 
-  const f=[['ID del Reporte',r.ID],['Nombre',r.Nombre],['Cédula',r['Cédula']],['Tipo de Riesgo',r['Tipo de Riesgo']],['Nivel de Riesgo',r['Nivel de Riesgo']],['Observaciones',r.Observaciones||'—'],['Fecha',formatFecha(r.Fecha)],['Hora',formatHora(r.Hora)],['Estado',r.Estado],['Fecha de Atención',r['Fecha Atención']||'—']]; 
-  document.getElementById('modalBody').innerHTML=f.map(([l,v])=>`<div class="modal-field"><div class="modal-label">${l}</div><div class="modal-value">${v||'—'}</div></div>`).join(''); 
-  const ab=document.getElementById('modalAttendBtn'); 
-  ab.disabled=r.Estado==='Atendido'; 
-  ab.textContent=r.Estado==='Atendido'?'✓ Ya atendido':'✓ Marcar como Atendido'; 
-  ab.onclick=()=>markAttended(id); 
-  document.getElementById('modalBackdrop').classList.add('show'); 
+function openModal(id) {
+  const r = allData.find(x => x.ID === id);
+  if (!r) return;
+  currentModalId = id;
+  const f = [
+    ['ID del Reporte', r.ID], ['Nombre', r.Nombre], ['Cédula', r['Cédula']],
+    ['Tipo de Riesgo', r['Tipo de Riesgo']], ['Nivel de Riesgo', r['Nivel de Riesgo']],
+    ['Observaciones', r.Observaciones || '—'], ['Fecha', formatFecha(r.Fecha)],
+    ['Hora', formatHora(r.Hora)], ['Estado', r.Estado], ['Fecha de Atención', r['Fecha Atención'] || '—']
+  ];
+  document.getElementById('modalBody').innerHTML = f.map(([l, v]) =>
+    `<div class="modal-field"><div class="modal-label">${l}</div><div class="modal-value">${v || '—'}</div></div>`
+  ).join('');
+  const ab = document.getElementById('modalAttendBtn');
+  ab.disabled = r.Estado === 'Atendido';
+  ab.textContent = r.Estado === 'Atendido' ? '✓ Ya atendido' : '✓ Marcar como Atendido';
+  ab.onclick = () => markAttended(id);
+  document.getElementById('modalBackdrop').classList.add('show');
 }
 
-function closeModal(e) { 
-  if(e&&e.target!==document.getElementById('modalBackdrop'))return; 
-  document.getElementById('modalBackdrop').classList.remove('show'); 
-  currentModalId=null; 
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalBackdrop')) return;
+  document.getElementById('modalBackdrop').classList.remove('show');
+  currentModalId = null;
 }
 
-function closeModalDirect() { 
-  document.getElementById('modalBackdrop').classList.remove('show'); 
-  currentModalId=null; 
-}
-
-// ==========================================
-// EXPORTAR
-// ==========================================
-function exportExcel() { 
-  if(typeof XLSX==='undefined') { showToast('❌','Error','Librería XLSX no cargada','error'); return; } 
-  const data=filteredData.length?filteredData:allData; 
-  const cols=['ID','Nombre','Cédula','Tipo de Riesgo','Nivel de Riesgo','Observaciones','Fecha','Hora','Estado','Fecha Atención']; 
-  const wsData=[['ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST'],[`Generado: ${new Date().toLocaleString('es-CO')} | Total: ${data.length}`],[],cols,...data.map(r=>[r.ID,r.Nombre,r['Cédula'],r['Tipo de Riesgo'],r['Nivel de Riesgo'],r.Observaciones,formatFecha(r.Fecha),formatHora(r.Hora),r.Estado,r['Fecha Atención']||''])]; 
-  const wb=XLSX.utils.book_new(); 
-  const ws=XLSX.utils.aoa_to_sheet(wsData); 
-  XLSX.utils.book_append_sheet(wb,ws,'Reportes SG-SST'); 
-  XLSX.writeFile(wb,`AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.xlsx`); 
-  showToast('📥','Excel exportado',`${data.length} reporte(s)`,'success'); 
-}
-
-function exportPDF() { 
-  if(typeof window.jspdf==='undefined') { showToast('❌','Error','jsPDF no cargado','error'); return; } 
-  const {jsPDF}=window.jspdf; 
-  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); 
-  const data=filteredData.length?filteredData:allData; 
-  doc.setFillColor(27,58,140); 
-  doc.rect(0,0,297,22,'F'); 
-  doc.setTextColor(255,255,255); 
-  doc.setFontSize(14); 
-  doc.setFont('helvetica','bold'); 
-  doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST',14,14); 
-  doc.autoTable({head:[['ID','Nombre','Cédula','Tipo de Riesgo','Nivel','Fecha','Estado']],body:data.map(r=>[r.ID||'—',r.Nombre||'—',r['Cédula']||'—',r['Tipo de Riesgo']||'—',r['Nivel de Riesgo']||'—',r.Fecha||'—',r.Estado||'—']),startY:26,styles:{fontSize:9,cellPadding:3,textColor:[30,30,30]},headStyles:{fillColor:[27,58,140],textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[245,247,252]},didParseCell:(d)=>{if(d.section==='body'){const n=d.row.raw[4];const e=d.row.raw[6];if(e==='Atendido')d.cell.styles.fillColor=[200,240,210];else if(n==='Alto')d.cell.styles.fillColor=[255,230,230];}}}); 
-  doc.save(`AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.pdf`); 
-  showToast('📄','PDF exportado',`${data.length} reporte(s)`,'success'); 
+function closeModalDirect() {
+  document.getElementById('modalBackdrop').classList.remove('show');
+  currentModalId = null;
 }
 
 // ==========================================
-// SETTINGS
+// EXPORTAR EXCEL (con diseño mejorado)
 // ==========================================
-function saveSettings() { 
-  const u=document.getElementById('settingScriptUrl').value.trim(); 
-  if(!u||!u.includes('script.google.com')) { showToast('⚠️','URL inválida','Pega el link de Google Apps Script','error'); return; } 
-  localStorage.setItem('SGSST_SCRIPT_URL',u); 
-  scriptUrl=u; 
-  document.getElementById('settingScriptUrl').style.borderColor='var(--success)'; 
-  setTimeout(()=>{document.getElementById('settingScriptUrl').style.borderColor='';},2000); 
-  showToast('✅','URL guardada','Panel y app móvil usarán este enlace','success'); 
-  setTimeout(()=>loadData(),1200); 
-}
+function exportExcel() {
+  if (typeof XLSX === 'undefined') { showToast('❌', 'Error', 'Librería XLSX no cargada', 'error'); return; }
+  const data = filteredData.length ? filteredData : allData;
+  const cols = ['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha Atención'];
 
-async function testConnection() { 
-  if(!scriptUrl) { showToast('⚠️','Sin URL','Guarda la URL primero','error'); return; } 
-  showToast('🔄','Probando...','','info'); 
-  try{ 
-    const r=await callSheetsApi({action:'ping'}); 
-    if(r.success) showToast('✅','Conexión OK','El servidor responde','success'); 
-    else throw new Error(r.error); 
-  } catch(e){ showToast('❌','Error',e.message,'error'); } 
-}
+  const titleStyle = {
+    font: { name: 'Arial', sz: 13, bold: true, color: { rgb: 'FFFFFF' } },
+    fill: { fgColor: { rgb: '1B3A8C' } },
+    alignment: { horizontal: 'center', vertical: 'center' }
+  };
+  const headerStyle = {
+    font: { name: 'Arial', sz: 10, bold: true, color: { rgb: 'FFFFFF' } },
+    fill: { fgColor: { rgb: '2E5FD9' } },
+    alignment: { horizontal: 'center', vertical: 'center' },
+    border: { top:{style:'thin',color:{rgb:'FFFFFF'}}, bottom:{style:'thin',color:{rgb:'FFFFFF'}}, left:{style:'thin',color:{rgb:'FFFFFF'}}, right:{style:'thin',color:{rgb:'FFFFFF'}} }
+  };
+  const subStyle = {
+    font: { name: 'Arial', sz: 10, italic: true, color: { rgb: '6B7280' } },
+    fill: { fgColor: { rgb: 'F3F4F6' } },
+    alignment: { horizontal: 'center' }
+  };
 
-function renderRisksAdmin() { 
-  const risks=getRisks(); 
-  const ul=document.getElementById('risksListAdmin'); 
-  ul.innerHTML=''; 
-  risks.forEach((risk,idx)=>{ 
-    const li=document.createElement('li'); 
-    li.className='risk-admin-item'; 
-    li.dataset.idx=idx; 
-    const span=document.createElement('span'); 
-    span.className='risk-admin-text'; 
-    span.textContent=risk; 
-    const actions=document.createElement('div'); 
-    actions.className='risk-admin-actions'; 
-    const eb=document.createElement('button'); 
-    eb.className='risk-admin-btn'; 
-    eb.textContent='✏️'; 
-    eb.title='Editar'; 
-    const db=document.createElement('button'); 
-    db.className='risk-admin-btn del'; 
-    db.textContent='🗑️'; 
-    db.title='Eliminar'; 
-    eb.onclick=()=>startEditRisk(idx,span,eb,db); 
-    db.onclick=()=>deleteRisk(idx); 
-    actions.appendChild(eb); 
-    actions.appendChild(db); 
-    li.appendChild(span); 
-    li.appendChild(actions); 
-    ul.appendChild(li); 
-  }); 
-}
+  // Nivel colores
+  const nivelFill = { 'Alto': 'FFE4E4', 'Medio': 'FFF8E1', 'Bajo': 'E8F5E9' };
+  const estadoFill = { 'Atendido': 'DCFCE7', 'No atendido': 'FEE2E2' };
 
-function startEditRisk(idx,span,eb,db) { 
-  const risks=getRisks(); 
-  const inp=document.createElement('input'); 
-  inp.type='text'; 
-  inp.className='risk-admin-text editing'; 
-  inp.value=risks[idx]; 
-  const save=()=>{ 
-    const v=inp.value.trim(); 
-    if(!v){renderRisksAdmin();return;} 
-    risks[idx]=v; 
-    setRisks(risks); 
-    renderRisksAdmin(); 
-  }; 
-  inp.onkeydown=e=>{if(e.key==='Enter')save();if(e.key==='Escape')renderRisksAdmin();}; 
-  eb.textContent='✅'; 
-  eb.onclick=save; 
-  span.replaceWith(inp); 
-  inp.focus(); 
-  inp.select(); 
-}
-
-function deleteRisk(idx) { 
-  const risks=getRisks(); 
-  if(!confirm(`¿Eliminar "${risks[idx]}"?`))return; 
-  risks.splice(idx,1); 
-  setRisks(risks); 
-  renderRisksAdmin(); 
-}
-
-function addRisk() { 
-  const inp=document.getElementById('newRiskInput'); 
-  const v=inp.value.trim(); 
-  if(!v)return; 
-  const risks=getRisks(); 
-  risks.push(v); 
-  setRisks(risks); 
-  inp.value=''; 
-  renderRisksAdmin(); 
-}
-
-async function changePassword() { 
-  const c=document.getElementById('currentPwdInput').value; 
-  const n=document.getElementById('newPwdInput').value; 
-  const cf=document.getElementById('confirmPwdInput').value; 
-  if(c!==getAdminPassword()) { setFeedback('pwdFeedback','❌ Contraseña actual incorrecta','err'); return; } 
-  if(n.length<6) { setFeedback('pwdFeedback','❌ Mínimo 6 caracteres','err'); return; } 
-  if(n!==cf) { setFeedback('pwdFeedback','❌ No coinciden','err'); return; } 
-  await saveConfigToSheet('admin_password'); 
-}
-
-// ==========================================
-// TOAST & MOBILE NAV
-// ==========================================
-function showToast(icon,title,msg,type='info'){
-  const c=document.getElementById('toastContainer');
-  const t=document.createElement('div');
-  t.className=`toast ${type}`;
-  t.innerHTML=`<div class="toast-icon">${icon}</div><div class="toast-body"><div class="toast-title">${title}</div>${msg?`<div class="toast-msg">${msg}</div>`:''}</div>`;
-  c.appendChild(t);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},4000);
-}
-
-function openSidebar(){
-  document.getElementById('sidebar').classList.add('open');
-  const ov=document.getElementById('sidebarOverlay');
-  ov.style.display='block';
-  requestAnimationFrame(()=>ov.classList.add('open'));
-  document.body.style.overflow='hidden';
-}
-
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('open');
-  const ov=document.getElementById('sidebarOverlay');
-  ov.classList.remove('open');
-  setTimeout(()=>{ov.style.display='none';},260);
-  document.body.style.overflow='';
-}
-
-function updateMobNav(page){
-  ['Dashboard','Reports','Settings'].forEach(p=>{
-    const b=document.getElementById('mobNav'+p);
-    if(b)b.classList.remove('active');
+  const cellStyle = (nivel, estado) => ({
+    font: { name: 'Arial', sz: 10 },
+    fill: { fgColor: { rgb: estado === 'Atendido' ? 'DCFCE7' : (nivelFill[nivel] || 'FFFFFF') } },
+    border: {
+      top:{style:'thin',color:{rgb:'E5E7EB'}}, bottom:{style:'thin',color:{rgb:'E5E7EB'}},
+      left:{style:'thin',color:{rgb:'E5E7EB'}}, right:{style:'thin',color:{rgb:'E5E7EB'}}
+    },
+    alignment: { vertical: 'center', wrapText: true }
   });
-  const m={dashboard:'Dashboard',reports:'Reports',settings:'Settings'};
-  const b=document.getElementById('mobNav'+(m[page]||''));
-  if(b)b.classList.add('active');
+
+  // Construir datos con estilos
+  const wsData = [
+    // Fila 1: Título
+    cols.map((_, i) => i === 0
+      ? { v: 'ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', s: titleStyle, t: 's' }
+      : { v: '', s: titleStyle, t: 's' }),
+    // Fila 2: Subtítulo
+    cols.map((_, i) => i === 0
+      ? { v: `Generado: ${new Date().toLocaleString('es-CO')} | Total registros: ${data.length}`, s: subStyle, t: 's' }
+      : { v: '', s: subStyle, t: 's' }),
+    // Fila 3: Vacía
+    cols.map(() => ({ v: '', t: 's' })),
+    // Fila 4: Encabezados
+    cols.map(h => ({ v: h, s: headerStyle, t: 's' })),
+    // Datos
+    ...data.map(r => cols.map(col => ({
+      v: col === 'Fecha' ? formatFecha(r[col])
+       : col === 'Hora' ? formatHora(r[col])
+       : (r[col] || ''),
+      s: cellStyle(r['Nivel de Riesgo'], r.Estado),
+      t: 's'
+    })))
+  ];
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Anchos de columnas
+  ws['!cols'] = [
+    { wch: 10 }, { wch: 22 }, { wch: 14 }, { wch: 28 },
+    { wch: 14 }, { wch: 35 }, { wch: 12 }, { wch: 10 },
+    { wch: 14 }, { wch: 18 }
+  ];
+
+  // Merge título y subtítulo
+  ws['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: cols.length - 1 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: cols.length - 1 } },
+    { s: { r: 2, c: 0 }, e: { r: 2, c: cols.length - 1 } }
+  ];
+
+  // Alturas de filas
+  ws['!rows'] = [{ hpt: 30 }, { hpt: 20 }, { hpt: 8 }, { hpt: 22 }];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Reportes SG-SST');
+  XLSX.writeFile(wb, `AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showToast('📥', 'Excel exportado', `${data.length} reporte(s) con diseño profesional`, 'success');
 }
 
-function updateMobPendingBadge(c){
-  const b=document.getElementById('mobPendingBadge');
-  if(!b)return;
-  b.textContent=c;
-  b.style.display=c>0?'inline':'none';
+// ==========================================
+// EXPORTAR PDF
+// ==========================================
+function exportPDF() {
+  if (typeof window.jspdf === 'undefined') { showToast('❌', 'Error', 'jsPDF no cargado', 'error'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const data = filteredData.length ? filteredData : allData;
+  doc.setFillColor(27, 58, 140);
+  doc.rect(0, 0, 297, 22, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', 14, 14);
+  doc.autoTable({
+    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Fecha', 'Estado']],
+    body: data.map(r => [r.ID||'—', r.Nombre||'—', r['Cédula']||'—', r['Tipo de Riesgo']||'—', r['Nivel de Riesgo']||'—', r.Fecha||'—', r.Estado||'—']),
+    startY: 26,
+    styles: { fontSize: 9, cellPadding: 3, textColor: [30,30,30] },
+    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245,247,252] },
+    didParseCell: (d) => {
+      if (d.section === 'body') {
+        const n = d.row.raw[4];
+        const e = d.row.raw[6];
+        if (e === 'Atendido') d.cell.styles.fillColor = [200,240,210];
+        else if (n === 'Alto') d.cell.styles.fillColor = [255,230,230];
+        else if (n === 'Medio') d.cell.styles.fillColor = [255,248,225];
+      }
+    }
+  });
+  doc.save(`AlarmavisionSGSST_${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('📄', 'PDF exportado', `${data.length} reporte(s)`, 'success');
 }
 
-function renderReportCards(data){
-  const c=document.getElementById('reportCards');
-  if(!c)return;
-  if(!data.length){
-    c.innerHTML=`<div class="empty-table" style="padding:40px 20px;text-align:center;color:var(--text-dim)"><svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" style="display:block;margin:0 auto 12px;opacity:0.25"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>No hay reportes</div>`;
+// ==========================================
+// CONFIGURACIÓN — URL SCRIPT
+// ==========================================
+function saveSettings() {
+  const u = document.getElementById('settingScriptUrl').value.trim();
+  if (!u || !u.includes('script.google.com')) {
+    showToast('⚠️', 'URL inválida', 'Pega el link de Google Apps Script', 'error');
     return;
-  } 
-  c.innerHTML=data.map(r=>{
-    const nc=(r['Nivel de Riesgo']||'').toLowerCase();
-    const at=r.Estado==='Atendido';
-    return`<div class="report-card${at?' atendido':''}" onclick="openModal('${(r.ID||'').replace(/'/g,"\\'")}')"><div class="report-card-accent ${nc}"></div><div style="padding-left:8px"><div class="report-card-head"><div><div class="report-card-id">${r.ID||'—'}</div><div class="report-card-name">${r.Nombre||'—'}</div></div><div>${nivelBadge(r['Nivel de Riesgo'])}</div></div><div class="report-card-tipo">${r['Tipo de Riesgo']||'—'}</div><div class="report-card-foot"><div class="report-card-date">📅 ${formatFecha(r.Fecha)} · ${formatHora(r.Hora)}</div><div class="report-card-actions">${estadoBadge(r.Estado)}${!at?`<button class="btn-attend" onclick="event.stopPropagation();markAttended('${(r.ID||'').replace(/'/g,"\\'")}')">+ Atender</button>`:''}</div></div></div></div>`;
+  }
+  localStorage.setItem('SGSST_SCRIPT_URL', u);
+  scriptUrl = u;
+  document.getElementById('settingScriptUrl').style.borderColor = 'var(--success)';
+  setTimeout(() => { document.getElementById('settingScriptUrl').style.borderColor = ''; }, 2000);
+  showToast('✅', 'URL guardada', 'Cargando datos del sistema...', 'success');
+  setTimeout(() => loadData(), 800);
+}
+
+async function testConnection() {
+  if (!scriptUrl) { showToast('⚠️', 'Sin URL', 'Guarda la URL primero', 'error'); return; }
+  showToast('🔄', 'Probando...', '', 'info');
+  try {
+    const r = await callSheetsApi({ action: 'ping' });
+    if (r.success) showToast('✅', 'Conexión OK', 'El servidor responde correctamente', 'success');
+    else throw new Error(r.error);
+  } catch(e) {
+    showToast('❌', 'Error de conexión', e.message, 'error');
+  }
+}
+
+// ==========================================
+// LISTA DE RIESGOS — ADMIN
+// Se actualiza en tiempo real al agregar/editar/eliminar
+// ==========================================
+function renderRisksAdmin() {
+  const risks = getRisks();
+  const ul = document.getElementById('risksListAdmin');
+  if (!ul) return;
+  ul.innerHTML = '';
+
+  if (risks.length === 0) {
+    ul.innerHTML = `<div class="empty-risks-info">
+      <strong>📋 Lista de riesgos vacía</strong>
+      Agrega tipos de riesgo usando el campo de abajo y luego presiona "Guardar lista en Excel" para sincronizar con la app móvil.
+    </div>`;
+    updateRisksCountBar();
+    return;
+  }
+
+  risks.forEach((risk, idx) => {
+    const li = document.createElement('li');
+    li.className = 'risk-admin-item';
+    li.dataset.idx = idx;
+
+    const span = document.createElement('span');
+    span.className = 'risk-admin-text';
+    span.textContent = risk;
+
+    const actions = document.createElement('div');
+    actions.className = 'risk-admin-actions';
+
+    const eb = document.createElement('button');
+    eb.className = 'risk-admin-btn';
+    eb.textContent = '✏️';
+    eb.title = 'Editar';
+
+    const db = document.createElement('button');
+    db.className = 'risk-admin-btn del';
+    db.textContent = '🗑️';
+    db.title = 'Eliminar';
+
+    eb.onclick = () => startEditRisk(idx, span, eb, db);
+    db.onclick = () => deleteRisk(idx);
+
+    actions.appendChild(eb);
+    actions.appendChild(db);
+    li.appendChild(span);
+    li.appendChild(actions);
+    ul.appendChild(li);
+  });
+  updateRisksCountBar();
+}
+
+function startEditRisk(idx, span, eb, db) {
+  const risks = getRisks();
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'risk-admin-text editing';
+  inp.value = risks[idx];
+  const save = () => {
+    const v = inp.value.trim();
+    if (!v) { renderRisksAdmin(); return; }
+    risks[idx] = v;
+    setRisks(risks);
+    renderRisksAdmin(); // actualiza lista en tiempo real
+  };
+  inp.onkeydown = e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') renderRisksAdmin(); };
+  eb.textContent = '✅';
+  eb.onclick = save;
+  span.replaceWith(inp);
+  inp.focus();
+  inp.select();
+}
+
+function deleteRisk(idx) {
+  const risks = getRisks();
+  if (!confirm(`¿Eliminar "${risks[idx]}"?`)) return;
+  risks.splice(idx, 1);
+  setRisks(risks);
+  renderRisksAdmin(); // actualiza lista en tiempo real
+  showToast('🗑️', 'Riesgo eliminado', 'Presiona "Guardar lista en Excel" para persistir el cambio', 'info');
+}
+
+function addRisk() {
+  const inp = document.getElementById('newRiskInput');
+  const v = inp.value.trim();
+  if (!v) return;
+  const risks = getRisks();
+  if (risks.includes(v)) { showToast('⚠️', 'Riesgo duplicado', 'Ese tipo ya existe en la lista', 'error'); return; }
+  risks.push(v);
+  setRisks(risks);
+  inp.value = '';
+  renderRisksAdmin(); // actualiza lista en tiempo real
+  showToast('➕', 'Riesgo agregado', 'Presiona "Guardar lista en Excel" para persistir el cambio', 'info');
+}
+
+// ==========================================
+// CONTRASEÑA
+// ==========================================
+async function changePassword() {
+  const c = document.getElementById('currentPwdInput').value;
+  const n = document.getElementById('newPwdInput').value;
+  const cf = document.getElementById('confirmPwdInput').value;
+  if (c !== getAdminPassword()) { setFeedback('pwdFeedback', '❌ Contraseña actual incorrecta', 'err'); return; }
+  if (n.length < 6) { setFeedback('pwdFeedback', '❌ Mínimo 6 caracteres', 'err'); return; }
+  if (n !== cf) { setFeedback('pwdFeedback', '❌ Las contraseñas no coinciden', 'err'); return; }
+  await saveConfigToSheet('admin_password');
+}
+
+// ==========================================
+// TOAST
+// ==========================================
+function showToast(icon, title, msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<div class="toast-icon">${icon}</div><div class="toast-body"><div class="toast-title">${title}</div>${msg ? `<div class="toast-msg">${msg}</div>` : ''}</div>`;
+  c.appendChild(t);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 5000);
+}
+
+// ==========================================
+// SIDEBAR MÓVIL
+// ==========================================
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  const ov = document.getElementById('sidebarOverlay');
+  ov.style.display = 'block';
+  requestAnimationFrame(() => ov.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  const ov = document.getElementById('sidebarOverlay');
+  ov.classList.remove('open');
+  setTimeout(() => { ov.style.display = 'none'; }, 260);
+  document.body.style.overflow = '';
+}
+
+function updateMobNav(page) {
+  ['Dashboard', 'Reports', 'Settings'].forEach(p => {
+    const b = document.getElementById('mobNav' + p);
+    if (b) b.classList.remove('active');
+  });
+  const m = { dashboard: 'Dashboard', reports: 'Reports', settings: 'Settings' };
+  const b = document.getElementById('mobNav' + (m[page] || ''));
+  if (b) b.classList.add('active');
+}
+
+function updateMobPendingBadge(c) {
+  const b = document.getElementById('mobPendingBadge');
+  if (!b) return;
+  b.textContent = c;
+  b.style.display = c > 0 ? 'inline' : 'none';
+}
+
+// ==========================================
+// REPORT CARDS (móvil)
+// ==========================================
+function renderReportCards(data) {
+  const c = document.getElementById('reportCards');
+  if (!c) return;
+  if (!data.length) {
+    c.innerHTML = `<div class="empty-table" style="padding:40px 20px;text-align:center;color:var(--text-dim)"><svg width="36" height="36" viewBox="0 0 16 16" fill="currentColor" style="display:block;margin:0 auto 12px;opacity:0.25"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>No hay reportes</div>`;
+    return;
+  }
+  c.innerHTML = data.map(r => {
+    const nc = (r['Nivel de Riesgo'] || '').toLowerCase();
+    const at = r.Estado === 'Atendido';
+    return `<div class="report-card${at ? ' atendido' : ''}" onclick="openModal('${(r.ID||'').replace(/'/g, "\\'")}')">
+      <div class="report-card-accent ${nc}"></div>
+      <div style="padding-left:8px">
+        <div class="report-card-head">
+          <div>
+            <div class="report-card-id">${r.ID||'—'}</div>
+            <div class="report-card-name">${r.Nombre||'—'}</div>
+          </div>
+          <div>${nivelBadge(r['Nivel de Riesgo'])}</div>
+        </div>
+        <div class="report-card-tipo">${r['Tipo de Riesgo']||'—'}</div>
+        <div class="report-card-foot">
+          <div class="report-card-date">📅 ${formatFecha(r.Fecha)} · ${formatHora(r.Hora)}</div>
+          <div class="report-card-actions">
+            ${estadoBadge(r.Estado)}
+            ${!at ? `<button class="btn-attend" onclick="event.stopPropagation();markAttended('${(r.ID||'').replace(/'/g,"\\'")}')">+ Atender</button>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-setInterval(()=>{if(navigator.onLine&&scriptUrl)loadData();},100000);
+// ==========================================
+// AUTO-REFRESH cada 2 minutos
+// ==========================================
+setInterval(() => { if (navigator.onLine && scriptUrl) loadData(); }, 120000);
 </script>
 </body>
 </html>
