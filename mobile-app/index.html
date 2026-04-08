@@ -7,6 +7,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SG-SST">
+  <!-- ── ANTI-CACHÉ: fuerza siempre la versión más reciente ── -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Alarmavision SG-SST — Reporte de Riesgos</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="../shared/icons/icon-192.png">
@@ -570,6 +574,41 @@ body::before {
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
+<script>
+// ============================================================
+// ANTI-CACHÉ — Se ejecuta ANTES que todo lo demás
+// Estrategia: versión estampada con fecha+hora de compilación.
+// Si el navegador cargó una versión vieja, se fuerza recarga.
+// ============================================================
+(function() {
+  // ── 1. Desregistrar Service Workers antiguos ──────────────
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => reg.unregister());
+    });
+  }
+
+  // ── 2. Limpiar caches del navegador (Cache API) ───────────
+  if ('caches' in window) {
+    caches.keys().then(names => names.forEach(n => caches.delete(n)));
+  }
+
+  // ── 3. Versión del archivo (cambia automáticamente) ───────
+  const FILE_VERSION = '20260408183248'; // reemplazado al guardar
+  const STORED_VER   = sessionStorage.getItem('app_version');
+
+  // Primera vez en esta sesión o versión distinta → limpiar y marcar
+  if (STORED_VER !== FILE_VERSION) {
+    sessionStorage.setItem('app_version', FILE_VERSION);
+
+    // Forzar recarga limpia solo si ya había una versión vieja cargada
+    if (STORED_VER !== null) {
+      // Hay una versión vieja en memoria: recargar sin caché
+      window.location.reload(true);
+    }
+  }
+})();
+</script>
 <script>
 // ============================================================
 // CONFIGURACIÓN
