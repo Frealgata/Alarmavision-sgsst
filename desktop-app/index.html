@@ -325,9 +325,9 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logos">
-        <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="assets/logo-company.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-divider"></div>
-        <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
       </div>
       <div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div>
       <div class="sidebar-sub">Panel SG-SST · Admin</div>
@@ -664,7 +664,7 @@ function setFeedback(elId, msg, type) {
 async function callSheetsApi(params) {
   if (!scriptUrl) throw new Error('URL de script no configurada');
   const q = new URLSearchParams(params).toString();
-  const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`);
+  const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`, { cache: 'no-store' });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
@@ -1377,7 +1377,7 @@ function renderReportCards(data) {
 // ==========================================
 // AUTO-REFRESH cada 2 minutos
 // ==========================================
-setInterval(() => { if (navigator.onLine && scriptUrl) loadData(); }, 1200000);
+setInterval(() => { if (navigator.onLine && scriptUrl) loadData(); }, 120000);
 </script>
 </body>
 </html>
