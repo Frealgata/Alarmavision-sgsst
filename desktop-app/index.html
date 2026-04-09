@@ -670,6 +670,27 @@ async function callSheetsApi(params) {
 }
 
 // ==========================================
+// NORMALIZAR FILA — mapea nombres de columna del backend al formato del dashboard
+// Backend devuelve: 'Nombre Reportante', 'Descripción / Observaciones', 'Fecha de Atención'
+// Dashboard espera: 'Nombre', 'Observaciones', 'Fecha Atención'
+// ==========================================
+function normalizeRow(r) {
+  return {
+    ID:                r['ID']                          || '',
+    Nombre:            r['Nombre Reportante']           || r['Nombre']          || '',
+    'Cédula':          r['Cédula']                     || r['Cedula']           || '',
+    'Tipo de Riesgo':  r['Tipo de Riesgo']             || '',
+    'Nivel de Riesgo': r['Nivel de Riesgo']            || '',
+    Observaciones:     r['Descripción / Observaciones'] || r['Observaciones']    || '',
+    Fecha:             r['Fecha']                       || '',
+    Hora:              r['Hora']                        || '',
+    Estado:            r['Estado']                      || 'No atendido',
+    'Fecha Atención':  r['Fecha de Atención']           || r['Fecha Atención']   || '',
+    Timestamp:         r['Timestamp']                   || ''
+  };
+}
+
+// ==========================================
 // CARGAR CONFIGURACIÓN DESDE EXCEL
 // Se ejecuta al iniciar si hay URL configurada
 // ==========================================
@@ -816,7 +837,7 @@ async function loadData() {
     if (!scriptUrl) throw new Error('Configura la URL del script primero');
     const r = await callSheetsApi({ action: 'get' });
     if (r.success) {
-      allData = r.data || [];
+      allData = (r.data || []).map(normalizeRow);
       filteredData = [...allData];
       updateDashboard();
       renderReportsTable(filteredData);
@@ -1034,7 +1055,21 @@ function closeModalDirect() {
 function exportExcel() {
   if (typeof XLSX === 'undefined') { showToast('❌', 'Error', 'Librería XLSX no cargada', 'error'); return; }
   const data = filteredData.length ? filteredData : allData;
-  const cols = ['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha Atención'];
+  // Columnas del Excel — deben coincidir con las claves normalizadas del objeto
+  const colsMap = [
+    { label: 'ID',                   key: 'ID' },
+    { label: 'Nombre Reportante',     key: 'Nombre' },
+    { label: 'Cédula',               key: 'Cédula' },
+    { label: 'Tipo de Riesgo',        key: 'Tipo de Riesgo' },
+    { label: 'Nivel de Riesgo',       key: 'Nivel de Riesgo' },
+    { label: 'Descripción / Obs.',    key: 'Observaciones' },
+    { label: 'Fecha',                 key: 'Fecha' },
+    { label: 'Hora',                  key: 'Hora' },
+    { label: 'Estado',                key: 'Estado' },
+    { label: 'Fecha de Atención',     key: 'Fecha Atención' }
+  ];
+  const cols = colsMap.map(c => c.label);
+  const colKeys = colsMap.map(c => c.key);
 
   const titleStyle = {
     font: { name: 'Arial', sz: 13, bold: true, color: { rgb: 'FFFFFF' } },
@@ -1082,10 +1117,10 @@ function exportExcel() {
     // Fila 4: Encabezados
     cols.map(h => ({ v: h, s: headerStyle, t: 's' })),
     // Datos
-    ...data.map(r => cols.map(col => ({
-      v: col === 'Fecha' ? formatFecha(r[col])
-       : col === 'Hora' ? formatHora(r[col])
-       : (r[col] || ''),
+    ...data.map(r => colKeys.map((key, i) => ({
+      v: key === 'Fecha' ? formatFecha(r[key])
+       : key === 'Hora'  ? formatHora(r[key])
+       : (r[key] != null ? String(r[key]) : ''),
       s: cellStyle(r['Nivel de Riesgo'], r.Estado),
       t: 's'
     })))
@@ -1096,9 +1131,16 @@ function exportExcel() {
 
   // Anchos de columnas
   ws['!cols'] = [
-    { wch: 10 }, { wch: 22 }, { wch: 14 }, { wch: 28 },
-    { wch: 14 }, { wch: 35 }, { wch: 12 }, { wch: 10 },
-    { wch: 14 }, { wch: 18 }
+    { wch: 10 }, // ID
+    { wch: 24 }, // Nombre Reportante
+    { wch: 14 }, // Cédula
+    { wch: 30 }, // Tipo de Riesgo
+    { wch: 14 }, // Nivel de Riesgo
+    { wch: 40 }, // Descripción / Obs.
+    { wch: 12 }, // Fecha
+    { wch: 10 }, // Hora
+    { wch: 14 }, // Estado
+    { wch: 20 }  // Fecha de Atención
   ];
 
   // Merge título y subtítulo
@@ -1131,16 +1173,39 @@ function exportPDF() {
   doc.setFont('helvetica', 'bold');
   doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', 14, 14);
   doc.autoTable({
-    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Fecha', 'Estado']],
-    body: data.map(r => [r.ID||'—', r.Nombre||'—', r['Cédula']||'—', r['Tipo de Riesgo']||'—', r['Nivel de Riesgo']||'—', r.Fecha||'—', r.Estado||'—']),
+    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Descripción', 'Fecha', 'Hora', 'Estado', 'Fecha Atención']],
+    body: data.map(r => [
+      r.ID||'—',
+      r.Nombre||'—',
+      r['Cédula']||'—',
+      r['Tipo de Riesgo']||'—',
+      r['Nivel de Riesgo']||'—',
+      r.Observaciones||'—',
+      formatFecha(r.Fecha)||'—',
+      formatHora(r.Hora)||'—',
+      r.Estado||'—',
+      r['Fecha Atención']||'—'
+    ]),
     startY: 26,
-    styles: { fontSize: 9, cellPadding: 3, textColor: [30,30,30] },
-    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold' },
+    styles: { fontSize: 8, cellPadding: 2.5, textColor: [30,30,30], overflow: 'linebreak' },
+    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold', fontSize: 8 },
     alternateRowStyles: { fillColor: [245,247,252] },
+    columnStyles: {
+      0: { cellWidth: 18 },   // ID
+      1: { cellWidth: 28 },   // Nombre
+      2: { cellWidth: 22 },   // Cédula
+      3: { cellWidth: 35 },   // Tipo de Riesgo
+      4: { cellWidth: 16 },   // Nivel
+      5: { cellWidth: 45 },   // Descripción
+      6: { cellWidth: 20 },   // Fecha
+      7: { cellWidth: 16 },   // Hora
+      8: { cellWidth: 22 },   // Estado
+      9: { cellWidth: 28 }    // Fecha Atención
+    },
     didParseCell: (d) => {
       if (d.section === 'body') {
         const n = d.row.raw[4];
-        const e = d.row.raw[6];
+        const e = d.row.raw[8];
         if (e === 'Atendido') d.cell.styles.fillColor = [200,240,210];
         else if (n === 'Alto') d.cell.styles.fillColor = [255,230,230];
         else if (n === 'Medio') d.cell.styles.fillColor = [255,248,225];
