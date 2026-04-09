@@ -13,7 +13,8 @@
   <meta http-equiv="Expires" content="0">
   <title>Alarmavision SG-SST — Reporte de Riesgos</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="../shared/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -394,9 +395,9 @@ body::before {
   <!-- HEADER -->
   <header class="app-header">
     <div class="header-logos">
-      <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
+      <img src="assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
       <div class="divider-v"></div>
-      <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
+      <img src="assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
     </div>
     <div class="header-info">
       <div class="header-title"><span1>Alarma</span1><span>vision</span></div>
@@ -410,6 +411,12 @@ body::before {
 
     <!-- TAB: FORMULARIO -->
     <div class="tab-content active" id="tab-form">
+
+      <!-- Aviso de actualización disponible -->
+      <div id="updateBanner" style="display:none;align-items:center;gap:10px;background:rgba(27,58,140,0.1);border:1px solid rgba(27,58,140,0.35);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--blue-mid);margin-bottom:12px;">
+        🔄 <span>Nueva versión disponible</span>
+        <button onclick="window.location.reload(true)" style="margin-left:auto;padding:4px 12px;background:var(--blue-mid);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Actualizar</button>
+      </div>
 
       <div class="queue-banner" id="queueBanner">
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -576,38 +583,33 @@ body::before {
 
 <script>
 // ============================================================
-// ANTI-CACHÉ — Se ejecuta ANTES que todo lo demás
-// Estrategia: versión estampada con fecha+hora de compilación.
-// Si el navegador cargó una versión vieja, se fuerza recarga.
+// REGISTRO DEL SERVICE WORKER — Con actualización automática
 // ============================================================
-(function() {
-  // ── 1. Desregistrar Service Workers antiguos ──────────────
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      regs.forEach(reg => reg.unregister());
-    });
-  }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+    .then(reg => {
+      // Revisar si hay una nueva versión disponible
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            // Nuevo SW listo — activar inmediatamente y recargar
+            newSW.postMessage('SKIP_WAITING');
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+              window.location.reload();
+            });
+          }
+        });
+      });
+      // Forzar revisión de actualizaciones cada vez que abre la app
+      reg.update();
+    })
+    .catch(console.error);
 
-  // ── 2. Limpiar caches del navegador (Cache API) ───────────
-  if ('caches' in window) {
-    caches.keys().then(names => names.forEach(n => caches.delete(n)));
-  }
-
-  // ── 3. Versión del archivo (cambia automáticamente) ───────
-  const FILE_VERSION = '20260408183248'; // reemplazado al guardar
-  const STORED_VER   = sessionStorage.getItem('app_version');
-
-  // Primera vez en esta sesión o versión distinta → limpiar y marcar
-  if (STORED_VER !== FILE_VERSION) {
-    sessionStorage.setItem('app_version', FILE_VERSION);
-
-    // Forzar recarga limpia solo si ya había una versión vieja cargada
-    if (STORED_VER !== null) {
-      // Hay una versión vieja en memoria: recargar sin caché
-      window.location.reload(true);
-    }
-  }
-})();
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.type === 'SYNC_NEEDED') syncPending();
+  });
+}
 </script>
 <script>
 // ============================================================
@@ -629,17 +631,10 @@ let risksLoaded = false; // ¿ya cargamos la lista desde el Excel?
 // INIT
 // ============================================================
 window.addEventListener('load', () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(console.error);
-    navigator.serviceWorker.addEventListener('message', e => {
-      if (e.data.type === 'SYNC_NEEDED') syncPending();
-    });
-  }
-
   updateOnlineStatus();
   renderHistory();
 
-  // Cargar lista de riesgos desde Excel al iniciar
+  // Cargar lista de riesgos SIEMPRE desde el servidor (no caché)
   loadRisksFromExcel();
 
   // Intentar sincronizar pendientes al arrancar
@@ -677,7 +672,7 @@ async function loadRisksFromExcel() {
     if (!isOnline) throw new Error('offline');
 
     const params = new URLSearchParams({ action: 'getConfig', t: Date.now() });
-    const res = await fetch(`${SCRIPT_URL}?${params}`);
+    const res = await fetch(`${SCRIPT_URL}?${params}`, { cache: 'no-store' });
     const data = await res.json();
 
     loadingEl.style.display = 'none';
