@@ -2,8 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1B3A8C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SG-SST Admin">
 <title>Alarmavision SG-SST — Panel Administrativo</title>
 <link rel="shortcut icon" href="shared/icons/icon-512.png" type="image"/>
 <link rel="manifest" href="manifest.json">
@@ -60,7 +63,7 @@ html, body { height: 100%; background: var(--black); color: var(--text); font-fa
 /* ==========================================
    ÁREA PRINCIPAL
    ========================================== */
-.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: visible; }
 .topbar { height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; padding: 0 20px; flex-shrink: 0; }
 .topbar-title { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; flex: 1; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
@@ -317,36 +320,79 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
    MÓVIL (≤ 768px)
    ========================================== */
 @media (max-width: 768px) {
-  html, body { overflow: hidden; }
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; z-index: 300; transform: translateX(-100%); transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: none; }
+  /* ── Permitir scroll vertical en todo el body ── */
+  html, body { overflow-x: hidden; overflow-y: auto; height: auto; }
+
+  /* ── App layout: columna, sin overflow hidden que bloquee el scroll ── */
+  .app-layout { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
+
+  /* ── Sidebar: drawer lateral, fuera del flujo ── */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 270px; z-index: 300;
+    transform: translateX(-100%);
+    transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    height: 100%;
+    overflow-y: auto;
+  }
   .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(27,58,140,0.15); }
   .sidebar-overlay { display: block; pointer-events: none; }
   .sidebar-overlay.open { pointer-events: auto; }
+
+  /* ── Main area: columna completa ── */
+  .main-area { flex: 1; display: flex; flex-direction: column; overflow: visible; }
+
+  /* ── Topbar ── */
   .mob-menu-btn { display: flex; }
-  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar { padding: 0 12px; gap: 8px; position: sticky; top: 0; z-index: 50; }
   .topbar-title { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar-actions .btn-excel, .topbar-actions .btn-pdf { display: none; }
   .topbar-actions .btn-primary { padding: 7px 10px; font-size: 12px; }
-  .page-content { padding: 14px 12px 80px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ── Contenido: scroll natural, con padding para nav bottom ── */
+  .page-content {
+    padding: 14px 12px 90px;
+    overflow-y: visible;
+    overflow-x: hidden;
+    flex: 1;
+  }
+
+  /* ── Stats: 2 columnas en vertical ── */
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .stat-value { font-size: 26px; }
+
+  /* ── Charts: 1 columna ── */
   .chart-row { grid-template-columns: 1fr; gap: 10px; }
 
-  /* En móvil: ocultar tabla de REPORTES y mostrar tarjetas */
+  /* ── Tabla de REPORTES: ocultar en móvil, usar tarjetas ── */
   #page-reports .table-scroll { display: none; }
-  #page-reports .filters-row { display: none; }
+  #page-reports .filters-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  #page-reports .filter-input.search { min-width: 100%; }
   .report-cards { display: block !important; }
 
-  /* Dashboard: tabla liviana visible con scroll horizontal */
+  /* ── Dashboard: tabla con scroll horizontal ── */
   #page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   #page-dashboard table { min-width: 480px; }
   #page-dashboard th, #page-dashboard td { padding: 7px 8px; font-size: 11px; }
 
-  .mob-bottom-nav { display: block; }
+  /* ── Nav bottom fijo ── */
+  .mob-bottom-nav {
+    display: block;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 200;
+  }
+
+  /* ── Settings ── */
   .settings-card { max-width: 100%; }
-  .toast-container { top: auto; bottom: 76px; left: 12px; right: 12px; }
+
+  /* ── Toasts desde abajo, sobre el nav ── */
+  .toast-container { position: fixed; top: auto; bottom: 76px; left: 12px; right: 12px; }
   .toast { min-width: unset; max-width: 100%; transform: translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; }
   .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── Modal en móvil: hoja inferior ── */
+  .modal-backdrop { align-items: flex-end !important; }
 }
 
 @media (max-width: 480px) {
