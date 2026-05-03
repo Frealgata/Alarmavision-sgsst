@@ -7,14 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SG-SST">
-  <!-- ── ANTI-CACHÉ: fuerza siempre la versión más reciente ── -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>Alarmavision SG-SST — Reporte de Riesgos</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../shared/icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -122,38 +117,107 @@ body::before {
 .status-dot.offline { background: var(--gray-light); box-shadow: none; animation: none; }
 @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
 
-/* ── LOADING RIESGOS ── */
+/* ── CARGANDO TIPOS DE REPORTE ── */
 .risks-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 28px 20px;
-  gap: 12px;
-  color: var(--text-dim);
-  font-size: 13px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 28px 20px; gap: 12px;
+  color: var(--text-dim); font-size: 13px;
 }
 .risks-loading-spinner {
   width: 28px; height: 28px;
   border: 2px solid rgba(27,58,140,0.2);
   border-top-color: var(--blue-mid);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── SIN DATOS EN EXCEL ── */
 .risks-empty-state {
-  background: var(--blue-tint);
-  border: 1px dashed rgba(27,58,140,0.3);
-  border-radius: var(--radius);
-  padding: 24px 20px;
-  text-align: center;
-  color: var(--text-dim);
+  background: var(--blue-tint); border: 1px dashed rgba(27,58,140,0.3);
+  border-radius: var(--radius); padding: 24px 20px; text-align: center; color: var(--text-dim);
 }
 .risks-empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; opacity: 0.3; }
 .risks-empty-state strong { display: block; color: var(--blue); font-size: 15px; margin-bottom: 6px; }
 .risks-empty-state p { font-size: 13px; line-height: 1.6; }
+
+/* ── TARJETAS DE TIPO DE REPORTE ── */
+.report-type-cards { display: flex; flex-direction: column; gap: 10px; }
+
+.rt-card {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  background: var(--surface2); overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer;
+}
+.rt-card.selected {
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+  background: var(--surface);
+}
+
+.rt-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 15px; user-select: none;
+}
+.rt-card-icon { font-size: 22px; flex-shrink: 0; }
+.rt-card-info { flex: 1; min-width: 0; }
+.rt-card-title {
+  font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+  color: var(--text); letter-spacing: 0.2px; margin-bottom: 2px;
+}
+.rt-card.selected .rt-card-title { color: var(--blue-mid); }
+.rt-card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+.rt-card-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all 0.2s;
+}
+.rt-card.selected .rt-card-check {
+  background: var(--blue-mid); border-color: var(--blue-mid); color: white;
+}
+
+/* Ejemplos expandibles */
+.rt-card-examples {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 0 solid var(--border2);
+}
+.rt-card.selected .rt-card-examples {
+  max-height: 400px; border-top-width: 1px;
+}
+
+.rt-examples-inner { padding: 10px 15px 14px; }
+.rt-examples-label {
+  font-size: 10.5px; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+}
+.rt-example-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.rt-example-chip {
+  background: var(--blue-tint); border: 1px solid var(--border);
+  border-radius: 100px; padding: 4px 12px; font-size: 12px;
+  color: var(--blue-mid); cursor: pointer; transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rt-example-chip.selected-chip {
+  background: var(--blue-mid); color: white; border-color: var(--blue-mid);
+}
+.rt-example-chip:active { opacity: 0.75; }
+
+/* Campo de descripción libre dentro del tipo */
+.rt-free-desc-label {
+  font-size: 10.5px; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+}
+.rt-free-desc {
+  width: 100%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px;
+  padding: 10px 12px; resize: vertical; min-height: 80px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; line-height: 1.5;
+}
+.rt-free-desc:focus {
+  border-color: var(--blue-mid); box-shadow: 0 0 0 3px var(--blue-glow);
+}
 
 /* ── MAIN ── */
 .main-content { flex: 1; padding: 20px 16px 100px; }
@@ -395,9 +459,9 @@ body::before {
   <!-- HEADER -->
   <header class="app-header">
     <div class="header-logos">
-      <img src="assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
+      <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
       <div class="divider-v"></div>
-      <img src="assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
+      <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
     </div>
     <div class="header-info">
       <div class="header-title"><span1>Alarma</span1><span>vision</span></div>
@@ -411,12 +475,6 @@ body::before {
 
     <!-- TAB: FORMULARIO -->
     <div class="tab-content active" id="tab-form">
-
-      <!-- Aviso de actualización disponible -->
-      <div id="updateBanner" style="display:none;align-items:center;gap:10px;background:rgba(27,58,140,0.1);border:1px solid rgba(27,58,140,0.35);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--blue-mid);margin-bottom:12px;">
-        🔄 <span>Nueva versión disponible</span>
-        <button onclick="window.location.reload(true)" style="margin-left:auto;padding:4px 12px;background:var(--blue-mid);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Actualizar</button>
-      </div>
 
       <div class="queue-banner" id="queueBanner">
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -461,27 +519,27 @@ body::before {
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="tipoRiesgo">Selecciona el tipo de riesgo <span class="required">*</span></label>
+          <label class="field-label">Tipo de reporte <span class="required">*</span></label>
 
-          <!-- Estado de carga de riesgos -->
+          <!-- Estado de carga -->
           <div id="risksLoadingState" class="risks-loading" style="display:none">
             <div class="risks-loading-spinner"></div>
-            <span>Cargando lista de riesgos desde Excel...</span>
+            <span>Cargando tipos de reporte...</span>
           </div>
 
           <!-- Sin datos en Excel -->
           <div id="risksEmptyState" class="risks-empty-state" style="display:none">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM9.5 3A1.5 1.5 0 0 1 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/></svg>
-            <strong>No hay tipos de riesgo configurados</strong>
-            <p>El administrador aún no ha guardado la lista de riesgos en el Excel. Contacta al administrador del panel para configurar los tipos de riesgo.</p>
+            <strong>No hay tipos de reporte configurados</strong>
+            <p>El administrador debe configurar los tipos de reporte en el panel y guardarlos en Excel.</p>
           </div>
 
-          <!-- Select con riesgos cargados desde Excel -->
-          <select id="tipoRiesgo" class="field-select" style="display:none">
-            <option value="">— Seleccionar —</option>
-          </select>
+          <!-- Tarjetas de tipo de reporte cargadas desde Excel -->
+          <div id="reportTypeCards" class="report-type-cards" style="display:none"></div>
 
-          <div class="field-error" id="tipo-error">Selecciona un tipo de riesgo</div>
+          <!-- Input oculto que guarda el valor seleccionado -->
+          <input type="hidden" id="tipoRiesgo" value="">
+          <div class="field-error" id="tipo-error">Selecciona un tipo de reporte</div>
         </div>
 
         <div class="field-group">
@@ -511,12 +569,10 @@ body::before {
           </div>
           <div class="field-error" id="nivel-error">Selecciona el nivel de riesgo</div>
         </div>
-
-        <div class="field-group" style="margin-bottom:0">
-          <label class="field-label" for="observaciones">Descripción del riesgo</label>
-          <textarea id="observaciones" class="field-textarea" placeholder="Describe brevemente el riesgo observado..."></textarea>
-        </div>
       </div>
+
+      <!-- Campo oculto de observaciones (se llena desde la tarjeta activa) -->
+      <input type="hidden" id="observaciones" value="">
 
       <!-- BOTÓN ENVIAR -->
       <button class="btn-send" id="btnSend" onclick="handleSubmit()">
@@ -583,36 +639,6 @@ body::before {
 
 <script>
 // ============================================================
-// REGISTRO DEL SERVICE WORKER — Con actualización automática
-// ============================================================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
-    .then(reg => {
-      // Revisar si hay una nueva versión disponible
-      reg.addEventListener('updatefound', () => {
-        const newSW = reg.installing;
-        newSW.addEventListener('statechange', () => {
-          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-            // Nuevo SW listo — activar inmediatamente y recargar
-            newSW.postMessage('SKIP_WAITING');
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-              window.location.reload();
-            });
-          }
-        });
-      });
-      // Forzar revisión de actualizaciones cada vez que abre la app
-      reg.update();
-    })
-    .catch(console.error);
-
-  navigator.serviceWorker.addEventListener('message', e => {
-    if (e.data && e.data.type === 'SYNC_NEEDED') syncPending();
-  });
-}
-</script>
-<script>
-// ============================================================
 // CONFIGURACIÓN
 // Lee URL del localStorage (configurada en el panel admin)
 // ============================================================
@@ -625,16 +651,201 @@ const SCRIPT_URL = localStorage.getItem('SGSST_SCRIPT_URL') || URL_DEFAULT;
 let isOnline = navigator.onLine;
 let pendingQueue = JSON.parse(localStorage.getItem('pending_queue') || '[]');
 let myReports = JSON.parse(localStorage.getItem('my_reports') || '[]');
-let risksLoaded = false; // ¿ya cargamos la lista desde el Excel?
+let risksLoaded = false;
+let currentReportTypes = []; // tipos cargados desde Excel
+
+// ============================================================
+// CARGAR TIPOS DE REPORTE DESDE EXCEL
+// ============================================================
+async function loadRisksFromExcel() {
+  const loadingEl = document.getElementById('risksLoadingState');
+  const emptyEl   = document.getElementById('risksEmptyState');
+  const cardsEl   = document.getElementById('reportTypeCards');
+
+  loadingEl.style.display = 'flex';
+  emptyEl.style.display   = 'none';
+  cardsEl.style.display   = 'none';
+
+  try {
+    if (!isOnline) throw new Error('offline');
+
+    const params = new URLSearchParams({ action: 'getConfig', t: Date.now() });
+    const res  = await fetch(`${SCRIPT_URL}?${params}`);
+    const data = await res.json();
+
+    loadingEl.style.display = 'none';
+
+    let types = null;
+    if (data.success && data.config) {
+      // Preferir reportTypes (nuevo formato) sobre risks (legado)
+      if (data.config.reportTypes && data.config.reportTypes.length > 0) {
+        types = data.config.reportTypes;
+      }
+    }
+
+    if (types && types.length > 0) {
+      currentReportTypes = types;
+      localStorage.setItem('SGSST_REPORT_TYPES', JSON.stringify(types));
+      renderReportTypeCards(types);
+      risksLoaded = true;
+    } else {
+      emptyEl.style.display = 'block';
+      showToast('⚠️', 'Sin tipos configurados', 'El administrador debe configurar los tipos de reporte', 'warning');
+    }
+  } catch(err) {
+    loadingEl.style.display = 'none';
+    // Intentar cache local
+    const cached = localStorage.getItem('SGSST_REPORT_TYPES');
+    if (cached) {
+      try {
+        const local = JSON.parse(cached);
+        if (local && local.length > 0) {
+          currentReportTypes = local;
+          renderReportTypeCards(local);
+          risksLoaded = true;
+          showToast('📦', 'Sin conexión', 'Mostrando tipos de reporte guardados localmente', 'warning');
+          return;
+        }
+      } catch(e) {}
+    }
+    emptyEl.style.display = 'block';
+    if (err.message !== 'offline') {
+      showToast('⚠️', 'No se pudo cargar', 'Verifica la URL del script en el panel admin', 'warning');
+    } else {
+      showToast('📡', 'Sin conexión', 'Conéctate para cargar los tipos de reporte', 'warning');
+    }
+  }
+}
+
+// ============================================================
+// RENDERIZAR TARJETAS DE TIPO DE REPORTE
+// ============================================================
+function renderReportTypeCards(types) {
+  const cardsEl = document.getElementById('reportTypeCards');
+  const emptyEl = document.getElementById('risksEmptyState');
+  cardsEl.innerHTML = '';
+  emptyEl.style.display = 'none';
+  cardsEl.style.display = 'flex';
+
+  // Limpiar selección previa
+  document.getElementById('tipoRiesgo').value = '';
+
+  types.forEach((cat, idx) => {
+    // Extraer partes del título (emoji + texto)
+    const iconMatch = cat.titulo.match(/^(\S+)\s(.+)$/);
+    const icon  = iconMatch ? iconMatch[1] : '📋';
+    const label = iconMatch ? iconMatch[2] : cat.titulo;
+
+    const card = document.createElement('div');
+    card.className = 'rt-card';
+    card.id = `rtCard_${idx}`;
+
+    card.innerHTML = `
+      <div class="rt-card-header" onclick="selectReportType(${idx})">
+        <span class="rt-card-icon">${icon}</span>
+        <div class="rt-card-info">
+          <div class="rt-card-title">${label}</div>
+          <div class="rt-card-desc">${cat.descripcion || ''}</div>
+        </div>
+        <div class="rt-card-check" id="rtCheck_${idx}"></div>
+      </div>
+      <div class="rt-card-examples" id="rtExamples_${idx}">
+        <div class="rt-examples-inner">
+          <div class="rt-examples-label">Ejemplos — toca uno o escribe abajo</div>
+          <div class="rt-example-chips" id="rtChips_${idx}">
+            ${(cat.ejemplos || []).map((ej, ei) =>
+              `<span class="rt-example-chip" onclick="toggleChip(${idx}, ${ei}, this)">${ej}</span>`
+            ).join('')}
+          </div>
+          <div class="rt-free-desc-label">Describe lo que observaste <span style="color:var(--danger)">*</span></div>
+          <textarea class="rt-free-desc" id="rtDesc_${idx}"
+            placeholder="Describe brevemente la situación..."
+            oninput="syncObservaciones(${idx})"></textarea>
+        </div>
+      </div>`;
+
+    cardsEl.appendChild(card);
+  });
+}
+
+// Seleccionar / deseleccionar una categoría
+function selectReportType(idx) {
+  const types = currentReportTypes;
+  if (!types[idx]) return;
+
+  const allCards = document.querySelectorAll('.rt-card');
+  allCards.forEach((c, i) => {
+    if (i === idx) {
+      const isOpen = c.classList.contains('selected');
+      c.classList.toggle('selected', !isOpen);
+      document.getElementById(`rtCheck_${i}`).textContent = isOpen ? '' : '✓';
+    } else {
+      c.classList.remove('selected');
+      const ch = document.getElementById(`rtCheck_${i}`);
+      if (ch) ch.textContent = '';
+    }
+  });
+
+  // Actualizar input oculto con el título de la categoría seleccionada
+  const card = document.getElementById(`rtCard_${idx}`);
+  if (card && card.classList.contains('selected')) {
+    document.getElementById('tipoRiesgo').value = types[idx].titulo;
+    document.getElementById('tipo-error').classList.remove('show');
+    // Hacer scroll suave a la tarjeta abierta
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 150);
+  } else {
+    document.getElementById('tipoRiesgo').value = '';
+  }
+}
+
+// Al tocar un chip de ejemplo, lo pone/quita del textarea
+function toggleChip(catIdx, exIdx, chipEl) {
+  const cat = currentReportTypes[catIdx];
+  if (!cat) return;
+  const ej = cat.ejemplos[exIdx];
+  const textarea = document.getElementById(`rtDesc_${catIdx}`);
+  chipEl.classList.toggle('selected-chip');
+
+  // Reconstruir descripción con los chips seleccionados
+  const selectedChips = document.querySelectorAll(`#rtChips_${catIdx} .rt-example-chip.selected-chip`);
+  const chipTexts = Array.from(selectedChips).map(c => c.textContent);
+  // Mantener texto libre que no venga de chips
+  const freeText = textarea.dataset.freeText || '';
+  const combined = [...chipTexts, ...(freeText ? [freeText] : [])].join('. ');
+  textarea.value = combined;
+  syncObservaciones(catIdx);
+}
+
+// Sincronizar textarea de descripción con el campo observaciones global
+function syncObservaciones(catIdx) {
+  const textarea = document.getElementById(`rtDesc_${catIdx}`);
+  // Guardar texto libre (sin chips) para no perderlo
+  const selectedChips = document.querySelectorAll(`#rtChips_${catIdx} .rt-example-chip.selected-chip`);
+  const chipTexts = Array.from(selectedChips).map(c => c.textContent);
+  const fullText = textarea.value;
+  // Separar texto libre quitando los chips seleccionados
+  let freeText = fullText;
+  chipTexts.forEach(ct => { freeText = freeText.replace(ct, '').replace(/^\.\s*/, '').replace(/\.\s*$/, '').trim(); });
+  textarea.dataset.freeText = freeText;
+  // El campo observaciones global lleva el valor completo del textarea activo
+  document.getElementById('observaciones') && (document.getElementById('observaciones').value = fullText);
+}
 
 // ============================================================
 // INIT
 // ============================================================
 window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data.type === 'SYNC_NEEDED') syncPending();
+    });
+  }
+
   updateOnlineStatus();
   renderHistory();
 
-  // Cargar lista de riesgos SIEMPRE desde el servidor (no caché)
+  // Cargar lista de riesgos desde Excel al iniciar
   loadRisksFromExcel();
 
   // Intentar sincronizar pendientes al arrancar
@@ -655,85 +866,7 @@ window.addEventListener('offline', () => {
 });
 
 // ============================================================
-// CARGAR RIESGOS DESDE EXCEL
-// Muestra: spinner → lista cargada | mensaje "sin datos" | fallback a local
-// ============================================================
-async function loadRisksFromExcel() {
-  const loadingEl  = document.getElementById('risksLoadingState');
-  const emptyEl    = document.getElementById('risksEmptyState');
-  const selectEl   = document.getElementById('tipoRiesgo');
 
-  // Mostrar spinner
-  loadingEl.style.display = 'flex';
-  emptyEl.style.display   = 'none';
-  selectEl.style.display  = 'none';
-
-  try {
-    if (!isOnline) throw new Error('offline');
-
-    const params = new URLSearchParams({ action: 'getConfig', t: Date.now() });
-    const res = await fetch(`${SCRIPT_URL}?${params}`, { cache: 'no-store' });
-    const data = await res.json();
-
-    loadingEl.style.display = 'none';
-
-    if (data.success && data.config && data.config.risks && data.config.risks.length > 0) {
-      // ✅ Hay riesgos en el Excel — poblar el select
-      populateRiskSelect(data.config.risks);
-      // Guardar en local para uso offline posterior
-      localStorage.setItem('SGSST_RISKS', JSON.stringify(data.config.risks));
-      risksLoaded = true;
-      showToast('✅', 'Lista cargada', `${data.config.risks.length} tipos de riesgo disponibles`, 'success');
-    } else {
-      // ⚠️ No hay riesgos en el Excel
-      emptyEl.style.display = 'block';
-      selectEl.style.display = 'none';
-      showToast('⚠️', 'Sin riesgos en Excel', 'El administrador debe configurar la lista de riesgos', 'warning');
-    }
-  } catch(err) {
-    loadingEl.style.display = 'none';
-
-    // Intentar cargar desde cache local
-    const cached = localStorage.getItem('SGSST_RISKS');
-    if (cached) {
-      try {
-        const localRisks = JSON.parse(cached);
-        if (localRisks.length > 0) {
-          populateRiskSelect(localRisks);
-          risksLoaded = true;
-          showToast('📦', 'Lista local', 'Usando riesgos guardados (sin conexión)', 'warning');
-          return;
-        }
-      } catch(e) {}
-    }
-
-    // Sin nada disponible — mostrar estado vacío
-    emptyEl.style.display = 'block';
-    selectEl.style.display = 'none';
-    if (err.message !== 'offline') {
-      showToast('⚠️', 'No se pudo cargar', 'Verifica la URL del script en el panel admin', 'warning');
-    } else {
-      showToast('📡', 'Sin conexión', 'Conéctate para cargar la lista de riesgos', 'warning');
-    }
-  }
-}
-
-// Poblar el select con la lista de riesgos
-function populateRiskSelect(risks) {
-  const selectEl = document.getElementById('tipoRiesgo');
-  const emptyEl  = document.getElementById('risksEmptyState');
-
-  selectEl.innerHTML = '<option value="">— Seleccionar —</option>';
-  risks.forEach(r => {
-    const opt = document.createElement('option');
-    opt.value = r;
-    opt.textContent = r;
-    selectEl.appendChild(opt);
-  });
-
-  emptyEl.style.display  = 'none';
-  selectEl.style.display = 'block';
-}
 
 // ============================================================
 // ONLINE STATUS
@@ -789,7 +922,7 @@ function validate() {
     valid = false;
   } else { cedula.classList.remove('invalid'); cedula.classList.add('valid'); document.getElementById('cedula-error').classList.remove('show'); }
 
-  if (!tipoRiesgo.value || tipoRiesgo.style.display === 'none') {
+  if (!tipoRiesgo.value) {
     tipoRiesgo.classList.add('invalid');
     document.getElementById('tipo-error').classList.add('show');
     valid = false;
@@ -818,7 +951,7 @@ async function handleSubmit() {
     cedula:        document.getElementById('cedula').value.trim(),
     tipoRiesgo:    document.getElementById('tipoRiesgo').value,
     nivelRiesgo:   document.querySelector('input[name="nivelRiesgo"]:checked').value,
-    observaciones: document.getElementById('observaciones').value.trim(),
+    observaciones: getActiveObservaciones(),
     fecha:         now.toLocaleDateString('es-CO'),
     hora:          now.toLocaleTimeString('es-CO'),
     timestamp:     now.toISOString(),
@@ -1040,8 +1173,12 @@ function resetForm() {
   document.getElementById('nombre').value = '';
   document.getElementById('cedula').value = '';
   document.getElementById('tipoRiesgo').value = '';
-  document.getElementById('observaciones').value = '';
   document.querySelectorAll('input[name="nivelRiesgo"]').forEach(r => r.checked = false);
+  // Deseleccionar todas las tarjetas y limpiar sus textareas
+  document.querySelectorAll('.rt-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.rt-card-check').forEach(c => c.textContent = '');
+  document.querySelectorAll('.rt-example-chip').forEach(c => c.classList.remove('selected-chip'));
+  document.querySelectorAll('.rt-free-desc').forEach(t => { t.value = ''; t.dataset.freeText = ''; });
   document.querySelectorAll('.field-input, .field-select, .field-textarea').forEach(el => {
     el.classList.remove('valid', 'invalid');
   });
@@ -1066,6 +1203,14 @@ function showToast(icon, title, msg, type = 'success') {
   setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 5000);
 }
 
+// Obtener la descripción del textarea de la tarjeta activa
+function getActiveObservaciones() {
+  const selected = document.querySelector('.rt-card.selected');
+  if (!selected) return '';
+  const textarea = selected.querySelector('.rt-free-desc');
+  return textarea ? textarea.value.trim() : '';
+}
+
 // ============================================================
 // INPUT LISTENERS — validación en tiempo real
 // ============================================================
@@ -1078,14 +1223,6 @@ function showToast(icon, title, msg, type = 'success') {
       document.getElementById(id + '-error')?.classList.remove('show');
     }
   });
-});
-
-document.getElementById('tipoRiesgo')?.addEventListener('change', () => {
-  const el = document.getElementById('tipoRiesgo');
-  if (el.value) {
-    el.classList.remove('invalid'); el.classList.add('valid');
-    document.getElementById('tipo-error')?.classList.remove('show');
-  }
 });
 </script>
 
