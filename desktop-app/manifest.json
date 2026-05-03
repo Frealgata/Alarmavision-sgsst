@@ -1,50 +1,55 @@
 {
   "name": "Alarmavision SG-SST — Panel Administrativo",
   "short_name": "SG-SST Admin",
-  "description": "Panel de gestión de reportes SG-SST — Alarmavision Services S.A.S.",
-  "start_url": "./index.html?pwa=1",
+  "description": "Panel de gestión y seguimiento de reportes de riesgos SG-SST",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#F3F4F6",
   "theme_color": "#1B3A8C",
   "lang": "es",
-  "dir": "ltr",
-  "scope": "./",
+  "categories": ["productivity", "business"],
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "../shared/icons/icon-72.png",  "sizes": "72x72",   "type": "image/png" },
+    { "src": "../shared/icons/icon-96.png",  "sizes": "96x96",   "type": "image/png" },
+    { "src": "../shared/icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "../shared/icons/icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "../shared/icons/icon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "../shared/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "../shared/icons/icon-384.png", "sizes": "384x384", "type": "image/png" },
+    { "src": "../shared/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
-  "categories": ["business", "productivity"],
-  "prefer_related_applications": false,
   "screenshots": [
     {
-      "src": "screenshot.png",
+      "src": "../shared/assets/screenshot-desktop.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Panel Administrativo SG-SST"
+      "label": "Panel administrativo de reportes"
+    },
+    {
+      "src": "../shared/assets/screenshot-admin-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Panel admin en móvil"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Reportes",
+      "short_name": "Reportes",
+      "description": "Ir a la lista de reportes",
+      "url": "./index.html#reports",
+      "icons": [{ "src": "../shared/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Ver el dashboard de riesgos",
+      "url": "./index.html",
+      "icons": [{ "src": "../shared/icons/icon-96.png", "sizes": "96x96" }]
     }
   ]
 }
