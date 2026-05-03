@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1B3A8C">
 <title>Alarmavision SG-SST — Panel Administrativo</title>
+<link rel="shortcut icon" href="shared/icons/icon-512.png" type="image"/>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -129,8 +130,8 @@ select.filter-input option { background: #FFFFFF; color: #111827; }
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .table-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 .table-header-title { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
-.table-scroll { overflow-x: auto; max-height: calc(100vh - 380px); }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table-scroll { overflow-x: auto; max-height: calc(100vh - 320px); -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
 thead { position: sticky; top: 0; z-index: 2; background: var(--surface2); }
 th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
 th:hover { color: var(--text); }
@@ -200,23 +201,44 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
 .settings-hint { font-size: 11.5px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
 
 /* ==========================================
-   RIESGOS ADMIN
+   TIPOS DE REPORTE ADMIN
    ========================================== */
-.risks-list-admin { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px; }
-.risk-admin-item { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 12px; transition: border-color 0.15s; }
-.risk-admin-item:hover { border-color: var(--blue-light); }
-.risk-admin-text { flex: 1; font-size: 13px; color: var(--text); }
-.risk-admin-text.editing { background: var(--surface); border: 1px solid var(--blue-light); border-radius: 5px; padding: 3px 8px; outline: none; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); width: 100%; }
-.risk-admin-actions { display: flex; gap: 4px; flex-shrink: 0; }
-.risk-admin-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 3px 6px; border-radius: 5px; transition: background 0.15s; line-height: 1; }
-.risk-admin-btn:hover { background: var(--surface3); }
-.risk-admin-btn.del:hover { background: rgba(220,38,38,0.1); }
-.add-risk-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.add-risk-field { flex: 1; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.15s; }
-.add-risk-field:focus { border-color: var(--blue-light); }
-.add-risk-field::placeholder { color: var(--text-dim); }
-.btn-add-risk { background: var(--blue); border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #fff; cursor: pointer; font-family: 'Rajdhani', sans-serif; transition: background 0.2s; white-space: nowrap; }
-.btn-add-risk:hover { background: var(--blue-light); }
+.report-types-admin { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+/* Tarjeta de categoría */
+.rt-category-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 9px; overflow: hidden; transition: border-color 0.15s; }
+.rt-category-card:hover { border-color: var(--blue-light); }
+
+.rt-category-header { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; user-select: none; }
+.rt-category-icon { font-size: 17px; flex-shrink: 0; }
+.rt-category-title { flex: 1; font-size: 13.5px; font-weight: 600; color: var(--text); }
+.rt-category-count { font-size: 11px; color: var(--text-dim); background: var(--surface3); border-radius: 100px; padding: 2px 8px; flex-shrink: 0; }
+.rt-category-arrow { font-size: 11px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; }
+.rt-category-card.open .rt-category-arrow { transform: rotate(180deg); }
+
+.rt-category-body { display: none; padding: 0 14px 12px; border-top: 1px solid var(--border2); }
+.rt-category-card.open .rt-category-body { display: block; }
+
+.rt-desc-input { width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px 10px; outline: none; margin-top: 10px; margin-bottom: 10px; transition: border-color 0.15s; }
+.rt-desc-input:focus { border-color: var(--blue-light); }
+
+.rt-examples-label { font-size: 10.5px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.rt-examples-list { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+.rt-example-item { display: flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; }
+.rt-example-text { flex: 1; font-size: 12px; color: var(--text); }
+.rt-example-text.editing { background: transparent; border: none; border-bottom: 1px solid var(--blue-light); outline: none; font-family: 'Inter', sans-serif; font-size: 12px; color: var(--text); width: 100%; padding: 1px 0; }
+.rt-example-btns { display: flex; gap: 3px; flex-shrink: 0; }
+.rt-ex-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 2px 5px; border-radius: 4px; transition: background 0.15s; line-height: 1; }
+.rt-ex-btn:hover { background: var(--surface3); }
+.rt-ex-btn.del:hover { background: rgba(220,38,38,0.1); }
+
+.rt-add-example-row { display: flex; gap: 6px; margin-top: 4px; }
+.rt-add-ex-input { flex: 1; background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px 10px; outline: none; transition: border-color 0.15s; }
+.rt-add-ex-input:focus { border-color: var(--blue-light); }
+.rt-add-ex-input::placeholder { color: var(--text-dim); }
+.rt-add-ex-btn { background: var(--blue); border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #fff; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+.rt-add-ex-btn:hover { background: var(--blue-light); }
+
 .save-feedback { font-size: 12px; margin-top: 8px; min-height: 18px; color: var(--text-dim); }
 .save-feedback.ok { color: var(--success); }
 .save-feedback.err { color: var(--danger); }
@@ -273,6 +295,27 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
   .modal-actions .btn { width: 100%; justify-content: center; padding: 12px !important; font-size: 14px !important; }
 }
 
+/* ==========================================
+   TABLET (769px – 1024px)
+   ========================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root { --sidebar-w: 190px; }
+  .sidebar { width: 190px; }
+  .sidebar-brand { font-size: 15px; }
+  .sidebar-sub { font-size: 10px; }
+  .page-content { padding: 16px 14px 20px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .chart-row { grid-template-columns: 1fr; gap: 12px; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 640px; }
+  td, th { padding: 8px 10px; font-size: 12px; }
+  .topbar-actions .btn-excel, .topbar-actions .btn-pdf { display: none; }
+  .settings-card { max-width: 100%; }
+}
+
+/* ==========================================
+   MÓVIL (≤ 768px)
+   ========================================== */
 @media (max-width: 768px) {
   html, body { overflow: hidden; }
   .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; z-index: 300; transform: translateX(-100%); transition: transform 0.27s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: none; }
@@ -288,20 +331,33 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .stat-value { font-size: 26px; }
   .chart-row { grid-template-columns: 1fr; gap: 10px; }
-  .table-wrap .table-scroll { display: none; }
-  .report-cards { display: block; }
+
+  /* En móvil: ocultar tabla de REPORTES y mostrar tarjetas */
+  #page-reports .table-scroll { display: none; }
+  #page-reports .filters-row { display: none; }
+  .report-cards { display: block !important; }
+
+  /* Dashboard: tabla liviana visible con scroll horizontal */
   #page-dashboard .table-scroll { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  #page-dashboard table { min-width: 520px; }
-  #page-dashboard th, #page-dashboard td { padding: 8px 10px; font-size: 11px; }
-  .filters-row { display: none; }
+  #page-dashboard table { min-width: 480px; }
+  #page-dashboard th, #page-dashboard td { padding: 7px 8px; font-size: 11px; }
+
   .mob-bottom-nav { display: block; }
   .settings-card { max-width: 100%; }
   .toast-container { top: auto; bottom: 76px; left: 12px; right: 12px; }
   .toast { min-width: unset; max-width: 100%; transform: translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; }
   .toast.show { transform: translateY(0); opacity: 1; }
 }
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 14px; }
+  .stat-value { font-size: 24px; }
+}
+
 @media (max-width: 380px) {
   .topbar-actions .btn-primary span { display: none; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
 }
 </style>
 </head>
@@ -325,9 +381,9 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logos">
-        <img src="assets/logo-company.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="../shared/assets/logo-png.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-divider"></div>
-        <img src="assets/logo-sgsst.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="../shared/assets/logo-SG-SST.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
       </div>
       <div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div>
       <div class="sidebar-sub">Panel SG-SST · Admin</div>
@@ -494,32 +550,26 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
           </div>
         </div>
 
-        <!-- Lista de Riesgos -->
+        <!-- Tipos de Reporte -->
         <div class="settings-card">
-          <div class="settings-title">📋 Lista de Riesgos (App Móvil)</div>
+          <div class="settings-title">📋 Tipos de Reporte (App Móvil)</div>
           <div style="background:rgba(27,58,140,0.06);border:1px solid rgba(27,58,140,0.18);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text-dim);line-height:1.6;">
-            ⚡ <b style="color:var(--text)">Sincronización bidireccional:</b> cada cambio se escribe en la hoja <b>Configuración</b> (Columna C). La App Móvil carga esta lista al iniciar.<br>
-            <span style="color:var(--success);font-weight:600;">Los cambios (agregar, editar, eliminar) se ven en la lista de inmediato. Presiona "Guardar en Excel" para persistirlos.</span>
+            ⚡ <b style="color:var(--text)">3 categorías fijas:</b> Acto inseguro, Condición insegura e Incidente de trabajo. Puedes editar los ejemplos de cada categoría. Los cambios se guardan en el Excel y se sincronizan con la app móvil.<br>
+            <span style="color:var(--success);font-weight:600;">Haz clic en una categoría para expandirla y editar sus ejemplos.</span>
           </div>
 
           <!-- Barra de estado -->
           <div class="risks-status-bar" id="risksStatusBar">
-            <span>📊 Riesgos en lista: <b id="risksCount">0</b></span>
+            <span>📊 Tipos de reporte: <b id="risksCount">3</b></span>
             <button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="loadConfigFromSheet()">☁️ Recargar desde Excel</button>
           </div>
 
-          <!-- Lista editable -->
-          <ul class="risks-list-admin" id="risksListAdmin"></ul>
-
-          <!-- Agregar nuevo riesgo -->
-          <div class="add-risk-row">
-            <input type="text" class="add-risk-field" id="newRiskInput" placeholder="Nuevo tipo de riesgo..." onkeydown="if(event.key==='Enter')addRisk()">
-            <button class="btn-add-risk" onclick="addRisk()">+ Agregar</button>
-          </div>
+          <!-- Editor de categorías -->
+          <div class="report-types-admin" id="reportTypesAdmin"></div>
 
           <!-- Acciones -->
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="saveConfigToSheet('risks')">💾 Guardar lista en Excel</button>
+            <button class="btn btn-primary" onclick="saveConfigToSheet('reportTypes')">💾 Guardar en Excel</button>
             <button class="btn btn-outline" onclick="loadConfigFromSheet()">☁️ Recargar desde Excel</button>
           </div>
           <div class="save-feedback" id="configFeedback"></div>
@@ -626,29 +676,47 @@ function getAdminPassword() { return localStorage.getItem('SGSST_ADMIN_PASSWORD'
 function setAdminPassword(p) { localStorage.setItem('SGSST_ADMIN_PASSWORD', p); }
 
 // ==========================================
-// GESTIÓN DE RIESGOS (local + sheets)
+// GESTIÓN DE TIPOS DE REPORTE (local + sheets)
 // ==========================================
-const DEFAULT_RISKS = [
-  'Daño en silla','Daño en módulo de trabajo','Cableado en mal estado',
-  'Iluminación deficiente','Riesgo eléctrico','Caídas o tropiezos',
-  'Riesgo de incendio','Señalización deficiente','Extintor vencido o ausente',
-  'Salida de emergencia bloqueada','Otros'
+const DEFAULT_REPORT_TYPES = [
+  {
+    id: 'acto_inseguro',
+    titulo: '⚠️ Acto inseguro',
+    descripcion: 'Acciones incorrectas realizadas por personas.',
+    ejemplos: ['Subirse a sillas o mesas','No usar EPP','Usar EPP incorrecto','Manipular equipos sin autorización','Correr en áreas de trabajo']
+  },
+  {
+    id: 'condicion_insegura',
+    titulo: '🏗️ Condición insegura',
+    descripcion: 'Problemas en el ambiente, infraestructura o equipos.',
+    ejemplos: ['Sillas dañadas','Cables expuestos','Pisos mojados','Lámparas dañadas','Falta de señalización']
+  },
+  {
+    id: 'incidente_trabajo',
+    titulo: '📋 Incidente de trabajo',
+    descripcion: 'Eventos que ocurrieron pero no causaron daño.',
+    ejemplos: ['Persona que se resbaló sin lesionarse','Objeto que cayó sin causar daño','Casi accidente']
+  }
 ];
 
-function getRisks() {
-  const s = localStorage.getItem('SGSST_RISKS');
-  if (s) { try { return JSON.parse(s); } catch(e) {} }
-  return [...DEFAULT_RISKS];
+function getReportTypes() {
+  const s = localStorage.getItem('SGSST_REPORT_TYPES');
+  if (s) { try { const p = JSON.parse(s); if (Array.isArray(p) && p.length > 0) return p; } catch(e) {} }
+  return JSON.parse(JSON.stringify(DEFAULT_REPORT_TYPES));
 }
 
-function setRisks(arr) {
-  localStorage.setItem('SGSST_RISKS', JSON.stringify(arr));
+function setReportTypes(arr) {
+  localStorage.setItem('SGSST_REPORT_TYPES', JSON.stringify(arr));
   updateRisksCountBar();
 }
 
+// Mantener compatibilidad con código anterior
+function getRisks() { return getReportTypes().map(r => r.titulo); }
+function setRisks(arr) { /* no-op — usamos setReportTypes */ }
+
 function updateRisksCountBar() {
   const el = document.getElementById('risksCount');
-  if (el) el.textContent = getRisks().length;
+  if (el) el.textContent = getReportTypes().length;
 }
 
 function setFeedback(elId, msg, type) {
@@ -664,35 +732,13 @@ function setFeedback(elId, msg, type) {
 async function callSheetsApi(params) {
   if (!scriptUrl) throw new Error('URL de script no configurada');
   const q = new URLSearchParams(params).toString();
-  const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`, { cache: 'no-store' });
+  const response = await fetch(`${scriptUrl}?${q}&t=${Date.now()}`);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
 // ==========================================
-// NORMALIZAR FILA — mapea nombres de columna del backend al formato del dashboard
-// Backend devuelve: 'Nombre Reportante', 'Descripción / Observaciones', 'Fecha de Atención'
-// Dashboard espera: 'Nombre', 'Observaciones', 'Fecha Atención'
-// ==========================================
-function normalizeRow(r) {
-  return {
-    ID:                r['ID']                          || '',
-    Nombre:            r['Nombre Reportante']           || r['Nombre']          || '',
-    'Cédula':          r['Cédula']                     || r['Cedula']           || '',
-    'Tipo de Riesgo':  r['Tipo de Riesgo']             || '',
-    'Nivel de Riesgo': r['Nivel de Riesgo']            || '',
-    Observaciones:     r['Descripción / Observaciones'] || r['Observaciones']    || '',
-    Fecha:             r['Fecha']                       || '',
-    Hora:              r['Hora']                        || '',
-    Estado:            r['Estado']                      || 'No atendido',
-    'Fecha Atención':  r['Fecha de Atención']           || r['Fecha Atención']   || '',
-    Timestamp:         r['Timestamp']                   || ''
-  };
-}
-
-// ==========================================
 // CARGAR CONFIGURACIÓN DESDE EXCEL
-// Se ejecuta al iniciar si hay URL configurada
 // ==========================================
 async function loadConfigFromSheet() {
   if (!scriptUrl) return;
@@ -700,16 +746,16 @@ async function loadConfigFromSheet() {
   try {
     const r = await callSheetsApi({ action: 'getConfig' });
     if (r.success && r.config) {
-      if (r.config.risks && Array.isArray(r.config.risks) && r.config.risks.length > 0) {
-        setRisks(r.config.risks);
+      if (r.config.reportTypes && Array.isArray(r.config.reportTypes) && r.config.reportTypes.length > 0) {
+        setReportTypes(r.config.reportTypes);
         renderRisksAdmin();
-        setFeedback('configFeedback', `✅ ${r.config.risks.length} riesgos cargados desde Excel`, 'ok');
-        showToast('✅', 'Riesgos cargados', `${r.config.risks.length} tipos de riesgo desde Excel`, 'success');
+        setFeedback('configFeedback', `✅ ${r.config.reportTypes.length} tipos de reporte cargados desde Excel`, 'ok');
+        showToast('✅', 'Configuración cargada', `${r.config.reportTypes.length} tipos de reporte desde Excel`, 'success');
       } else {
-        // No hay riesgos en Excel — mostrar aviso y se puede guardar lista local
-        renderRisksAdmin(); // muestra la lista local actual (puede ser la de DEFAULT o la guardada localmente)
-        setFeedback('configFeedback', '⚠️ No hay riesgos en el Excel aún. Agrega y presiona "Guardar lista en Excel".', '');
-        showToast('⚠️', 'Excel sin riesgos', 'Agrega riesgos y guárdalos para sincronizar con la app móvil', 'info');
+        // No hay tipos en Excel — usar los locales (default)
+        renderRisksAdmin();
+        setFeedback('configFeedback', '⚠️ Excel sin tipos de reporte. Presiona "Guardar en Excel" para sincronizar.', '');
+        showToast('⚠️', 'Excel sin configurar', 'Guarda los tipos de reporte para sincronizar con la app móvil', 'info');
       }
       if (r.config.admin_password) setAdminPassword(r.config.admin_password);
     } else {
@@ -718,7 +764,7 @@ async function loadConfigFromSheet() {
   } catch(err) {
     setFeedback('configFeedback', '❌ ' + err.message, 'err');
     showToast('❌', 'Error al cargar configuración', err.message, 'error');
-    renderRisksAdmin(); // igual mostrar la lista local
+    renderRisksAdmin();
   }
 }
 
@@ -726,12 +772,13 @@ async function loadConfigFromSheet() {
 // GUARDAR CONFIGURACIÓN EN EXCEL
 // ==========================================
 async function saveConfigToSheet(key) {
-  let feedbackId = key === 'risks' ? 'configFeedback' : 'pwdFeedback';
+  let feedbackId = (key === 'reportTypes' || key === 'risks') ? 'configFeedback' : 'pwdFeedback';
   setFeedback(feedbackId, '⏳ Guardando en Excel…', '');
   try {
     let value;
-    if (key === 'risks') {
-      value = JSON.stringify(getRisks());
+    if (key === 'reportTypes' || key === 'risks') {
+      value = JSON.stringify(getReportTypes());
+      key = 'reportTypes';
     } else if (key === 'admin_password') {
       value = document.getElementById('newPwdInput').value;
     }
@@ -745,8 +792,8 @@ async function saveConfigToSheet(key) {
         document.getElementById('newPwdInput').value = '';
         document.getElementById('confirmPwdInput').value = '';
       }
-      const msg = key === 'risks'
-        ? `Lista de ${getRisks().length} riesgos guardada en Excel`
+      const msg = key === 'reportTypes'
+        ? `${getReportTypes().length} tipos de reporte guardados en Excel`
         : 'Contraseña actualizada en Excel';
       setFeedback(feedbackId, '✅ ' + msg, 'ok');
       showToast('✅', 'Guardado en Excel', msg, 'success');
@@ -825,6 +872,16 @@ function switchPage(page) {
   }
 }
 
+
+// ==========================================
+// NORMALIZAR CLAVES DEL BACKEND
+// El backend devuelve 'Nombre Reportante', 'Cedula', 'Descripcion / Observaciones'
+// Esta función devuelve el valor sin importar qué variante use el backend.
+// ==========================================
+function rNombre(r)  { return r['Nombre Reportante'] || r['Nombre'] || '—'; }
+function rCedula(r)  { return r['Cedula'] || r['Cédula'] || '—'; }
+function rDesc(r)    { return r['Descripcion / Observaciones'] || r['Descripción / Observaciones'] || r['Observaciones'] || '—'; }
+
 // ==========================================
 // DATOS & DASHBOARD
 // ==========================================
@@ -837,7 +894,7 @@ async function loadData() {
     if (!scriptUrl) throw new Error('Configura la URL del script primero');
     const r = await callSheetsApi({ action: 'get' });
     if (r.success) {
-      allData = (r.data || []).map(normalizeRow);
+      allData = r.data || [];
       filteredData = [...allData];
       updateDashboard();
       renderReportsTable(filteredData);
@@ -858,7 +915,7 @@ async function loadData() {
 }
 
 function loadDemoData() {
-  allData = [{ ID: 'RPT-DEMO', Nombre: 'Ejemplo Demo', 'Cédula': '0000000000', 'Tipo de Riesgo': 'Cableado en mal estado', 'Nivel de Riesgo': 'Alto', Observaciones: 'Configura la URL del script', Fecha: new Date().toLocaleDateString('es-CO'), Hora: '00:00:00', Estado: 'No atendido' }];
+  allData = [{ ID: 'RPT-DEMO', 'Nombre Reportante': 'Ejemplo Demo', 'Cedula': '0000000000', 'Tipo de Riesgo': 'Cableado en mal estado', 'Nivel de Riesgo': 'Alto', 'Descripcion / Observaciones': 'Configura la URL del script', Fecha: new Date().toLocaleDateString('es-CO'), Hora: '00:00:00', Estado: 'No atendido' }];
   filteredData = [...allData];
   updateDashboard();
   renderReportsTable(filteredData);
@@ -895,7 +952,7 @@ function updateDashboard() {
 
   const l10 = [...allData].slice(-10).reverse();
   document.getElementById('dashboardTableBody').innerHTML = l10.length
-    ? l10.map(r => `<tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}"><td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td><td class="td-truncate">${r.Nombre || '—'}</td><td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo'] || '—'}</td><td>${nivelBadge(r['Nivel de Riesgo'])}</td><td style="font-size:12px">${formatFecha(r.Fecha)}</td><td>${estadoBadge(r.Estado)}</td></tr>`).join('')
+    ? l10.map(r => `<tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}"><td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td><td class="td-truncate">${rNombre(r)}</td><td class="td-truncate" style="max-width:160px">${r['Tipo de Riesgo'] || '—'}</td><td>${nivelBadge(r['Nivel de Riesgo'])}</td><td style="font-size:12px">${formatFecha(r.Fecha)}</td><td>${estadoBadge(r.Estado)}</td></tr>`).join('')
     : '<tr><td colspan="6" class="empty-table">Sin reportes</td></tr>';
 }
 
@@ -913,11 +970,11 @@ function renderReportsTable(data) {
   tbody.innerHTML = data.map(r =>
     `<tr class="${r.Estado === 'Atendido' ? 'atendido' : ''}" onclick="openModal('${(r.ID || '').replace(/'/g, "\\'")}')">
       <td style="font-size:12px;color:var(--text-dim)">${r.ID || '—'}</td>
-      <td class="td-truncate">${r.Nombre || '—'}</td>
-      <td style="font-size:12px">${r['Cédula'] || '—'}</td>
+      <td class="td-truncate">${rNombre(r)}</td>
+      <td style="font-size:12px">${rCedula(r)}</td>
       <td class="td-truncate">${r['Tipo de Riesgo'] || '—'}</td>
       <td>${nivelBadge(r['Nivel de Riesgo'])}</td>
-      <td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${r.Observaciones || '—'}</td>
+      <td class="td-truncate" style="max-width:160px;font-size:12px;color:var(--text-dim)">${rDesc(r)}</td>
       <td style="font-size:12px">${formatFecha(r.Fecha)}</td>
       <td style="font-size:12px">${formatHora(r.Hora)}</td>
       <td>${estadoBadge(r.Estado)}</td>
@@ -958,7 +1015,7 @@ function applyFilters() {
   const e = document.getElementById('filterEstado').value;
   const f = document.getElementById('filterFecha').value;
   filteredData = allData.filter(r => {
-    const mn = !n || (r.Nombre||'').toLowerCase().includes(n) || (r['Cédula']||'').toString().includes(n);
+    const mn = !n || rNombre(r).toLowerCase().includes(n) || rCedula(r).toString().includes(n);
     const ml = !l || r['Nivel de Riesgo'] === l;
     const me = !e || r.Estado === e;
     const mf = !f || (r.Fecha||'').includes(new Date(f).toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'}));
@@ -1023,10 +1080,10 @@ function openModal(id) {
   if (!r) return;
   currentModalId = id;
   const f = [
-    ['ID del Reporte', r.ID], ['Nombre', r.Nombre], ['Cédula', r['Cédula']],
+    ['ID del Reporte', r.ID], ['Nombre', rNombre(r)], ['Cédula', rCedula(r)],
     ['Tipo de Riesgo', r['Tipo de Riesgo']], ['Nivel de Riesgo', r['Nivel de Riesgo']],
-    ['Observaciones', r.Observaciones || '—'], ['Fecha', formatFecha(r.Fecha)],
-    ['Hora', formatHora(r.Hora)], ['Estado', r.Estado], ['Fecha de Atención', r['Fecha Atención'] || '—']
+    ['Observaciones', rDesc(r)], ['Fecha', formatFecha(r.Fecha)],
+    ['Hora', formatHora(r.Hora)], ['Estado', r.Estado], ['Fecha de Atención', r['Fecha de Atención'] || r['Fecha Atención'] || '—']
   ];
   document.getElementById('modalBody').innerHTML = f.map(([l, v]) =>
     `<div class="modal-field"><div class="modal-label">${l}</div><div class="modal-value">${v || '—'}</div></div>`
@@ -1055,21 +1112,8 @@ function closeModalDirect() {
 function exportExcel() {
   if (typeof XLSX === 'undefined') { showToast('❌', 'Error', 'Librería XLSX no cargada', 'error'); return; }
   const data = filteredData.length ? filteredData : allData;
-  // Columnas del Excel — deben coincidir con las claves normalizadas del objeto
-  const colsMap = [
-    { label: 'ID',                   key: 'ID' },
-    { label: 'Nombre Reportante',     key: 'Nombre' },
-    { label: 'Cédula',               key: 'Cédula' },
-    { label: 'Tipo de Riesgo',        key: 'Tipo de Riesgo' },
-    { label: 'Nivel de Riesgo',       key: 'Nivel de Riesgo' },
-    { label: 'Descripción / Obs.',    key: 'Observaciones' },
-    { label: 'Fecha',                 key: 'Fecha' },
-    { label: 'Hora',                  key: 'Hora' },
-    { label: 'Estado',                key: 'Estado' },
-    { label: 'Fecha de Atención',     key: 'Fecha Atención' }
-  ];
-  const cols = colsMap.map(c => c.label);
-  const colKeys = colsMap.map(c => c.key);
+  const cols = ['ID', 'Nombre Reportante', 'Cedula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Descripcion / Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha de Atención'];
+  const colLabels = ['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel de Riesgo', 'Observaciones', 'Fecha', 'Hora', 'Estado', 'Fecha de Atención'];
 
   const titleStyle = {
     font: { name: 'Arial', sz: 13, bold: true, color: { rgb: 'FFFFFF' } },
@@ -1115,12 +1159,15 @@ function exportExcel() {
     // Fila 3: Vacía
     cols.map(() => ({ v: '', t: 's' })),
     // Fila 4: Encabezados
-    cols.map(h => ({ v: h, s: headerStyle, t: 's' })),
+    colLabels.map(h => ({ v: h, s: headerStyle, t: 's' })),
     // Datos
-    ...data.map(r => colKeys.map((key, i) => ({
-      v: key === 'Fecha' ? formatFecha(r[key])
-       : key === 'Hora'  ? formatHora(r[key])
-       : (r[key] != null ? String(r[key]) : ''),
+    ...data.map(r => cols.map(col => ({
+      v: col === 'Fecha' ? formatFecha(r[col])
+       : col === 'Hora' ? formatHora(r[col])
+       : col === 'Nombre Reportante' ? rNombre(r)
+       : col === 'Cedula' ? rCedula(r)
+       : col === 'Descripcion / Observaciones' ? rDesc(r)
+       : (r[col] || ''),
       s: cellStyle(r['Nivel de Riesgo'], r.Estado),
       t: 's'
     })))
@@ -1131,16 +1178,9 @@ function exportExcel() {
 
   // Anchos de columnas
   ws['!cols'] = [
-    { wch: 10 }, // ID
-    { wch: 24 }, // Nombre Reportante
-    { wch: 14 }, // Cédula
-    { wch: 30 }, // Tipo de Riesgo
-    { wch: 14 }, // Nivel de Riesgo
-    { wch: 40 }, // Descripción / Obs.
-    { wch: 12 }, // Fecha
-    { wch: 10 }, // Hora
-    { wch: 14 }, // Estado
-    { wch: 20 }  // Fecha de Atención
+    { wch: 10 }, { wch: 22 }, { wch: 14 }, { wch: 28 },
+    { wch: 14 }, { wch: 35 }, { wch: 12 }, { wch: 10 },
+    { wch: 14 }, { wch: 18 }
   ];
 
   // Merge título y subtítulo
@@ -1173,39 +1213,16 @@ function exportPDF() {
   doc.setFont('helvetica', 'bold');
   doc.text('ALARMAVISION SERVICES S.A.S. — REPORTE SG-SST', 14, 14);
   doc.autoTable({
-    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Descripción', 'Fecha', 'Hora', 'Estado', 'Fecha Atención']],
-    body: data.map(r => [
-      r.ID||'—',
-      r.Nombre||'—',
-      r['Cédula']||'—',
-      r['Tipo de Riesgo']||'—',
-      r['Nivel de Riesgo']||'—',
-      r.Observaciones||'—',
-      formatFecha(r.Fecha)||'—',
-      formatHora(r.Hora)||'—',
-      r.Estado||'—',
-      r['Fecha Atención']||'—'
-    ]),
+    head: [['ID', 'Nombre', 'Cédula', 'Tipo de Riesgo', 'Nivel', 'Fecha', 'Estado']],
+    body: data.map(r => [r.ID||'—', rNombre(r), rCedula(r), r['Tipo de Riesgo']||'—', r['Nivel de Riesgo']||'—', r.Fecha||'—', r.Estado||'—']),
     startY: 26,
-    styles: { fontSize: 8, cellPadding: 2.5, textColor: [30,30,30], overflow: 'linebreak' },
-    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold', fontSize: 8 },
+    styles: { fontSize: 9, cellPadding: 3, textColor: [30,30,30] },
+    headStyles: { fillColor: [27,58,140], textColor: [255,255,255], fontStyle: 'bold' },
     alternateRowStyles: { fillColor: [245,247,252] },
-    columnStyles: {
-      0: { cellWidth: 18 },   // ID
-      1: { cellWidth: 28 },   // Nombre
-      2: { cellWidth: 22 },   // Cédula
-      3: { cellWidth: 35 },   // Tipo de Riesgo
-      4: { cellWidth: 16 },   // Nivel
-      5: { cellWidth: 45 },   // Descripción
-      6: { cellWidth: 20 },   // Fecha
-      7: { cellWidth: 16 },   // Hora
-      8: { cellWidth: 22 },   // Estado
-      9: { cellWidth: 28 }    // Fecha Atención
-    },
     didParseCell: (d) => {
       if (d.section === 'body') {
         const n = d.row.raw[4];
-        const e = d.row.raw[8];
+        const e = d.row.raw[6];
         if (e === 'Atendido') d.cell.styles.fillColor = [200,240,210];
         else if (n === 'Alto') d.cell.styles.fillColor = [255,230,230];
         else if (n === 'Medio') d.cell.styles.fillColor = [255,248,225];
@@ -1246,99 +1263,146 @@ async function testConnection() {
 }
 
 // ==========================================
-// LISTA DE RIESGOS — ADMIN
-// Se actualiza en tiempo real al agregar/editar/eliminar
+// EDITOR DE TIPOS DE REPORTE — ADMIN
+// 3 categorías fijas, ejemplos editables por categoría
 // ==========================================
 function renderRisksAdmin() {
-  const risks = getRisks();
-  const ul = document.getElementById('risksListAdmin');
+  const types = getReportTypes();
+  const container = document.getElementById('reportTypesAdmin');
+  if (!container) return;
+  container.innerHTML = '';
+  updateRisksCountBar();
+
+  types.forEach((cat, catIdx) => {
+    const card = document.createElement('div');
+    card.className = 'rt-category-card';
+    card.id = `rtCard_${catIdx}`;
+
+    // Header clicable
+    const header = document.createElement('div');
+    header.className = 'rt-category-header';
+    header.innerHTML = `
+      <span class="rt-category-icon">${cat.titulo.split(' ')[0]}</span>
+      <span class="rt-category-title">${cat.titulo.replace(/^[^\s]+\s/,'')}</span>
+      <span class="rt-category-count">${cat.ejemplos.length} ejemplos</span>
+      <span class="rt-category-arrow">▼</span>`;
+    header.onclick = () => card.classList.toggle('open');
+
+    // Body expandible
+    const body = document.createElement('div');
+    body.className = 'rt-category-body';
+
+    // Descripción editable
+    body.innerHTML = `
+      <div class="rt-examples-label" style="margin-top:10px">Descripción de la categoría</div>
+      <input type="text" class="rt-desc-input" value="${cat.descripcion}"
+        onchange="updateCatDesc(${catIdx}, this.value)"
+        placeholder="Descripción breve de esta categoría...">
+      <div class="rt-examples-label">Ejemplos que verá el usuario</div>
+      <ul class="rt-examples-list" id="rtExamples_${catIdx}"></ul>
+      <div class="rt-add-example-row">
+        <input type="text" class="rt-add-ex-input" id="rtNewEx_${catIdx}"
+          placeholder="Nuevo ejemplo..." onkeydown="if(event.key==='Enter')addExample(${catIdx})">
+        <button class="rt-add-ex-btn" onclick="addExample(${catIdx})">+ Agregar</button>
+      </div>`;
+
+    card.appendChild(header);
+    card.appendChild(body);
+    container.appendChild(card);
+
+    // Renderizar ejemplos dentro del body
+    renderExamples(catIdx);
+  });
+}
+
+function renderExamples(catIdx) {
+  const types = getReportTypes();
+  const cat = types[catIdx];
+  const ul = document.getElementById(`rtExamples_${catIdx}`);
   if (!ul) return;
   ul.innerHTML = '';
 
-  if (risks.length === 0) {
-    ul.innerHTML = `<div class="empty-risks-info">
-      <strong>📋 Lista de riesgos vacía</strong>
-      Agrega tipos de riesgo usando el campo de abajo y luego presiona "Guardar lista en Excel" para sincronizar con la app móvil.
-    </div>`;
-    updateRisksCountBar();
-    return;
-  }
+  // Actualizar conteo en el header
+  const countEl = document.querySelector(`#rtCard_${catIdx} .rt-category-count`);
+  if (countEl) countEl.textContent = `${cat.ejemplos.length} ejemplos`;
 
-  risks.forEach((risk, idx) => {
+  cat.ejemplos.forEach((ej, ejIdx) => {
     const li = document.createElement('li');
-    li.className = 'risk-admin-item';
-    li.dataset.idx = idx;
+    li.className = 'rt-example-item';
 
     const span = document.createElement('span');
-    span.className = 'risk-admin-text';
-    span.textContent = risk;
+    span.className = 'rt-example-text';
+    span.textContent = `• ${ej}`;
 
-    const actions = document.createElement('div');
-    actions.className = 'risk-admin-actions';
+    const btns = document.createElement('div');
+    btns.className = 'rt-example-btns';
 
     const eb = document.createElement('button');
-    eb.className = 'risk-admin-btn';
+    eb.className = 'rt-ex-btn';
     eb.textContent = '✏️';
     eb.title = 'Editar';
+    eb.onclick = () => startEditExample(catIdx, ejIdx, span, eb);
 
     const db = document.createElement('button');
-    db.className = 'risk-admin-btn del';
+    db.className = 'rt-ex-btn del';
     db.textContent = '🗑️';
     db.title = 'Eliminar';
+    db.onclick = () => deleteExample(catIdx, ejIdx);
 
-    eb.onclick = () => startEditRisk(idx, span, eb, db);
-    db.onclick = () => deleteRisk(idx);
-
-    actions.appendChild(eb);
-    actions.appendChild(db);
+    btns.appendChild(eb);
+    btns.appendChild(db);
     li.appendChild(span);
-    li.appendChild(actions);
+    li.appendChild(btns);
     ul.appendChild(li);
   });
-  updateRisksCountBar();
 }
 
-function startEditRisk(idx, span, eb, db) {
-  const risks = getRisks();
+function updateCatDesc(catIdx, val) {
+  const types = getReportTypes();
+  types[catIdx].descripcion = val.trim();
+  setReportTypes(types);
+}
+
+function startEditExample(catIdx, ejIdx, span, eb) {
+  const types = getReportTypes();
   const inp = document.createElement('input');
   inp.type = 'text';
-  inp.className = 'risk-admin-text editing';
-  inp.value = risks[idx];
+  inp.className = 'rt-example-text editing';
+  inp.value = types[catIdx].ejemplos[ejIdx];
   const save = () => {
     const v = inp.value.trim();
-    if (!v) { renderRisksAdmin(); return; }
-    risks[idx] = v;
-    setRisks(risks);
-    renderRisksAdmin(); // actualiza lista en tiempo real
+    if (!v) { renderExamples(catIdx); return; }
+    types[catIdx].ejemplos[ejIdx] = v;
+    setReportTypes(types);
+    renderExamples(catIdx);
   };
-  inp.onkeydown = e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') renderRisksAdmin(); };
+  inp.onkeydown = e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') renderExamples(catIdx); };
   eb.textContent = '✅';
   eb.onclick = save;
   span.replaceWith(inp);
-  inp.focus();
-  inp.select();
+  inp.focus(); inp.select();
 }
 
-function deleteRisk(idx) {
-  const risks = getRisks();
-  if (!confirm(`¿Eliminar "${risks[idx]}"?`)) return;
-  risks.splice(idx, 1);
-  setRisks(risks);
-  renderRisksAdmin(); // actualiza lista en tiempo real
-  showToast('🗑️', 'Riesgo eliminado', 'Presiona "Guardar lista en Excel" para persistir el cambio', 'info');
+function deleteExample(catIdx, ejIdx) {
+  const types = getReportTypes();
+  if (!confirm(`¿Eliminar el ejemplo "${types[catIdx].ejemplos[ejIdx]}"?`)) return;
+  types[catIdx].ejemplos.splice(ejIdx, 1);
+  setReportTypes(types);
+  renderExamples(catIdx);
+  showToast('🗑️', 'Ejemplo eliminado', 'Presiona "Guardar en Excel" para persistir el cambio', 'info');
 }
 
-function addRisk() {
-  const inp = document.getElementById('newRiskInput');
+function addExample(catIdx) {
+  const inp = document.getElementById(`rtNewEx_${catIdx}`);
   const v = inp.value.trim();
   if (!v) return;
-  const risks = getRisks();
-  if (risks.includes(v)) { showToast('⚠️', 'Riesgo duplicado', 'Ese tipo ya existe en la lista', 'error'); return; }
-  risks.push(v);
-  setRisks(risks);
+  const types = getReportTypes();
+  if (types[catIdx].ejemplos.includes(v)) { showToast('⚠️', 'Ejemplo duplicado', 'Ya existe en esta categoría', 'error'); return; }
+  types[catIdx].ejemplos.push(v);
+  setReportTypes(types);
   inp.value = '';
-  renderRisksAdmin(); // actualiza lista en tiempo real
-  showToast('➕', 'Riesgo agregado', 'Presiona "Guardar lista en Excel" para persistir el cambio', 'info');
+  renderExamples(catIdx);
+  showToast('➕', 'Ejemplo agregado', 'Presiona "Guardar en Excel" para persistir el cambio', 'info');
 }
 
 // ==========================================
@@ -1422,7 +1486,7 @@ function renderReportCards(data) {
         <div class="report-card-head">
           <div>
             <div class="report-card-id">${r.ID||'—'}</div>
-            <div class="report-card-name">${r.Nombre||'—'}</div>
+            <div class="report-card-name">${rNombre(r)}</div>
           </div>
           <div>${nivelBadge(r['Nivel de Riesgo'])}</div>
         </div>
