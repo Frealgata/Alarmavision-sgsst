@@ -1596,6 +1596,52 @@ setInterval(() => { if (navigator.onLine && scriptUrl) loadData(); }, 120000);
   window.hasPWAPrompt = function() { return !!deferredPrompt; };
 })();
 </script>
+<!-- ============================================================
+  PEGA ESTE BLOQUE AL FINAL DE desktop-app/index.html
+  justo antes del </body>
+  ============================================================ -->
+<script>
+// ══════════════════════════════════════════════════════════════
+// PWA INSTALL — Panel Admin
+// Si la URL tiene ?install=1, lanzar el prompt automáticamente.
+// ══════════════════════════════════════════════════════════════
+(function() {
+  var deferredPrompt = null;
+  var autoInstall = location.search.includes('install=1');
 
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (autoInstall) {
+      setTimeout(function() {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          console.log('[PWA Admin] userChoice:', result.outcome);
+          deferredPrompt = null;
+          // Si aceptó → volver a la landing
+          if (result.outcome === 'accepted') {
+            setTimeout(function() {
+              window.location.href = '../index.html';
+            }, 800);
+          }
+          // Si rechazó → quitar el flag para no molestar
+          if (result.outcome === 'dismissed') {
+            history.replaceState(null, '', location.pathname);
+          }
+        });
+      }, 600);
+    }
+
+    window.__pwaPrompt = deferredPrompt;
+  });
+
+  window.addEventListener('appinstalled', function() {
+    console.log('[PWA Admin] ✓ Instalada');
+    deferredPrompt = null;
+    window.__pwaPrompt = null;
+  });
+})();
+</script>
 </body>
 </html>
