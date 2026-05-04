@@ -1,55 +1,56 @@
 {
-  "name": "Alarmavision SG-SST — Panel Administrativo",
+  "name": "Alarmavision — Panel Admin",
   "short_name": "SG-SST Admin",
-  "description": "Panel de gestión y seguimiento de reportes de riesgos SG-SST",
+  "description": "Panel de gestión de reportes de riesgos SG-SST",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#F3F4F6",
+  "background_color": "#080808",
   "theme_color": "#1B3A8C",
   "lang": "es",
-  "categories": ["productivity", "business"],
   "icons": [
-    { "src": "../shared/icons/icon-72.png",  "sizes": "72x72",   "type": "image/png" },
-    { "src": "../shared/icons/icon-96.png",  "sizes": "96x96",   "type": "image/png" },
-    { "src": "../shared/icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
-    { "src": "../shared/icons/icon-144.png", "sizes": "144x144", "type": "image/png" },
-    { "src": "../shared/icons/icon-152.png", "sizes": "152x152", "type": "image/png" },
-    { "src": "../shared/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "../shared/icons/icon-384.png", "sizes": "384x384", "type": "image/png" },
-    { "src": "../shared/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
-  ],
-  "screenshots": [
     {
-      "src": "../shared/assets/screenshot-desktop.png",
-      "sizes": "1280x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Panel administrativo de reportes"
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
     },
     {
-      "src": "../shared/assets/screenshot-admin-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Panel admin en móvil"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Ver Reportes",
-      "short_name": "Reportes",
-      "description": "Ir a la lista de reportes",
-      "url": "./index.html#reports",
-      "icons": [{ "src": "../shared/icons/icon-96.png", "sizes": "96x96" }]
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
     },
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Ver el dashboard de riesgos",
-      "url": "./index.html",
-      "icons": [{ "src": "../shared/icons/icon-96.png", "sizes": "96x96" }]
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
