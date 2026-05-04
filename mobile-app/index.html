@@ -1268,6 +1268,51 @@ function getActiveObservaciones() {
   window.hasPWAPrompt = function() { return !!deferredPrompt; };
 })();
 </script>
+<!-- ============================================================
+  PEGA ESTE BLOQUE AL FINAL DE mobile-app/index.html
+  justo antes del </body>
+  ============================================================ -->
+<script>
+// ══════════════════════════════════════════════════════════════
+// PWA INSTALL — App Móvil
+// Si la URL tiene ?install=1, lanzar el prompt automáticamente.
+// Sino, guardar el evento para usarlo si hay un botón en la UI.
+// ══════════════════════════════════════════════════════════════
+(function() {
+  var deferredPrompt = null;
+  var autoInstall = location.search.includes('install=1');
 
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (autoInstall) {
+      // Pequeño delay para que la página cargue visualmente
+      setTimeout(function() {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          console.log('[PWA Móvil] userChoice:', result.outcome);
+          deferredPrompt = null;
+          // Si aceptó instalar → redirigir de vuelta a la landing
+          if (result.outcome === 'accepted') {
+            setTimeout(function() {
+              window.location.href = '../index.html';
+            }, 800);
+          }
+        });
+      }, 600);
+    }
+
+    // Exponer para uso externo (ej. botón dentro de la app)
+    window.__pwaPrompt = deferredPrompt;
+  });
+
+  window.addEventListener('appinstalled', function() {
+    console.log('[PWA Móvil] ✓ Instalada');
+    deferredPrompt = null;
+    window.__pwaPrompt = null;
+  });
+})();
+</script>
 </body>
 </html>
