@@ -450,140 +450,178 @@ body::before {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-/* ═══════════════════════════════════════════
-   BANNER DE INSTALACIÓN PWA
-═══════════════════════════════════════════ */
-.install-banner {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 9999;
-  background: linear-gradient(135deg, #1B3A8C 0%, #2E5FD9 100%);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  box-shadow: 0 -4px 24px rgba(27,58,140,0.45);
-  animation: slideUpBanner 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  border-top: 1px solid rgba(255,255,255,0.15);
-}
-.install-banner.hidden { display: none !important; }
-@keyframes slideUpBanner {
-  from { transform: translateY(100%); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.banner-icon { font-size: 26px; flex-shrink: 0; }
-.banner-text { flex: 1; font-size: 13.5px; font-weight: 600; line-height: 1.35; }
-.banner-text small { display: block; font-weight: 400; opacity: 0.8; font-size: 11.5px; margin-top: 2px; }
-.banner-btn-install {
-  background: #fff;
-  color: #1B3A8C;
-  border: none; border-radius: 8px;
-  padding: 9px 18px;
-  font-size: 13px; font-weight: 700;
-  cursor: pointer; flex-shrink: 0;
-  font-family: inherit;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.banner-btn-install:hover { transform: scale(1.04); box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
-.banner-btn-close {
-  background: rgba(255,255,255,0.15);
-  border: none; border-radius: 6px;
-  color: #fff; font-size: 16px;
-  width: 30px; height: 30px;
-  cursor: pointer; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
-}
-.banner-btn-close:hover { background: rgba(255,255,255,0.28); }
-
-/* iOS modal de instrucciones */
-.ios-install-modal {
-  display: none;
-  position: fixed; inset: 0; z-index: 10000;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
-  align-items: flex-end; justify-content: center;
-  padding: 0;
-}
-.ios-install-modal.show { display: flex; }
-.ios-install-box {
-  background: #0D1117;
-  border: 1px solid rgba(46,95,217,0.4);
-  border-radius: 20px 20px 0 0;
-  padding: 28px 24px 36px;
-  width: 100%; max-width: 480px;
-  animation: slideUpBanner 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  text-align: center; color: #E6EDF3;
-}
-.ios-install-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-.ios-install-box p  { font-size: 13px; color: #9EA2A2; margin-bottom: 20px; }
-.ios-steps { text-align: left; display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-.ios-step  { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; }
-.ios-step-n {
-  background: #2E5FD9; color: #fff; border-radius: 50%;
-  width: 26px; height: 26px; display: flex; align-items: center;
-  justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;
-}
-.ios-close-btn {
-  width: 100%; background: rgba(46,95,217,0.15);
-  border: 1px solid rgba(46,95,217,0.35); border-radius: 10px;
-  color: #7EB0FF; font-size: 14px; font-weight: 600;
-  padding: 12px; cursor: pointer; font-family: inherit;
-}
-
   </style>
+  <style>
+/* ── Modal instalación PWA — App Móvil ── */
+#pwaModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(8, 8, 8, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: pwaFadeIn .25s ease;
+}
+#pwaModal.show { display: flex; }
+@keyframes pwaFadeIn { from { opacity: 0; } to { opacity: 1; } }
+ 
+.pwa-modal-box {
+  background: #161B22;
+  border: 1px solid rgba(27, 58, 140, 0.5);
+  border-radius: 20px;
+  padding: 36px 28px 28px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: pwaSlideUp .28s cubic-bezier(.4,0,.2,1);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+@keyframes pwaSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+.pwa-modal-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1B3A8C, #2E5FD9, #1B3A8C);
+}
+ 
+.pwa-modal-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: none; border: none;
+  color: #8B949E; font-size: 18px;
+  cursor: pointer; line-height: 1;
+  padding: 4px 6px; border-radius: 6px;
+  transition: color .15s, background .15s;
+}
+.pwa-modal-close:hover { color: #E6EDF3; background: rgba(255,255,255,.07); }
+ 
+.pwa-modal-icon { font-size: 44px; margin-bottom: 14px; line-height: 1; }
+ 
+.pwa-modal-title {
+  font-size: 19px; font-weight: 700;
+  color: #E6EDF3; margin-bottom: 8px;
+  letter-spacing: .3px;
+}
+.pwa-modal-desc {
+  font-size: 13px; color: #8B949E;
+  line-height: 1.55; margin-bottom: 22px;
+}
+ 
+/* Botones */
+.pwa-btn-install {
+  width: 100%;
+  background: linear-gradient(135deg, #1B3A8C, #2E5FD9);
+  border: none; border-radius: 11px;
+  padding: 13px; margin-bottom: 10px;
+  font-size: 14px; font-weight: 700;
+  color: #fff; cursor: pointer;
+  letter-spacing: .3px;
+  transition: all .2s;
+  display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+}
+.pwa-btn-install:hover { background: linear-gradient(135deg, #2352C8, #3B6FE8); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,58,140,0.4); }
+.pwa-btn-install:active { transform: translateY(0); }
+ 
+.pwa-btn-browser {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(139,148,158,.3);
+  border-radius: 11px;
+  padding: 11px;
+  font-size: 13px; font-weight: 500;
+  color: #8B949E; cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+}
+.pwa-btn-browser:hover { color: #E6EDF3; border-color: rgba(139,148,158,.6); background: rgba(255,255,255,.04); }
+ 
+/* Instrucciones iOS */
+.pwa-ios-steps {
+  display: none;
+  text-align: left;
+  background: rgba(27,58,140,0.1);
+  border: 1px solid rgba(27,58,140,.35);
+  border-radius: 10px;
+  padding: 13px 14px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: #8B949E;
+  line-height: 1.6;
+}
+.pwa-ios-steps.show { display: block; }
+.pwa-ios-step { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 7px; }
+.pwa-ios-step:last-child { margin-bottom: 0; }
+.pwa-ios-num {
+  min-width: 18px; height: 18px; border-radius: 50%;
+  background: #1B3A8C; color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px; flex-shrink: 0;
+}
+.pwa-ios-step span strong { color: #E6EDF3; }
+ 
+/* Badge ya instalada */
+.pwa-installed-note {
+  display: none;
+  font-size: 12px; color: #3FB950;
+  margin-top: 10px;
+  align-items: center; gap: 6px;
+  justify-content: center;
+}
+.pwa-installed-note.show { display: flex; }
+</style>
 </head>
 <body>
-
-<!-- ═══ INSTALL BANNER PWA ═══ -->
-<div id="installBanner" class="install-banner hidden">
-  <span class="banner-icon">📱</span>
-  <span class="banner-text">
-    Instala la App Móvil
-    <small>Funciona sin conexión · acceso rápido</small>
-  </span>
-  <button class="banner-btn-install" id="btnInstalarApp">⬇ Instalar</button>
-  <button class="banner-btn-close" id="btnCerrarBanner" aria-label="Cerrar">✕</button>
-</div>
-
-<!-- ═══ iOS INSTRUCCIONES ═══ -->
-<div class="ios-install-modal" id="iosModal">
-  <div class="ios-install-box">
-    <h3>📲 Cómo instalar la App</h3>
-    <p style="margin-bottom:16px">Sigue los pasos según tu dispositivo:</p>
-
-    <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📱 Android — Chrome</div>
-    <div class="ios-steps" style="margin-bottom:18px">
-      <div class="ios-step"><div class="ios-step-n">1</div><span>Toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</span></div>
-      <div class="ios-step"><div class="ios-step-n">2</div><span>Toca <strong>"Añadir a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong></span></div>
-      <div class="ios-step"><div class="ios-step-n">3</div><span>Confirma tocando <strong>Instalar</strong></span></div>
+<!-- INSTALL MODAL — App Móvil SG-SST -->
+<div id="pwaModal" role="dialog" aria-modal="true" aria-labelledby="pwaModalTitle">
+  <div class="pwa-modal-box">
+    <button class="pwa-modal-close" onclick="pwaClose()" aria-label="Cerrar">✕</button>
+    <div class="pwa-modal-icon">📱</div>
+    <div class="pwa-modal-title" id="pwaModalTitle">App Móvil SG-SST</div>
+    <div class="pwa-modal-desc" id="pwaModalDesc">
+      Instala la app de reportes en tu dispositivo para acceder más rápido, sin abrir el navegador.
     </div>
-
-    <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🍎 iPhone / iPad — Safari</div>
-    <div class="ios-steps">
-      <div class="ios-step"><div class="ios-step-n">1</div><span>Toca el botón <strong>Compartir ↑</strong> en la barra inferior</span></div>
-      <div class="ios-step"><div class="ios-step-n">2</div><span>Toca <strong>"Añadir a pantalla de inicio"</strong></span></div>
-      <div class="ios-step"><div class="ios-step-n">3</div><span>Toca <strong>Añadir</strong> arriba a la derecha</span></div>
+ 
+    <!-- Instrucciones iOS (ocultas por defecto) -->
+    <div class="pwa-ios-steps" id="pwaIosSteps">
+      <div class="pwa-ios-step"><div class="pwa-ios-num">1</div><span>Abre esta página en <strong>Safari</strong>.</span></div>
+      <div class="pwa-ios-step"><div class="pwa-ios-num">2</div><span>Toca <strong>Compartir ⎙</strong> en la barra inferior.</span></div>
+      <div class="pwa-ios-step"><div class="pwa-ios-num">3</div><span>Selecciona <strong>"Añadir a pantalla de inicio"</strong>.</span></div>
+      <div class="pwa-ios-step"><div class="pwa-ios-num">4</div><span>Toca <strong>"Añadir"</strong> para confirmar.</span></div>
     </div>
-
-    <button class="ios-close-btn" id="btnCerrarIos" style="margin-top:24px">Entendido</button>
+ 
+    <button class="pwa-btn-install" id="pwaBtnInstall" onclick="pwaDoInstall()">
+      ⬇️ Instalar como App
+    </button>
+    <button class="pwa-btn-browser" onclick="pwaClose()">
+      🌐 Continuar en el navegador
+    </button>
+ 
+    <div class="pwa-installed-note" id="pwaInstalledNote">
+      ✅ La aplicación ya está instalada en tu dispositivo
+    </div>
   </div>
 </div>
-    <button class="ios-close-btn" id="btnCerrarIos">Entendido</button>
-  </div>
-</div>
-
-
 <div class="app-wrapper">
 
   <!-- HEADER -->
   <header class="app-header">
     <div class="header-logos">
-      <img src="../shared/assets/logo-company.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
+      <img src="../shared/assets/logo.png" alt="Alarmavision" class="logo-img" onerror="this.style.display='none'">
       <div class="divider-v"></div>
-      <img src="../shared/assets/logo-sgsst.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
+      <img src="../shared/assets/logo-SG-SST.png" alt="SG-SST" class="logo-sgsst" onerror="this.style.display='none'">
     </div>
     <div class="header-info">
       <div class="header-title"><span1>Alarma</span1><span>vision</span></div>
@@ -1350,100 +1388,144 @@ function getActiveObservaciones() {
 
 
 <script id="pwa-install-handler">
-
-/* ═══════════════════════════════════════════════════════
-   PWA INSTALL — Banner siempre visible al cargar
-   No depende de beforeinstallprompt para mostrarse.
-   El evento habilita el botón de instalación nativa.
-═══════════════════════════════════════════════════════ */
+// ══════════════════════════════════════════════════════
+// AUTO-INSTALL — se activa cuando se llega con ?install=1
+// ══════════════════════════════════════════════════════
 (function() {
-  var deferredPrompt = null;
-  var banner     = document.getElementById('installBanner');
-  var btnInst    = document.getElementById('btnInstalarApp');
-  var btnClose   = document.getElementById('btnCerrarBanner');
-  var iosModal   = document.getElementById('iosModal');
-  var btnIosCerrar = document.getElementById('btnCerrarIos');
+  let deferredPrompt = null;
 
-  var isIOS      = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-  var isSafari   = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  var standalone = window.matchMedia('(display-mode: standalone)').matches
-                || window.navigator.standalone === true;
-
-  // Si ya está instalada como app, no mostrar nada
-  if (standalone) return;
-
-  // Mostrar el banner inmediatamente (no esperar el evento)
-  mostrarBanner();
-
-  // Capturar el prompt nativo cuando el navegador lo ofrezca
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    // Actualizar texto del botón para dejar claro que puede instalar
-    if (btnInst) {
-      btnInst.textContent = '⬇ Instalar ahora';
-      btnInst.style.background = '#ffffff';
+    console.log('[PWA Mobile] beforeinstallprompt capturado ✓');
+
+    // Si venimos con ?install=1, disparar el prompt automáticamente
+    if (new URLSearchParams(location.search).get('install') === '1') {
+      setTimeout(function() { triggerInstallPrompt(); }, 800);
     }
   });
 
   window.addEventListener('appinstalled', function() {
-    ocultarBanner();
-    deferredPrompt = null;
+    console.log('[PWA Mobile] App instalada ✓');
+    // Limpiar el parámetro de URL
+    history.replaceState({}, '', location.pathname);
   });
 
-  // Clic en botón Instalar
-  if (btnInst) {
-    btnInst.addEventListener('click', function() {
-      // iOS Safari → mostrar instrucciones manuales
-      if (isIOS && isSafari) {
-        ocultarBanner();
-        if (iosModal) iosModal.classList.add('show');
-        return;
-      }
-
-      // Android/Chrome con prompt listo → diálogo nativo
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(function(result) {
-          deferredPrompt = null;
-          if (result.outcome === 'accepted') ocultarBanner();
-        });
-        return;
-      }
-
-      // Prompt aún no disponible → instrucciones manuales
-      if (iosModal) iosModal.classList.add('show');
-    });
+  async function triggerInstallPrompt() {
+    if (!deferredPrompt) return;
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('[PWA Mobile] userChoice:', outcome);
+      deferredPrompt = null;
+    } catch(err) {
+      console.warn('[PWA Mobile] Error prompt:', err);
+    }
   }
 
-  // Cerrar banner
-  if (btnClose) {
-    btnClose.addEventListener('click', function() {
-      ocultarBanner();
-      sessionStorage.setItem('pwa_banner_cerrado', '1');
-    });
-  }
-
-  // Cerrar modal iOS
-  if (btnIosCerrar) btnIosCerrar.addEventListener('click', function() {
-    if (iosModal) iosModal.classList.remove('show');
-  });
-  if (iosModal) iosModal.addEventListener('click', function(e) {
-    if (e.target === iosModal) iosModal.classList.remove('show');
-  });
-
-  function mostrarBanner() {
-    if (!banner) return;
-    // No mostrar si el usuario lo cerró en esta sesión
-    if (sessionStorage.getItem('pwa_banner_cerrado')) return;
-    banner.classList.remove('hidden');
-  }
-
-  function ocultarBanner() {
-    if (banner) banner.classList.add('hidden');
-  }
+  // Exponer para botones internos de la app si los hay
+  window.triggerPWAInstall = triggerInstallPrompt;
+  window.hasPWAPrompt = function() { return !!deferredPrompt; };
 })();
-
+</script>
+<script>
+// ════════════════════════════════════════════════════════════
+// PWA INSTALL MODAL — App Móvil SG-SST
+// ════════════════════════════════════════════════════════════
+(function() {
+  'use strict';
+ 
+  var _prompt  = null;
+  var _modal   = document.getElementById('pwaModal');
+  var _btnInst = document.getElementById('pwaBtnInstall');
+  var _iosSteps= document.getElementById('pwaIosSteps');
+  var _instNote= document.getElementById('pwaInstalledNote');
+  var _desc    = document.getElementById('pwaModalDesc');
+ 
+  var IS_IOS   = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  var IS_SA    = window.matchMedia('(display-mode: standalone)').matches
+              || window.navigator.standalone === true;
+ 
+  // Mostrar modal (con delay para que la app cargue primero)
+  function pwaShow() {
+    if (sessionStorage.getItem('pwa_modal_dismissed')) return;
+    setTimeout(function() { _modal.classList.add('show'); }, 1200);
+  }
+ 
+  // Cerrar modal
+  window.pwaClose = function() {
+    _modal.classList.remove('show');
+    sessionStorage.setItem('pwa_modal_dismissed', '1');
+  };
+ 
+  // Disparar instalación nativa
+  window.pwaDoInstall = function() {
+    if (!_prompt) {
+      // Sin prompt disponible: instrucciones del navegador
+      alert('Abre el menú del navegador (⋮) y selecciona "Instalar aplicación" o "Agregar a pantalla de inicio".');
+      return;
+    }
+    _prompt.prompt();
+    _prompt.userChoice.then(function(r) {
+      _prompt = null;
+      if (r.outcome === 'accepted') {
+        _modal.classList.remove('show');
+      }
+    });
+  };
+ 
+  // ── Caso: ya está instalada como PWA ──
+  if (IS_SA) {
+    // No mostrar modal, la app ya está instalada
+    return;
+  }
+ 
+  // ── Caso: iOS ──
+  if (IS_IOS) {
+    _btnInst.style.display = 'none';
+    _desc.textContent = 'Para instalar esta app en tu iPhone o iPad sigue estos pasos:';
+    _iosSteps.classList.add('show');
+    pwaShow();
+    return;
+  }
+ 
+  // ── Caso: Chrome / Edge / Android ──
+  // Esperar el evento beforeinstallprompt
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    _prompt = e;
+    pwaShow();
+  });
+ 
+  // Si viene de la landing con ?install=1 → mostrar modal inmediatamente
+  if (location.search.includes('install=1')) {
+    // Limpiar flag de dismiss para forzar el modal
+    sessionStorage.removeItem('pwa_modal_dismissed');
+    // El modal se mostrará cuando llegue beforeinstallprompt
+    // Si no llega en 2s (ya instalada u otro motivo), mostrar igual
+    setTimeout(function() {
+      if (!_prompt && !IS_SA) {
+        _btnInst.style.display = 'none';
+        _instNote.classList.add('show');
+        _desc.textContent = 'Si la app no está instalada, usa el menú del navegador → "Instalar aplicación".';
+        _modal.classList.add('show');
+      }
+    }, 2000);
+  }
+ 
+  // Cuando se instala
+  window.addEventListener('appinstalled', function() {
+    _prompt = null;
+    _modal.classList.remove('show');
+    _instNote.classList.add('show');
+  });
+ 
+  // Cerrar modal al hacer clic en el fondo
+  _modal.addEventListener('click', function(e) {
+    if (e.target === _modal) window.pwaClose();
+  });
+ 
+})();
 </script>
 
 </body>
