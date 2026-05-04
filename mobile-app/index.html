@@ -537,16 +537,29 @@ body::before {
 </head>
 <body>
 
-<!-- ═══ INSTALL BANNER — mismo patrón PQRS ═══ -->
+<!-- ═══ INSTALL BANNER PWA ═══ -->
 <div id="installBanner" class="install-banner hidden">
   <span class="banner-icon">📱</span>
   <span class="banner-text">
     Instala la App Móvil
-    <small>Acceso rápido · funciona sin conexión</small>
+    <small>Funciona sin conexión · acceso rápido</small>
   </span>
   <button class="banner-btn-install" id="btnInstalarApp">⬇ Instalar</button>
   <button class="banner-btn-close" id="btnCerrarBanner" aria-label="Cerrar">✕</button>
 </div>
+
+<!-- ═══ iOS INSTRUCCIONES ═══ -->
+<div class="ios-install-modal" id="iosModal">
+  <div class="ios-install-box">
+    <h3>📲 Cómo instalar la App</h3>
+    <p style="margin-bottom:16px">Sigue los pasos según tu dispositivo:</p>
+
+    <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📱 Android — Chrome</div>
+    <div class="ios-steps" style="margin-bottom:18px">
+      <div class="ios-step"><div class="ios-step-n">1</div><span>Toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</span></div>
+      <div class="ios-step"><div class="ios-step-n">2</div><span>Toca <strong>"Añadir a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong></span></div>
+      <div class="ios-step"><div class="ios-step-n">3</div><span>Confirma tocando <strong>Instalar</strong></span></div>
+    </div>
 
     <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🍎 iPhone / iPad — Safari</div>
     <div class="ios-steps">
@@ -1337,56 +1350,100 @@ function getActiveObservaciones() {
 
 
 <script id="pwa-install-handler">
+
 /* ═══════════════════════════════════════════════════════
-   PWA INSTALL — Patrón exacto del PQRS Alarmavision
-   - Banner oculto hasta que beforeinstallprompt dispara
-   - Botón llama prompt() directamente
-   - Sin modales manuales, sin redirecciones
+   PWA INSTALL — Banner siempre visible al cargar
+   No depende de beforeinstallprompt para mostrarse.
+   El evento habilita el botón de instalación nativa.
 ═══════════════════════════════════════════════════════ */
 (function() {
   var deferredPrompt = null;
+  var banner     = document.getElementById('installBanner');
+  var btnInst    = document.getElementById('btnInstalarApp');
+  var btnClose   = document.getElementById('btnCerrarBanner');
+  var iosModal   = document.getElementById('iosModal');
+  var btnIosCerrar = document.getElementById('btnCerrarIos');
 
-  // El navegador avisa que la app ES instalable
+  var isIOS      = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  var isSafari   = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches
+                || window.navigator.standalone === true;
+
+  // Si ya está instalada como app, no mostrar nada
+  if (standalone) return;
+
+  // Mostrar el banner inmediatamente (no esperar el evento)
+  mostrarBanner();
+
+  // Capturar el prompt nativo cuando el navegador lo ofrezca
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    // Mostrar el banner ahora que SÍ podemos instalar
-    var banner = document.getElementById('installBanner');
-    if (banner) banner.classList.remove('hidden');
+    // Actualizar texto del botón para dejar claro que puede instalar
+    if (btnInst) {
+      btnInst.textContent = '⬇ Instalar ahora';
+      btnInst.style.background = '#ffffff';
+    }
   });
 
-  // Botón INSTALAR — llama al diálogo nativo del sistema
-  var btnInstalar = document.getElementById('btnInstalarApp');
-  if (btnInstalar) {
-    btnInstalar.addEventListener('click', function() {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function(result) {
-        if (result.outcome === 'accepted') {
-          var banner = document.getElementById('installBanner');
-          if (banner) banner.classList.add('hidden');
-        }
-        deferredPrompt = null;
-      });
-    });
-  }
-
-  // Botón CERRAR banner
-  var btnCerrar = document.getElementById('btnCerrarBanner');
-  if (btnCerrar) {
-    btnCerrar.addEventListener('click', function() {
-      var banner = document.getElementById('installBanner');
-      if (banner) banner.classList.add('hidden');
-    });
-  }
-
-  // Después de instalar, ocultar el banner
   window.addEventListener('appinstalled', function() {
-    var banner = document.getElementById('installBanner');
-    if (banner) banner.classList.add('hidden');
+    ocultarBanner();
     deferredPrompt = null;
   });
+
+  // Clic en botón Instalar
+  if (btnInst) {
+    btnInst.addEventListener('click', function() {
+      // iOS Safari → mostrar instrucciones manuales
+      if (isIOS && isSafari) {
+        ocultarBanner();
+        if (iosModal) iosModal.classList.add('show');
+        return;
+      }
+
+      // Android/Chrome con prompt listo → diálogo nativo
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          deferredPrompt = null;
+          if (result.outcome === 'accepted') ocultarBanner();
+        });
+        return;
+      }
+
+      // Prompt aún no disponible → instrucciones manuales
+      if (iosModal) iosModal.classList.add('show');
+    });
+  }
+
+  // Cerrar banner
+  if (btnClose) {
+    btnClose.addEventListener('click', function() {
+      ocultarBanner();
+      sessionStorage.setItem('pwa_banner_cerrado', '1');
+    });
+  }
+
+  // Cerrar modal iOS
+  if (btnIosCerrar) btnIosCerrar.addEventListener('click', function() {
+    if (iosModal) iosModal.classList.remove('show');
+  });
+  if (iosModal) iosModal.addEventListener('click', function(e) {
+    if (e.target === iosModal) iosModal.classList.remove('show');
+  });
+
+  function mostrarBanner() {
+    if (!banner) return;
+    // No mostrar si el usuario lo cerró en esta sesión
+    if (sessionStorage.getItem('pwa_banner_cerrado')) return;
+    banner.classList.remove('hidden');
+  }
+
+  function ocultarBanner() {
+    if (banner) banner.classList.add('hidden');
+  }
 })();
+
 </script>
 
 </body>
