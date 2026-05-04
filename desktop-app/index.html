@@ -1554,5 +1554,48 @@ function renderReportCards(data) {
 // ==========================================
 setInterval(() => { if (navigator.onLine && scriptUrl) loadData(); }, 120000);
 </script>
+
+<script id="pwa-install-handler">
+// ══════════════════════════════════════════════════════
+// AUTO-INSTALL — se activa cuando se llega con ?install=1
+// ══════════════════════════════════════════════════════
+(function() {
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('[PWA Desktop] beforeinstallprompt capturado ✓');
+
+    // Si venimos con ?install=1, disparar el prompt automáticamente
+    if (new URLSearchParams(location.search).get('install') === '1') {
+      setTimeout(function() { triggerInstallPrompt(); }, 800);
+    }
+  });
+
+  window.addEventListener('appinstalled', function() {
+    console.log('[PWA Desktop] App instalada ✓');
+    // Limpiar el parámetro de URL
+    history.replaceState({}, '', location.pathname);
+  });
+
+  async function triggerInstallPrompt() {
+    if (!deferredPrompt) return;
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('[PWA Desktop] userChoice:', outcome);
+      deferredPrompt = null;
+    } catch(err) {
+      console.warn('[PWA Desktop] Error prompt:', err);
+    }
+  }
+
+  // Exponer para botones internos de la app si los hay
+  window.triggerPWAInstall = triggerInstallPrompt;
+  window.hasPWAPrompt = function() { return !!deferredPrompt; };
+})();
+</script>
+
 </body>
 </html>
