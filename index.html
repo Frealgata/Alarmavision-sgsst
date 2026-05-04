@@ -24,21 +24,22 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
 .logo-img{height:72px;width:72px;object-fit:contain;border-radius:14px;box-shadow:0 0 0 1px rgba(46,95,217,0.25),0 8px 24px rgba(27,58,140,0.35);background:rgba(27,58,140,0.15);}
 .logo-div{width:1px;height:56px;background:rgba(27,58,140,0.4);}
 .hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(32px,7vw,52px);font-weight:700;letter-spacing:0.5px;line-height:1.05;margin-bottom:12px;animation:fadeDown 0.55s 0.08s ease both;}
-.hero-title .accent{color:var(--blue-light);}
-.hero-title .muted{color:var(--gray-dark);}
+.hero-title .accent{color:var(--blue-light);}.hero-title .muted{color:var(--gray-dark);}
 .hero-sub{font-size:14px;color:var(--gray);margin-bottom:44px;line-height:1.6;animation:fadeDown 0.55s 0.14s ease both;}
 .hero-sub span{color:#58A6FF;font-weight:500;}
-.ios-hint{display:none;width:100%;background:rgba(27,58,140,0.1);border:1px dashed rgba(46,95,217,0.3);border-radius:10px;padding:13px 16px;font-size:13px;color:var(--gray);line-height:1.65;text-align:left;margin-bottom:22px;}
+
+/* iOS hint */
+.ios-hint{display:none;width:100%;background:rgba(27,58,140,0.1);border:1px dashed rgba(46,95,217,0.3);border-radius:12px;padding:16px;font-size:13px;color:var(--gray);line-height:1.7;text-align:left;margin-bottom:22px;}
 .ios-hint.show{display:block;}
-.ios-hint strong{color:#7EB0FF;}
-.ios-hint .step{margin-top:7px;display:flex;align-items:flex-start;gap:9px;}
-.ios-hint .step-num{background:var(--blue);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.ios-hint strong{color:#7EB0FF;display:block;margin-bottom:8px;font-size:14px;}
+.ios-hint .step{display:flex;align-items:flex-start;gap:10px;margin-top:6px;}
+.ios-hint .n{background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
 .apps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;width:100%;margin-bottom:32px;}
 .app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:9px;position:relative;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s;animation:fadeUp 0.55s ease both;backdrop-filter:blur(12px);}
-.app-card:nth-child(1){animation-delay:0.22s;}
-.app-card:nth-child(2){animation-delay:0.32s;}
+.app-card:nth-child(1){animation-delay:0.22s;}.app-card:nth-child(2){animation-delay:0.32s;}
 .app-card::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(46,95,217,0.45),transparent);}
-.app-card:hover{border-color:var(--border-hover);box-shadow:0 8px 40px rgba(27,58,140,0.28),0 0 0 1px rgba(46,95,217,0.18);transform:translateY(-3px);}
+.app-card:hover{border-color:var(--border-hover);box-shadow:0 8px 40px rgba(27,58,140,0.28);transform:translateY(-3px);}
 .app-icon{font-size:38px;filter:drop-shadow(0 0 8px rgba(46,95,217,0.35));}
 .app-name{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;}
 .app-desc{font-size:13px;color:var(--gray);line-height:1.55;text-align:center;}
@@ -48,17 +49,15 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
 .btn-open{background:rgba(46,95,217,0.12);border:1px solid rgba(46,95,217,0.35);color:#7EB0FF;}
 .btn-open:hover{background:rgba(46,95,217,0.24);color:#A8CAFF;}
 .btn-install{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-light) 100%);color:white;box-shadow:0 3px 12px rgba(27,58,140,0.45);}
-.btn-install:hover:not(:disabled){box-shadow:0 5px 20px rgba(46,95,217,0.55);opacity:0.92;}
-.btn-install:disabled{opacity:0.35;cursor:not-allowed;background:rgba(255,255,255,0.06);color:#666;box-shadow:none;border:1px solid rgba(255,255,255,0.08);}
-.btn-install.installed{background:rgba(5,150,105,0.15);color:#34d399;border:1px solid rgba(5,150,105,0.3);box-shadow:none;opacity:1;}
-/* Estado esperando prompt */
-.btn-install.waiting{animation:pulse 1.8s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+.btn-install:hover:not(:disabled){box-shadow:0 5px 20px rgba(46,95,217,0.55);opacity:0.93;}
+.btn-install.installed{background:rgba(5,150,105,0.15);color:#34d399;border:1px solid rgba(5,150,105,0.3);box-shadow:none;}
+.btn-install:disabled:not(.installed){opacity:0.35;cursor:not-allowed;background:rgba(255,255,255,0.06);color:#555;box-shadow:none;border:1px solid rgba(255,255,255,0.08);}
 
-/* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a2236;border:1px solid rgba(46,95,217,0.4);border-radius:10px;padding:12px 20px;font-size:13px;color:#E6EDF3;z-index:200;opacity:0;transition:all 0.3s;pointer-events:none;max-width:90vw;text-align:center;white-space:pre-line;}
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:#111827;border:1px solid rgba(46,95,217,0.4);border-radius:12px;padding:14px 20px;font-size:13px;color:#E6EDF3;z-index:300;opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;max-width:88vw;text-align:center;white-space:pre-line;line-height:1.6;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,8,8,0.9);backdrop-filter:blur(10px);z-index:100;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.active{display:flex;}
 .modal{background:#0D1117;border:1px solid rgba(27,58,140,0.45);border-radius:20px;padding:36px 30px;width:100%;max-width:380px;text-align:center;animation:slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
@@ -99,16 +98,14 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
     Sistema de Reporte y Gestión de Riesgos · <span>Services S.A.S.</span>
   </p>
 
-  <!-- iOS HINT -->
   <div class="ios-hint" id="iosHint">
-    <strong>📲 Cómo instalar en iPhone / iPad:</strong>
-    <div class="step"><div class="step-num">1</div><span>Abre esta página en <strong>Safari</strong> (no Chrome ni Firefox)</span></div>
-    <div class="step"><div class="step-num">2</div><span>Toca el botón <strong>Compartir</strong> (□↑) en la barra inferior de Safari</span></div>
-    <div class="step"><div class="step-num">3</div><span>Selecciona <strong>"Añadir a pantalla de inicio"</strong> y toca <strong>Añadir</strong></span></div>
+    <strong>📲 Instalar en iPhone / iPad:</strong>
+    <div class="step"><div class="n">1</div><span>Abre esta página en <strong>Safari</strong></span></div>
+    <div class="step"><div class="n">2</div><span>Toca el botón <strong>Compartir ↑</strong> en la barra inferior</span></div>
+    <div class="step"><div class="n">3</div><span>Selecciona <strong>"Añadir a pantalla de inicio"</strong></span></div>
   </div>
 
   <div class="apps-grid">
-    <!-- APP MÓVIL -->
     <div class="app-card">
       <div class="app-icon">📱</div>
       <div class="app-name">App Móvil</div>
@@ -116,12 +113,10 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
       <div class="app-badge">Emisor · PWA</div>
       <div class="card-actions">
         <a href="mobile-app/index.html" class="btn-action btn-open">🌐 Abrir</a>
-        <button class="btn-action btn-install" id="btnInstallMobile"
-                onclick="installApp('mobile')">⬇ Instalar</button>
+        <button class="btn-action btn-install" id="btnM" onclick="goInstall('mobile-app/index.html')">⬇ Instalar</button>
       </div>
     </div>
 
-    <!-- PANEL ADMIN -->
     <div class="app-card">
       <div class="app-icon">💻</div>
       <div class="app-name">Panel Admin</div>
@@ -129,8 +124,7 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
       <div class="app-badge">Receptor · PWA</div>
       <div class="card-actions">
         <button class="btn-action btn-open" onclick="openPasswordModal()">🌐 Abrir</button>
-        <button class="btn-action btn-install" id="btnInstallDesktop"
-                onclick="installApp('desktop')">⬇ Instalar</button>
+        <button class="btn-action btn-install" id="btnD" onclick="goInstallAdmin()">⬇ Instalar</button>
       </div>
     </div>
   </div>
@@ -138,10 +132,8 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
   <div class="footer">Alarmavision Services S.A.S. · Sistema SG-SST v1.0.0</div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL CONTRASEÑA -->
 <div class="modal-overlay" id="passwordModal">
   <div class="modal">
     <div style="font-size:34px;margin-bottom:12px">🔐</div>
@@ -156,129 +148,98 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(r
 </div>
 
 <script>
-// ─── SERVICE WORKER ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// SERVICE WORKER RAÍZ
+// ══════════════════════════════════════════════════════
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('[SW] Registrado:', r.scope))
-      .catch(e => console.warn('[SW] Error:', e));
-  });
+  navigator.serviceWorker.register('./sw.js')
+    .then(r => console.log('[SW] ✓', r.scope))
+    .catch(e => console.warn('[SW] ✗', e));
 }
 
-// ─── PWA INSTALL ──────────────────────────────────────────────────
-let deferredPrompt = null;
-let pendingTarget  = null;
+// ══════════════════════════════════════════════════════
+// DETECCIÓN DE PLATAFORMA
+// ══════════════════════════════════════════════════════
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  console.log('[PWA] beforeinstallprompt capturado ✓');
-  setInstallButtons('ready');
-});
+// ══════════════════════════════════════════════════════
+// LÓGICA PRINCIPAL DE INSTALACIÓN
+//
+// IMPORTANTE: el botón "Instalar" NO instala desde el index raíz.
+// Navega a la sub-app correspondiente con ?install=1
+// Allí el SW + manifest propios disparan beforeinstallprompt.
+// Esta es la arquitectura correcta para apps multi-scope en PWA.
+// ══════════════════════════════════════════════════════
 
-window.addEventListener('appinstalled', () => {
-  console.log('[PWA] App instalada ✓');
-  deferredPrompt = null;
-  setInstallButtons('installed');
-  showToast('✓ App instalada correctamente en tu dispositivo.');
-  setTimeout(() => {
-    if (pendingTarget === 'mobile') window.location.href = 'mobile-app/index.html';
-    else if (pendingTarget === 'desktop') openPasswordModal();
-  }, 1200);
-});
-
-function setInstallButtons(state) {
-  const configs = {
-    waiting:   { disabled: true,  cls: 'waiting',   text: '⏳ Cargando…' },
-    ready:     { disabled: false, cls: '',           text: '⬇ Instalar'   },
-    installed: { disabled: true,  cls: 'installed',  text: '✓ Instalada'  },
-    ios:       { disabled: false, cls: '',           text: '📲 Cómo instalar' },
-  };
-  const cfg = configs[state] || configs.waiting;
-  ['btnInstallMobile','btnInstallDesktop'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.disabled = cfg.disabled;
-    btn.className = 'btn-action btn-install' + (cfg.cls ? ' ' + cfg.cls : '');
-    btn.innerHTML = cfg.text;
-  });
-}
-
-async function installApp(target) {
-  pendingTarget = target;
-
-  // iOS Safari → mostrar instrucciones
-  if (isIOS()) {
+function goInstall(url) {
+  if (isIOS) {
     document.getElementById('iosHint').classList.add('show');
-    document.getElementById('iosHint').scrollIntoView({ behavior:'smooth', block:'center' });
+    document.getElementById('iosHint').scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-
-  // Sin servidor (file://) → explicar
-  if (location.protocol === 'file:') {
-    showToast('⚠️ Para instalar necesitas servir los archivos\ndesde un servidor web (no file://).\n\nUsa Netlify, GitHub Pages o:\npython -m http.server 8080');
-    return;
-  }
-
-  // El prompt está listo → dispararlo
-  if (deferredPrompt) {
-    try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('[PWA] userChoice:', outcome);
-      if (outcome !== 'accepted') {
-        showToast('ℹ️ Instalación cancelada. Puedes intentarlo de nuevo.');
-      }
-      deferredPrompt = null;
-    } catch(err) {
-      console.warn('[PWA] prompt error:', err);
-      showToast('No se pudo mostrar el diálogo de instalación.\nIntenta desde el menú del navegador (⋮ → Instalar app).');
-    }
-    return;
-  }
-
-  // Prompt aún no llegó (puede ser timing)
-  showToast('ℹ️ El navegador aún no activó la instalación.\n\nEspera unos segundos y vuelve a intentarlo,\no usa el menú ⋮ → "Instalar aplicación".');
+  // Navegar a la sub-app con flag de instalación
+  window.location.href = url + '?install=1';
 }
 
-function isIOS() {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+function goInstallAdmin() {
+  if (isIOS) {
+    document.getElementById('iosHint').classList.add('show');
+    document.getElementById('iosHint').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  // Para admin: pedir contraseña primero, luego navegar con ?install=1
+  openPasswordModal(true);
 }
 
-// Al cargar, detectar estado
-window.addEventListener('load', () => {
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                    || navigator.standalone === true;
+// ══════════════════════════════════════════════════════
+// ESTADO INICIAL DE BOTONES
+// ══════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
   if (isStandalone) {
-    setInstallButtons('installed');
-  } else if (isIOS()) {
+    // Ya instalada como app
+    setBtn('btnM', 'installed', '✓ Instalada', true);
+    setBtn('btnD', 'installed', '✓ Instalada', true);
+  } else if (isIOS && isSafari) {
     document.getElementById('iosHint').classList.add('show');
-    setInstallButtons('ios');
-  } else {
-    setInstallButtons('waiting');
-    // Si en 5s no llegó el prompt, habilitar de todos modos para dar mensaje útil
-    setTimeout(() => {
-      if (!deferredPrompt) setInstallButtons('ready');
-    }, 5000);
+    setBtn('btnM', '', '📲 Cómo instalar', false);
+    setBtn('btnD', '', '📲 Cómo instalar', false);
   }
+  // En Android/Chrome los botones quedan en estado normal (⬇ Instalar, habilitados)
 });
 
-// ─── TOAST ────────────────────────────────────────────────────────
-let toastTimer = null;
-function showToast(msg, duration = 5000) {
+function setBtn(id, cls, text, disabled) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.className = 'btn-action btn-install' + (cls ? ' ' + cls : '');
+  btn.innerHTML = text;
+  btn.disabled = disabled;
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+let _toastTimer;
+function showToast(msg, ms = 5000) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), ms);
 }
 
-// ─── CONTRASEÑA ───────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// CONTRASEÑA
+// ══════════════════════════════════════════════════════
 const DEFAULT_PASSWORD = "Alarmavision2006";
+let _installAfterAuth = false;
+
 function getAdminPassword() {
   return localStorage.getItem('SGSST_ADMIN_PASSWORD') || DEFAULT_PASSWORD;
 }
-function openPasswordModal() {
+function openPasswordModal(installAfter = false) {
+  _installAfterAuth = installAfter;
   document.getElementById('passwordModal').classList.add('active');
   setTimeout(() => document.getElementById('passwordInput').focus(), 120);
 }
@@ -287,12 +248,14 @@ function closePasswordModal() {
   const i = document.getElementById('passwordInput');
   i.value = ''; i.classList.remove('error');
   document.getElementById('errorMsg').classList.remove('active');
+  _installAfterAuth = false;
 }
 function checkPassword() {
   const val = document.getElementById('passwordInput').value;
   if (val === getAdminPassword()) {
     closePasswordModal();
-    window.location.href = 'desktop-app/index.html';
+    const dest = 'desktop-app/index.html' + (_installAfterAuth ? '?install=1' : '');
+    window.location.href = dest;
   } else {
     const i = document.getElementById('passwordInput');
     i.classList.add('error');
@@ -304,17 +267,17 @@ function checkPassword() {
 document.getElementById('passwordModal').addEventListener('click', e => {
   if (e.target === document.getElementById('passwordModal')) closePasswordModal();
 });
-async function syncPassword() {
+
+// Sync contraseña desde Sheets
+(async () => {
   const u = localStorage.getItem('SGSST_SCRIPT_URL');
   if (!u) return;
   try {
-    const r = await fetch(`${u}?action=getConfig&t=${Date.now()}`);
-    const d = await r.json();
+    const d = await (await fetch(`${u}?action=getConfig&t=${Date.now()}`)).json();
     if (d.success && d.config?.admin_password)
       localStorage.setItem('SGSST_ADMIN_PASSWORD', d.config.admin_password);
   } catch(e) {}
-}
-syncPassword();
+})();
 </script>
 </body>
 </html>
