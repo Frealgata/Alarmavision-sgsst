@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SG-SST Admin">
 <title>Alarmavision SG-SST — Panel Administrativo</title>
-<link rel="shortcut icon" href="icons/icon-192.png" type="image"/>
+<link rel="shortcut icon" href="shared/icons/icon-512.png" type="image"/>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -512,8 +512,9 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
     <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📱 Android — Chrome</div>
     <div class="ios-steps" style="margin-bottom:18px">
       <div class="ios-step"><div class="ios-step-n">1</div><span>Toca el menú <strong>⋮</strong> (tres puntos) arriba a la derecha</span></div>
-      <div class="ios-step"><div class="ios-step-n">2</div><span>Toca <strong>"Añadir a pantalla de inicio"</strong> o <strong>"Instalar aplicación"</strong></span></div>
-      <div class="ios-step"><div class="ios-step-n">3</div><span>Confirma tocando <strong>Instalar</strong></span></div>
+      <div class="ios-step"><div class="ios-step-n">2</div><span>Ve hasta <strong>"Enviar, guardar y compartir"</strong> </span></div>
+      <div class="ios-step"><div class="ios-step-n">3</div><span>Instalar  <strong>Página como aplicación</strong></span></div>
+      <div class="ios-step"><div class="ios-step-n">3</div><span>Confirma Clic <strong>Instalar</strong></span></div>
     </div>
 
     <div style="font-size:12px;font-weight:700;color:#58A6FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🍎 iPhone / iPad — Safari</div>
@@ -525,9 +526,7 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
 
     <button class="ios-close-btn" id="btnCerrarIos" style="margin-top:24px">Entendido</button>
   </div>
-</div>
-    <button class="ios-close-btn" id="btnCerrarIos">Entendido</button>
-  </div>
+
 </div>
 
 
@@ -549,9 +548,9 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logos">
-        <img src="../shared/assets/logo.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="../shared/assets/logo-png.png" alt="Alarmavision" class="sidebar-logo" onerror="this.style.display='none'">
         <div class="sidebar-divider"></div>
-        <img src="../shared/assets/SG-SST.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="../shared/assets/logo-SG-SST.png" alt="SG-SST" class="sidebar-logo" onerror="this.style.display='none'">
       </div>
       <div class="sidebar-brand"><span1>Alarma</span1><span>vision</span></div>
       <div class="sidebar-sub">Panel SG-SST · Admin</div>
@@ -561,7 +560,7 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
         <div class="nav-section-title">Principal</div>
         <button class="nav-item active" onclick="switchPage('dashboard')">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/></svg>
-          Dashboard
+          Panel
         </button>
         <button class="nav-item" onclick="switchPage('reports')">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 1a.5.5 0 0 0-.5.5V2H2.5A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2H12v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V2h-4v-.5a.5.5 0 0 0-.5-.5h-1z"/></svg>
@@ -607,7 +606,7 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
       <button class="mob-menu-btn" id="mobMenuBtn" onclick="openSidebar()" aria-label="Menú">
         <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
       </button>
-      <div class="topbar-title" id="pageTitle">📊 Dashboard</div>
+      <div class="topbar-title" id="pageTitle">📊 Panel</div>
       <div class="topbar-actions">
         <button class="btn btn-excel" onclick="exportExcel()">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>
@@ -762,7 +761,7 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
           <div class="save-feedback" id="pwdFeedback"></div>
         </div>
 
-        <!-- Instrucciones -->
+        <!-- Instrucciones 
         <div class="settings-card">
           <div class="settings-title">📋 Cómo configurar paso a paso</div>
           <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
@@ -775,7 +774,7 @@ tbody tr.atendido:hover { background: rgba(5,150,105,0.09); }
             • Copia la URL generada y pégala arriba.<br><br>
             <b style="color:var(--text)">2. ¡Listo!</b> La hoja creará automáticamente las pestañas <b>Reportes-SG-SST</b> y <b>Configuracion</b> al primer uso.
           </div>
-        </div>
+        </div>-->
 
       </div>
     </div><!-- /page-content -->
